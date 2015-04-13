@@ -40,16 +40,8 @@ public class User implements Serializable {
 		return email;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
 	public String getHash() {
 		return hash;
-	}
-
-	public void setPassword(String password) {
-		this.hash = password;
 	}
 
 	public int getId() {
