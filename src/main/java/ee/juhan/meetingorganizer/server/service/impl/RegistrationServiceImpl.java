@@ -3,8 +3,6 @@ package ee.juhan.meetingorganizer.server.service.impl;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +16,6 @@ import ee.juhan.meetingorganizer.server.service.RegistrationService;
 
 @Service
 public class RegistrationServiceImpl implements RegistrationService {
-
-	private static Logger LOG = LoggerFactory
-			.getLogger(RegistrationServiceImpl.class);
 
 	@Autowired
 	private AccountRepository accountRepository;
@@ -37,7 +32,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 	}
 
 	private ServerResult checkEmail(String email) {
-		LOG.info("Checking email: " + email);
 		Account account = accountRepository.findByEmail(email);
 		if (account == null)
 			return ServerResult.SUCCESS;
@@ -47,7 +41,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 	private Account createAccount(String email, String password) {
 		try {
-			LOG.info("Creating account: " + email);
 			String sid = SIDGeneratorUtil.generateSID();
 			Account account = new Account(email,
 					HasherUtil.createHash(password), sid);

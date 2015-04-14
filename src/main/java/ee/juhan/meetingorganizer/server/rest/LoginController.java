@@ -11,26 +11,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ee.juhan.meetingorganizer.server.rest.domain.ServerResponse;
-import ee.juhan.meetingorganizer.server.service.RegistrationService;
+import ee.juhan.meetingorganizer.server.service.LoginService;
 
 @RestController
-@RequestMapping("/register")
-public class RegistrationController {
+@RequestMapping("/login")
+public class LoginController {
 
-	private static Logger LOG = LoggerFactory
-			.getLogger(RegistrationController.class);
+	private static Logger LOG = LoggerFactory.getLogger(LoginController.class);
 
 	@Autowired
-	RegistrationService registrationService;
+	LoginService loginService;
 
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<ServerResponse> registrationRequest(
 			@RequestParam(value = "email") String email,
 			@RequestParam(value = "password") String password) {
-		LOG.info("Registration request: " + email);
-		ServerResponse response = registrationService.registrationRequest(
-				email, password);
-		LOG.info("Registration request completed.");
+		LOG.info("Log in request: " + email);
+		ServerResponse response = loginService.loginRequest(email, password);
+		LOG.info("Log in request completed.");
 		return new ResponseEntity<ServerResponse>(response, HttpStatus.OK);
 
 	}
