@@ -23,16 +23,20 @@ public class Account implements Serializable {
 	private String hash;
 
 	@Column(nullable = false)
+	private String phoneNumber;
+
+	@Column(nullable = false)
 	private String sid;
 
 	protected Account() {
 		super();
 	}
 
-	public Account(String email, String hash, String sid) {
+	public Account(String email, String hash, String phoneNumber, String sid) {
 		super();
 		this.email = email;
 		this.hash = hash;
+		this.phoneNumber = phoneNumber;
 		this.sid = sid;
 	}
 
@@ -42,6 +46,10 @@ public class Account implements Serializable {
 
 	public String getHash() {
 		return hash;
+	}
+	
+	public String getPhoneNumber() {
+		return phoneNumber;
 	}
 
 	public int getId() {

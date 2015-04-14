@@ -10,6 +10,7 @@ import ee.juhan.meetingorganizer.server.core.domain.Account;
 import ee.juhan.meetingorganizer.server.core.repository.AccountRepository;
 import ee.juhan.meetingorganizer.server.core.util.HasherUtil;
 import ee.juhan.meetingorganizer.server.core.util.SIDGeneratorUtil;
+import ee.juhan.meetingorganizer.server.rest.domain.AccountDTO;
 import ee.juhan.meetingorganizer.server.rest.domain.ServerResponse;
 import ee.juhan.meetingorganizer.server.rest.domain.ServerResult;
 import ee.juhan.meetingorganizer.server.service.RegistrationService;
@@ -21,10 +22,10 @@ public class RegistrationServiceImpl implements RegistrationService {
 	private AccountRepository accountRepository;
 
 	@Override
-	public ServerResponse registrationRequest(String email, String password) {
-		if (checkEmail(email) == ServerResult.EMAIL_IN_USE)
+	public ServerResponse registrationRequest(AccountDTO accountDTO) {
+		if (checkEmail(accountDTO.getEmail()) == ServerResult.EMAIL_IN_USE)
 			return new ServerResponse(ServerResult.EMAIL_IN_USE);
-		Account account = createAccount(email, password);
+		Account account = createAccount(accountDTO);
 		if (account == null)
 			return new ServerResponse(ServerResult.FAIL);
 		return new ServerResponse(ServerResult.SUCCESS, account.getSid(),
@@ -39,11 +40,12 @@ public class RegistrationServiceImpl implements RegistrationService {
 			return ServerResult.EMAIL_IN_USE;
 	}
 
-	private Account createAccount(String email, String password) {
+	private Account createAccount(AccountDTO accountDTO) {
 		try {
 			String sid = SIDGeneratorUtil.generateSID();
-			Account account = new Account(email,
-					HasherUtil.createHash(password), sid);
+			Account account = new Account(accountDTO.getEmail(),
+					HasherUtil.createHash(accountDTO.getPassword()),
+					accountDTO.getPhoneNumber(), sid);
 			accountRepository.save(account);
 			return account;
 		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {

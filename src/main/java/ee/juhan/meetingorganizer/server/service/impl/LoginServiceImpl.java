@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import ee.juhan.meetingorganizer.server.core.domain.Account;
 import ee.juhan.meetingorganizer.server.core.repository.AccountRepository;
 import ee.juhan.meetingorganizer.server.core.util.HasherUtil;
+import ee.juhan.meetingorganizer.server.rest.domain.AccountDTO;
 import ee.juhan.meetingorganizer.server.rest.domain.ServerResponse;
 import ee.juhan.meetingorganizer.server.rest.domain.ServerResult;
 import ee.juhan.meetingorganizer.server.service.LoginService;
@@ -20,13 +21,14 @@ public class LoginServiceImpl implements LoginService {
 	private AccountRepository accountRepository;
 
 	@Override
-	public ServerResponse loginRequest(String email, String password) {
-		Account account = accountRepository.findByEmail(email);
+	public ServerResponse loginRequest(AccountDTO accountDTO) {
+		Account account = accountRepository.findByEmail(accountDTO.getEmail());
 		if (account == null)
 			return new ServerResponse(ServerResult.NO_ACCOUNT_FOUND);
 
 		try {
-			if (HasherUtil.validatePassword(password, account.getHash()))
+			if (HasherUtil.validatePassword(accountDTO.getPassword(),
+					account.getHash()))
 				return new ServerResponse(ServerResult.SUCCESS,
 						account.getSid(), account.getId());
 			else
@@ -35,7 +37,6 @@ public class LoginServiceImpl implements LoginService {
 			e.printStackTrace();
 			return new ServerResponse(ServerResult.FAIL);
 		}
-
 	}
 
 }
