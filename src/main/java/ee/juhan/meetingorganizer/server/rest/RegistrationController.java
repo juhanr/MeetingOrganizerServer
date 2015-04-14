@@ -30,6 +30,7 @@ public class RegistrationController {
 		LOG.info("Registration request: " + email);
 		ServerResponse response = registrationService.registrationRequest(
 				email, password);
+		LOG.info("Registration request completed.");
 		return new ResponseEntity<ServerResponse>(response, HttpStatus.OK);
 
 	}

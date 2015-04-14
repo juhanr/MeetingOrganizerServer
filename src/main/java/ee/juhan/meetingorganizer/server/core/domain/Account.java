@@ -8,7 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class User implements Serializable {
+public class Account implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -25,11 +25,11 @@ public class User implements Serializable {
 	@Column(nullable = false)
 	private String sid;
 
-	protected User() {
+	protected Account() {
 		super();
 	}
 
-	public User(String email, String hash, String sid) {
+	public Account(String email, String hash, String sid) {
 		super();
 		this.email = email;
 		this.hash = hash;
