@@ -46,6 +46,7 @@ public class Account implements Serializable {
 	public Account(String name, String email, String hash, String phoneNumber,
 			String sid) {
 		super();
+		this.name = name;
 		this.email = email;
 		this.hash = hash;
 		this.phoneNumber = phoneNumber;
