@@ -43,7 +43,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 	private Account createAccount(AccountDTO accountDTO) {
 		try {
 			String sid = SIDGeneratorUtil.generateSID();
-			Account account = new Account(accountDTO.getEmail(),
+			Account account = new Account(accountDTO.getName(), accountDTO.getEmail(),
 					HasherUtil.createHash(accountDTO.getPassword()),
 					accountDTO.getPhoneNumber(), sid);
 			accountRepository.save(account);
