@@ -23,8 +23,11 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 	@Override
 	public ServerResponse registrationRequest(AccountDTO accountDTO) {
-		if (checkEmail(accountDTO.getEmail()) == ServerResult.EMAIL_IN_USE)
+		if (accountRepository.findByEmail(accountDTO.getEmail()) != null)
 			return new ServerResponse(ServerResult.EMAIL_IN_USE);
+		if (accountRepository.findByPhoneNumber(accountDTO.getPhoneNumber()) != null)
+			return new ServerResponse(ServerResult.PHONE_NUMBER_IN_USE);
+
 		Account account = createAccount(accountDTO);
 		if (account == null)
 			return new ServerResponse(ServerResult.FAIL);
@@ -32,20 +35,12 @@ public class RegistrationServiceImpl implements RegistrationService {
 				account.getId());
 	}
 
-	private ServerResult checkEmail(String email) {
-		Account account = accountRepository.findByEmail(email);
-		if (account == null)
-			return ServerResult.SUCCESS;
-		else
-			return ServerResult.EMAIL_IN_USE;
-	}
-
 	private Account createAccount(AccountDTO accountDTO) {
 		try {
 			String sid = SIDGeneratorUtil.generateSID();
-			Account account = new Account(accountDTO.getName(), accountDTO.getEmail(),
-					HasherUtil.createHash(accountDTO.getPassword()),
-					accountDTO.getPhoneNumber(), sid);
+			Account account = new Account(accountDTO.getName(),
+					accountDTO.getEmail(), HasherUtil.createHash(accountDTO
+							.getPassword()), accountDTO.getPhoneNumber(), sid);
 			accountRepository.save(account);
 			return account;
 		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {

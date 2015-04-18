@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,6 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+@Entity
 public class Meeting implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -21,6 +23,9 @@ public class Meeting implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+
+	@Column(nullable = false)
+	private int leaderId;
 
 	@Column(nullable = false)
 	private String title;
@@ -33,31 +38,19 @@ public class Meeting implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date endTime;
 
-	@Column(nullable = false)
 	private double locationLatitude;
 
-	@Column(nullable = false)
 	private double locationLongitude;
 
 	@OneToMany(fetch = FetchType.LAZY)
 	private Set<Participant> participants = new HashSet<>();
 
-	@Column(nullable = false)
 	private String message;
 
-	public Meeting(String title, Date startTime, Date endTime,
-			double locationLatitude, double locationLongitude, String message) {
+	public Meeting(int leaderId, String title, Date startTime, Date endTime,
+			String message) {
 		super();
-		this.title = title;
-		this.startTime = startTime;
-		this.endTime = endTime;
-		this.locationLatitude = locationLatitude;
-		this.locationLongitude = locationLongitude;
-		this.message = message;
-	}
-
-	public Meeting(String title, Date startTime, Date endTime, String message) {
-		super();
+		this.leaderId = leaderId;
 		this.title = title;
 		this.startTime = startTime;
 		this.endTime = endTime;
@@ -66,6 +59,10 @@ public class Meeting implements Serializable {
 
 	public int getId() {
 		return id;
+	}
+
+	public int getLeaderId() {
+		return leaderId;
 	}
 
 	public String getTitle() {

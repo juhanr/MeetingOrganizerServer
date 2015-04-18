@@ -6,7 +6,7 @@ import java.util.Set;
 
 public class MeetingDTO {
 
-	private int inviterUserId;
+	private int leaderId;
 	private String title;
 	private Date startTime;
 	private Date endTime;
@@ -18,8 +18,8 @@ public class MeetingDTO {
 	public MeetingDTO() {
 	}
 
-	public int getInviterUserId() {
-		return inviterUserId;
+	public int getLeaderId() {
+		return leaderId;
 	}
 
 	public String getTitle() {

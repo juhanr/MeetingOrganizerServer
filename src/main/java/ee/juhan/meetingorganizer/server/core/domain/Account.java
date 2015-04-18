@@ -20,7 +20,7 @@ public class Account implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	
+
 	@Column(nullable = false)
 	private String name;
 
@@ -38,23 +38,24 @@ public class Account implements Serializable {
 
 	@OneToMany(fetch = FetchType.LAZY)
 	private Set<Meeting> meetings = new HashSet<>();
-	
+
 	protected Account() {
 		super();
 	}
 
-	public Account(String name, String email, String hash, String phoneNumber, String sid) {
+	public Account(String name, String email, String hash, String phoneNumber,
+			String sid) {
 		super();
 		this.email = email;
 		this.hash = hash;
 		this.phoneNumber = phoneNumber;
 		this.sid = sid;
 	}
-	
+
 	public int getId() {
 		return id;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -66,7 +67,7 @@ public class Account implements Serializable {
 	public String getHash() {
 		return hash;
 	}
-	
+
 	public String getPhoneNumber() {
 		return phoneNumber;
 	}
@@ -74,11 +75,11 @@ public class Account implements Serializable {
 	public String getSid() {
 		return sid;
 	}
-	
+
 	public Set<Meeting> getMeetings() {
 		return meetings;
 	}
-	
+
 	public boolean addMeeting(Meeting meeting) {
 		return meetings.add(meeting);
 	}

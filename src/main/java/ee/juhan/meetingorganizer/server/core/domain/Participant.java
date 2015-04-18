@@ -3,10 +3,12 @@ package ee.juhan.meetingorganizer.server.core.domain;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+@Entity
 public class Participant implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -18,7 +20,6 @@ public class Participant implements Serializable {
 	@Column(nullable = false)
 	private String name;
 
-	@Column(nullable = false)
 	private String email;
 
 	@Column(nullable = false)
@@ -27,10 +28,8 @@ public class Participant implements Serializable {
 	@Column(nullable = false)
 	private boolean isParticipating;
 
-	@Column(nullable = false)
 	private double locationLatitude;
 
-	@Column(nullable = false)
 	private double locationLongitude;
 
 	public Participant(String name, String email, String phoneNumber) {
@@ -79,5 +78,5 @@ public class Participant implements Serializable {
 	public void setLocationLongitude(double locationLongitude) {
 		this.locationLongitude = locationLongitude;
 	}
-	
+
 }
