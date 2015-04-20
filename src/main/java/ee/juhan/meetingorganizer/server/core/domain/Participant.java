@@ -36,9 +36,14 @@ public class Participant implements Serializable {
 
 	private double locationLongitude;
 
+	protected Participant() {
+		super();
+	}
+
 	public Participant(int accountId, String name, String email,
 			String phoneNumber, ParticipationAnswer participationAnswer,
 			double locationLatitude, double locationLongitude) {
+		super();
 		this.accountId = accountId;
 		this.name = name;
 		this.email = email;

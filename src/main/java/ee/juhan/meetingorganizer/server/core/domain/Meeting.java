@@ -52,8 +52,13 @@ public class Meeting implements Serializable {
 
 	private String message;
 
+	protected Meeting() {
+		super();
+	}
+
 	public Meeting(int leaderId, String title, Date startTime, Date endTime,
 			String message, LocationType locationType) {
+		super();
 		this.leaderId = leaderId;
 		this.title = title;
 		this.startTime = startTime;
