@@ -1,15 +1,10 @@
 package ee.juhan.meetingorganizer.server.rest.domain;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 public class MeetingDTO {
-
-	public static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
-			"dd.MM.yyyy hh:mm");
 
 	private int leaderId;
 	private String title;
@@ -86,24 +81,8 @@ public class MeetingDTO {
 		this.startTime = startTime;
 	}
 
-	public void setStartTimeFromString(String startTimeString) {
-		try {
-			this.startTime = DATE_FORMAT.parse(startTimeString);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-	}
-
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
-	}
-
-	public void setEndTimeFromString(String endTimeString) {
-		try {
-			this.endTime = DATE_FORMAT.parse(endTimeString);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public void setLocationLatitude(double locationLatitude) {
