@@ -30,73 +30,75 @@ public class MeetingController {
 
 	@RequestMapping(method = RequestMethod.POST, value = "/new")
 	public ResponseEntity<ServerResponse> newMeetingRequest(
-			@RequestBody MeetingDTO meetingDTO) {
+			@RequestBody MeetingDTO meetingDTO,
+			@CookieValue(value = "sid", defaultValue = "cookie") String cookie) {
 		LOG.info("New meeting request: " + meetingDTO.getTitle());
-		ServerResponse response = meetingService.newMeetingRequest(meetingDTO);
+		ServerResponse response = meetingService.newMeetingRequest(meetingDTO,
+				cookie);
 		LOG.info("New meeting request completed.");
+		if (response == null)
+			return new ResponseEntity<ServerResponse>(HttpStatus.FORBIDDEN);
 		return new ResponseEntity<ServerResponse>(response, HttpStatus.OK);
 
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/ongoing-meetings")
 	public ResponseEntity<List<MeetingDTO>> getOngoingMeetingsRequest(
-			@RequestParam(value = "userId") String userId,
+			@RequestParam(value = "accountId") String accountId,
+			@RequestParam(value = "clientLocalTime") String clientLocalTime,
 			@CookieValue(value = "sid", defaultValue = "cookie") String cookie) {
-		LOG.info("Get ongoing meetings request for user " + userId);
-		if (cookie.equals("")) {
-			return new ResponseEntity<List<MeetingDTO>>(HttpStatus.FORBIDDEN);
-		}
-		List<MeetingDTO> ongoingMeetings = meetingService
-				.getOngoingMeetingsRequest(Integer.parseInt(userId), cookie);
+		LOG.info("Get ongoing meetings request for user " + accountId);
+		List<MeetingDTO> response = meetingService.getOngoingMeetingsRequest(
+				Integer.parseInt(accountId), clientLocalTime, cookie);
 		LOG.info("Get ongoing meetings request completed.");
-		return new ResponseEntity<List<MeetingDTO>>(ongoingMeetings,
-				HttpStatus.OK);
+		if (response == null)
+			return new ResponseEntity<List<MeetingDTO>>(HttpStatus.FORBIDDEN);
+		return new ResponseEntity<List<MeetingDTO>>(response, HttpStatus.OK);
 
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/future-meetings")
 	public ResponseEntity<List<MeetingDTO>> getFutureMeetingsRequest(
-			@RequestParam(value = "userId") String userId,
+			@RequestParam(value = "accountId") String accountId,
+			@RequestParam(value = "clientLocalTime") String clientLocalTime,
 			@CookieValue(value = "sid", defaultValue = "cookie") String cookie) {
-		LOG.info("Get future meetings request for user " + userId);
-		if (cookie.equals("")) {
-			return new ResponseEntity<List<MeetingDTO>>(HttpStatus.FORBIDDEN);
-		}
-		List<MeetingDTO> futureMeetings = meetingService
-				.getFutureMeetingsRequest(Integer.parseInt(userId), cookie);
+		LOG.info("Get future meetings request for user " + accountId);
+		List<MeetingDTO> response = meetingService.getFutureMeetingsRequest(
+				Integer.parseInt(accountId), clientLocalTime, cookie);
 		LOG.info("Get future meetings request completed.");
-		return new ResponseEntity<List<MeetingDTO>>(futureMeetings,
-				HttpStatus.OK);
+		if (response == null)
+			return new ResponseEntity<List<MeetingDTO>>(HttpStatus.FORBIDDEN);
+		return new ResponseEntity<List<MeetingDTO>>(response, HttpStatus.OK);
 
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/past-meetings")
 	public ResponseEntity<List<MeetingDTO>> getPastMeetingsRequest(
-			@RequestParam(value = "userId") String userId,
+			@RequestParam(value = "accountId") String accountId,
+			@RequestParam(value = "clientLocalTime") String clientLocalTime,
 			@CookieValue(value = "sid", defaultValue = "cookie") String cookie) {
-		LOG.info("Get past meetings request for user " + userId);
-		if (cookie.equals("")) {
-			return new ResponseEntity<List<MeetingDTO>>(HttpStatus.FORBIDDEN);
-		}
-		List<MeetingDTO> pastMeetings = meetingService.getPastMeetingsRequest(
-				Integer.parseInt(userId), cookie);
+		LOG.info("Get past meetings request for user " + accountId);
+		List<MeetingDTO> response = meetingService.getPastMeetingsRequest(
+				Integer.parseInt(accountId), clientLocalTime, cookie);
 		LOG.info("Get past meetings request completed.");
-		return new ResponseEntity<List<MeetingDTO>>(pastMeetings, HttpStatus.OK);
+		if (response == null)
+			return new ResponseEntity<List<MeetingDTO>>(HttpStatus.FORBIDDEN);
+		return new ResponseEntity<List<MeetingDTO>>(response, HttpStatus.OK);
 
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/invitations")
 	public ResponseEntity<List<MeetingDTO>> getInvitationsRequest(
-			@RequestParam(value = "userId") String userId,
+			@RequestParam(value = "accountId") String accountId,
+			@RequestParam(value = "clientLocalTime") String clientLocalTime,
 			@CookieValue(value = "sid", defaultValue = "cookie") String cookie) {
-		LOG.info("Get invitations request for user " + userId);
-		if (cookie.equals("")) {
-			return new ResponseEntity<List<MeetingDTO>>(HttpStatus.FORBIDDEN);
-		}
-		List<MeetingDTO> invitations = meetingService.getInvitationsRequest(
-				Integer.parseInt(userId), cookie);
+		LOG.info("Get invitations request for user " + accountId);
+		List<MeetingDTO> response = meetingService.getInvitationsRequest(
+				Integer.parseInt(accountId), clientLocalTime, cookie);
 		LOG.info("Get invitations request completed.");
-		return new ResponseEntity<List<MeetingDTO>>(invitations, HttpStatus.OK);
+		if (response == null)
+			return new ResponseEntity<List<MeetingDTO>>(HttpStatus.FORBIDDEN);
+		return new ResponseEntity<List<MeetingDTO>>(response, HttpStatus.OK);
 
 	}
 

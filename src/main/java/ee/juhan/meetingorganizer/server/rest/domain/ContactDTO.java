@@ -1,13 +1,18 @@
 package ee.juhan.meetingorganizer.server.rest.domain;
 
-public class AccountDTO {
+public class ContactDTO {
 
+	private int accountId;
 	private String name;
 	private String email;
-	private String password;
 	private String phoneNumber;
 
-	public AccountDTO() {
+	public ContactDTO() {
+
+	}
+
+	public int getAccountId() {
+		return accountId;
 	}
 
 	public String getName() {
@@ -18,12 +23,12 @@ public class AccountDTO {
 		return email;
 	}
 
-	public String getPassword() {
-		return password;
-	}
-
 	public String getPhoneNumber() {
 		return phoneNumber;
+	}
+
+	public void setAccountId(int accountId) {
+		this.accountId = accountId;
 	}
 
 	public void setName(String name) {
@@ -32,10 +37,6 @@ public class AccountDTO {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 	public void setPhoneNumber(String phoneNumber) {

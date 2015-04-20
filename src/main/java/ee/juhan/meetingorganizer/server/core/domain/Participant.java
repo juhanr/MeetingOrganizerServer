@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import ee.juhan.meetingorganizer.server.rest.domain.ParticipationAnswer;
+
 @Entity
 public class Participant implements Serializable {
 
@@ -16,6 +18,8 @@ public class Participant implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+
+	private int accountId;
 
 	@Column(nullable = false)
 	private String name;
@@ -26,14 +30,32 @@ public class Participant implements Serializable {
 	private String phoneNumber;
 
 	@Column(nullable = false)
-	private boolean isParticipating;
+	private ParticipationAnswer participationAnswer = ParticipationAnswer.NOT_ANSWERED;
 
 	private double locationLatitude;
 
 	private double locationLongitude;
 
+	public Participant(int accountId, String name, String email,
+			String phoneNumber, ParticipationAnswer participationAnswer,
+			double locationLatitude, double locationLongitude) {
+		this.accountId = accountId;
+		this.name = name;
+		this.email = email;
+		this.phoneNumber = phoneNumber;
+		this.participationAnswer = participationAnswer;
+		this.locationLatitude = locationLatitude;
+		this.locationLongitude = locationLongitude;
+	}
+
+	public Participant(int accountId, String name, String email,
+			String phoneNumber) {
+		this.name = name;
+		this.email = email;
+		this.phoneNumber = phoneNumber;
+	}
+
 	public Participant(String name, String email, String phoneNumber) {
-		super();
 		this.name = name;
 		this.email = email;
 		this.phoneNumber = phoneNumber;
@@ -41,6 +63,10 @@ public class Participant implements Serializable {
 
 	public int getId() {
 		return id;
+	}
+
+	public int getAccountId() {
+		return accountId;
 	}
 
 	public String getName() {
@@ -55,8 +81,8 @@ public class Participant implements Serializable {
 		return phoneNumber;
 	}
 
-	public boolean isParticipating() {
-		return isParticipating;
+	public ParticipationAnswer getParticipationAnswer() {
+		return participationAnswer;
 	}
 
 	public double getLocationLatitude() {
@@ -67,8 +93,12 @@ public class Participant implements Serializable {
 		return locationLongitude;
 	}
 
-	public void setParticipating(boolean isParticipating) {
-		this.isParticipating = isParticipating;
+	public void setAccountId(int accountId) {
+		this.accountId = accountId;
+	}
+
+	public void setParticipationAnswer(ParticipationAnswer participationAnswer) {
+		this.participationAnswer = participationAnswer;
 	}
 
 	public void setLocationLatitude(double locationLatitude) {

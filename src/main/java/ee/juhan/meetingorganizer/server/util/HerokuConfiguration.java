@@ -16,7 +16,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
  * For example <code>mysql://root:root@localhost:3306/test</code>.
  * 
  * @author TKasekamp
- *
+ * 
  */
 @Configuration
 @Profile("default")
@@ -29,7 +29,7 @@ public class HerokuConfiguration {
 	@Bean
 	public DataSource dataSource() {
 		String databaseUrl = System.getenv("DATABASE_URL");
-		//LOG.info("Using Heroku configuration with variable: " + databaseUrl);
+		// LOG.info("Using Heroku configuration with variable: " + databaseUrl);
 
 		String[] a = databaseUrl.split("@");
 		String[] b = a[0].split(":");

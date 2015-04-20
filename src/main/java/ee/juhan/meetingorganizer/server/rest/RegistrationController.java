@@ -28,7 +28,8 @@ public class RegistrationController {
 	public ResponseEntity<ServerResponse> registrationRequest(
 			@RequestBody AccountDTO accountDTO) {
 		LOG.info("Registration request: " + accountDTO.getEmail());
-		ServerResponse response = registrationService.registrationRequest(accountDTO);
+		ServerResponse response = registrationService
+				.registrationRequest(accountDTO);
 		LOG.info("Registration request completed.");
 		return new ResponseEntity<ServerResponse>(response, HttpStatus.OK);
 

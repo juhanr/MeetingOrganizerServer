@@ -40,12 +40,11 @@ public class Account implements Serializable {
 	private Set<Meeting> meetings = new HashSet<>();
 
 	protected Account() {
-		super();
+
 	}
 
 	public Account(String name, String email, String hash, String phoneNumber,
 			String sid) {
-		super();
 		this.name = name;
 		this.email = email;
 		this.hash = hash;

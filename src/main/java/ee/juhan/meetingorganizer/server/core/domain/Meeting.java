@@ -15,6 +15,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import ee.juhan.meetingorganizer.server.rest.domain.LocationType;
+
 @Entity
 public class Meeting implements Serializable {
 
@@ -42,19 +44,22 @@ public class Meeting implements Serializable {
 
 	private double locationLongitude;
 
+	@Column(nullable = false)
+	private LocationType locationType;
+
 	@OneToMany(fetch = FetchType.LAZY)
 	private Set<Participant> participants = new HashSet<>();
 
 	private String message;
 
 	public Meeting(int leaderId, String title, Date startTime, Date endTime,
-			String message) {
-		super();
+			String message, LocationType locationType) {
 		this.leaderId = leaderId;
 		this.title = title;
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.message = message;
+		this.locationType = locationType;
 	}
 
 	public int getId() {
@@ -83,6 +88,10 @@ public class Meeting implements Serializable {
 
 	public double getLocationLongitude() {
 		return locationLongitude;
+	}
+
+	public LocationType getLocationType() {
+		return locationType;
 	}
 
 	public Set<Participant> getParticipants() {
