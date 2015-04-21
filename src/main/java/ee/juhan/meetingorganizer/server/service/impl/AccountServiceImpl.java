@@ -23,17 +23,19 @@ public class AccountServiceImpl implements AccountService {
 			return null;
 		for (int i = 0; i < contacts.size(); i++) {
 			ContactDTO contact = contacts.get(i);
-			if (!isWithAreaNumber(contact.getPhoneNumber())) {
-				contact.setPhoneNumber(addAreaNumber(contact.getPhoneNumber(),
-						accountId));
-			}
+			if (contact.getPhoneNumber() != null) {
+				if (!isWithAreaNumber(contact.getPhoneNumber())) {
+					contact.setPhoneNumber(addAreaNumber(
+							contact.getPhoneNumber(), accountId));
+				}
 
-			Account contactAccount = accountRepository
-					.findByPhoneNumber(contact.getPhoneNumber());
-			if (contactAccount != null) {
-				contact.setAccountId(contactAccount.getId());
+				Account contactAccount = accountRepository
+						.findByPhoneNumber(contact.getPhoneNumber());
+				if (contactAccount != null) {
+					contact.setAccountId(contactAccount.getId());
+				}
+				contacts.set(i, contact);
 			}
-			contacts.set(i, contact);
 		}
 		return contacts;
 	}
