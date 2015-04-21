@@ -23,7 +23,8 @@ public class AccountServiceImpl implements AccountService {
 			return null;
 		for (int i = 0; i < contacts.size(); i++) {
 			ContactDTO contact = contacts.get(i);
-			if (contact.getPhoneNumber() != null) {
+			if (contact.getPhoneNumber() != null
+					&& !contact.getPhoneNumber().equals("")) {
 				if (!isWithAreaNumber(contact.getPhoneNumber())) {
 					contact.setPhoneNumber(addAreaNumber(
 							contact.getPhoneNumber(), accountId));
