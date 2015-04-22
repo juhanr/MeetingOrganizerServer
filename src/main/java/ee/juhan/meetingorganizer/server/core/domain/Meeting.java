@@ -32,6 +32,8 @@ public class Meeting implements Serializable {
 	@Column(nullable = false)
 	private String title;
 
+	private String description;
+
 	@Column(nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date startTime;
@@ -50,20 +52,18 @@ public class Meeting implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY)
 	private Set<Participant> participants = new HashSet<>();
 
-	private String message;
-
 	protected Meeting() {
 		super();
 	}
 
-	public Meeting(int leaderId, String title, Date startTime, Date endTime,
-			String message, LocationType locationType) {
+	public Meeting(int leaderId, String title, String description,
+			Date startTime, Date endTime, LocationType locationType) {
 		super();
 		this.leaderId = leaderId;
 		this.title = title;
+		this.description = description;
 		this.startTime = startTime;
 		this.endTime = endTime;
-		this.message = message;
 		this.locationType = locationType;
 	}
 
@@ -77,6 +77,10 @@ public class Meeting implements Serializable {
 
 	public String getTitle() {
 		return title;
+	}
+	
+	public String getDescription() {
+		return description;
 	}
 
 	public Date getStartTime() {
@@ -102,9 +106,9 @@ public class Meeting implements Serializable {
 	public Set<Participant> getParticipants() {
 		return participants;
 	}
-
-	public String getMessage() {
-		return message;
+	
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public void setLocationLatitude(double locationLatitude) {
@@ -113,10 +117,6 @@ public class Meeting implements Serializable {
 
 	public void setLocationLongitude(double locationLongitude) {
 		this.locationLongitude = locationLongitude;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
 	}
 
 	public boolean addParticipant(Participant participant) {

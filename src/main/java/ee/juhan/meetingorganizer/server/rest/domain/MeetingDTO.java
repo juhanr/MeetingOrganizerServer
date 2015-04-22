@@ -8,7 +8,7 @@ public class MeetingDTO {
 
 	private int leaderId;
 	private String title;
-	private String message;
+	private String description;
 	private Date startTime;
 	private Date endTime;
 	private double locationLatitude;
@@ -16,12 +16,12 @@ public class MeetingDTO {
 	private LocationType locationType;
 	private Set<ParticipantDTO> participants = new HashSet<>();
 
-	public MeetingDTO(int leaderId, String title, String message,
+	public MeetingDTO(int leaderId, String title, String description,
 			Date startTime, Date endTime, double locationLatitude,
 			double locationLongitude, LocationType locationType) {
 		this.leaderId = leaderId;
 		this.title = title;
-		this.message = message;
+		this.description = description;
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.locationLatitude = locationLatitude;
@@ -37,8 +37,8 @@ public class MeetingDTO {
 		return title;
 	}
 
-	public String getMessage() {
-		return message;
+	public String getDescription() {
+		return description;
 	}
 
 	public Date getStartTime() {
@@ -73,8 +73,8 @@ public class MeetingDTO {
 		this.title = title;
 	}
 
-	public void setMessage(String message) {
-		this.message = message;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public void setStartTime(Date startTime) {

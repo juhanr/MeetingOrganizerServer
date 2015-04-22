@@ -49,8 +49,8 @@ public class MeetingServiceImpl implements MeetingService {
 
 	private Meeting createMeeting(MeetingDTO meetingDTO) {
 		Meeting meeting = new Meeting(meetingDTO.getLeaderId(),
-				meetingDTO.getTitle(), meetingDTO.getStartTime(),
-				meetingDTO.getEndTime(), meetingDTO.getMessage(),
+				meetingDTO.getTitle(), meetingDTO.getDescription(),
+				meetingDTO.getStartTime(), meetingDTO.getEndTime(),
 				meetingDTO.getLocationType());
 		if (meetingDTO.getLocationLatitude() != 0) {
 			meeting.setLocationLatitude(meetingDTO.getLocationLatitude());
@@ -229,7 +229,7 @@ public class MeetingServiceImpl implements MeetingService {
 
 	private MeetingDTO toDTO(Meeting meeting) {
 		MeetingDTO meetingDTO = new MeetingDTO(meeting.getLeaderId(),
-				meeting.getTitle(), meeting.getMessage(),
+				meeting.getTitle(), meeting.getDescription(),
 				meeting.getStartTime(), meeting.getEndTime(),
 				meeting.getLocationLatitude(), meeting.getLocationLongitude(),
 				meeting.getLocationType());
