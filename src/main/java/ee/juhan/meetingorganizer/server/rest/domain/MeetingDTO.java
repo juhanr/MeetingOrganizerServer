@@ -4,6 +4,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import ee.juhan.meetingorganizer.server.core.util.JsonDateDeserializer;
+
 public class MeetingDTO {
 
 	private int leaderId;
@@ -15,6 +19,10 @@ public class MeetingDTO {
 	private double locationLongitude;
 	private LocationType locationType;
 	private Set<ParticipantDTO> participants = new HashSet<>();
+
+	public MeetingDTO() {
+
+	}
 
 	public MeetingDTO(int leaderId, String title, String description,
 			Date startTime, Date endTime, double locationLatitude,
@@ -77,10 +85,12 @@ public class MeetingDTO {
 		this.description = description;
 	}
 
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
 	}
 
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}

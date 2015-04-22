@@ -78,7 +78,7 @@ public class Meeting implements Serializable {
 	public String getTitle() {
 		return title;
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}
@@ -106,7 +106,7 @@ public class Meeting implements Serializable {
 	public Set<Participant> getParticipants() {
 		return participants;
 	}
-	
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
