@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TimeZone;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,7 +16,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import ee.juhan.meetingorganizer.server.core.util.DateParserUtil;
 import ee.juhan.meetingorganizer.server.rest.domain.LocationType;
+import ee.juhan.meetingorganizer.server.rest.domain.MeetingDTO;
+import ee.juhan.meetingorganizer.server.rest.domain.ParticipantDTO;
 
 @Entity
 public class Meeting implements Serializable {
@@ -121,6 +125,26 @@ public class Meeting implements Serializable {
 
 	public boolean addParticipant(Participant participant) {
 		return participants.add(participant);
+	}
+
+	public MeetingDTO toDTO(Meeting meeting, TimeZone clientTimeZone) {
+		MeetingDTO meetingDTO = new MeetingDTO(meeting.getLeaderId(),
+				meeting.getTitle(), meeting.getDescription(),
+				DateParserUtil.fromClientTimeZone(meeting.getStartDateTime(),
+						clientTimeZone), DateParserUtil.fromClientTimeZone(
+						meeting.getEndDateTime(), clientTimeZone),
+				meeting.getLocationLatitude(), meeting.getLocationLongitude(),
+				meeting.getLocationType());
+		for (Participant participant : meeting.getParticipants()) {
+			ParticipantDTO participantDTO = new ParticipantDTO(
+					participant.getAccountId(), participant.getName(),
+					participant.getEmail(), participant.getPhoneNumber(),
+					participant.getParticipationAnswer(),
+					participant.getLocationLatitude(),
+					participant.getLocationLongitude());
+			meetingDTO.addParticipant(participantDTO);
+		}
+		return meetingDTO;
 	}
 
 }

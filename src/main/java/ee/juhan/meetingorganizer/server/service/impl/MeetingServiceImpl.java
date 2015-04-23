@@ -1,7 +1,5 @@
 package ee.juhan.meetingorganizer.server.service.impl;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -11,13 +9,13 @@ import java.util.TimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ee.juhan.meetingorganizer.server.Constants;
 import ee.juhan.meetingorganizer.server.core.domain.Account;
 import ee.juhan.meetingorganizer.server.core.domain.Meeting;
 import ee.juhan.meetingorganizer.server.core.domain.Participant;
 import ee.juhan.meetingorganizer.server.core.repository.AccountRepository;
 import ee.juhan.meetingorganizer.server.core.repository.MeetingRepository;
 import ee.juhan.meetingorganizer.server.core.repository.ParticipantRepository;
+import ee.juhan.meetingorganizer.server.core.util.DateParserUtil;
 import ee.juhan.meetingorganizer.server.core.util.MeetingDTOComparator;
 import ee.juhan.meetingorganizer.server.rest.domain.MeetingDTO;
 import ee.juhan.meetingorganizer.server.rest.domain.ParticipantDTO;
@@ -101,11 +99,12 @@ public class MeetingServiceImpl implements MeetingService {
 
 	@Override
 	public List<MeetingDTO> getOngoingMeetingsRequest(int accountId,
-			String clientTimeZone, String sid) {
+			String clientTimeZoneId, String sid) {
 		if (!isValidSID(accountId, sid))
 			return null;
-		this.clientTimeZone = TimeZone.getTimeZone(clientTimeZone);
-		Date clientLocalTime = toClientTimeZone(new Date());
+		this.clientTimeZone = TimeZone.getTimeZone(clientTimeZoneId);
+		Date clientLocalTime = DateParserUtil.toClientTimeZone(new Date(),
+				clientTimeZone);
 		List<MeetingDTO> responseList = new ArrayList<MeetingDTO>();
 		List<Meeting> meetings = accountRepository.findMeetingsById(accountId);
 		for (Meeting meeting : meetings) {
@@ -116,7 +115,8 @@ public class MeetingServiceImpl implements MeetingService {
 				for (Participant participant : meeting.getParticipants()) {
 					if (participant.getAccountId() == accountId
 							&& participant.getParticipationAnswer() == ParticipationAnswer.PARTICIPATING) {
-						responseList.add(toDTO(meeting));
+						responseList
+								.add(meeting.toDTO(meeting, clientTimeZone));
 						break;
 					}
 				}
@@ -128,11 +128,12 @@ public class MeetingServiceImpl implements MeetingService {
 
 	@Override
 	public List<MeetingDTO> getFutureMeetingsRequest(int accountId,
-			String clientTimeZone, String sid) {
+			String clientTimeZoneId, String sid) {
 		if (!isValidSID(accountId, sid))
 			return null;
-		this.clientTimeZone = TimeZone.getTimeZone(clientTimeZone);
-		Date clientLocalTime = toClientTimeZone(new Date());
+		this.clientTimeZone = TimeZone.getTimeZone(clientTimeZoneId);
+		Date clientLocalTime = DateParserUtil.toClientTimeZone(new Date(),
+				clientTimeZone);
 		List<MeetingDTO> responseList = new ArrayList<MeetingDTO>();
 		List<Meeting> meetings = accountRepository.findMeetingsById(accountId);
 		for (Meeting meeting : meetings) {
@@ -140,7 +141,8 @@ public class MeetingServiceImpl implements MeetingService {
 				for (Participant participant : meeting.getParticipants()) {
 					if (participant.getAccountId() == accountId
 							&& participant.getParticipationAnswer() == ParticipationAnswer.PARTICIPATING) {
-						responseList.add(toDTO(meeting));
+						responseList
+								.add(meeting.toDTO(meeting, clientTimeZone));
 						break;
 					}
 				}
@@ -152,11 +154,12 @@ public class MeetingServiceImpl implements MeetingService {
 
 	@Override
 	public List<MeetingDTO> getPastMeetingsRequest(int accountId,
-			String clientTimeZone, String sid) {
+			String clientTimeZoneId, String sid) {
 		if (!isValidSID(accountId, sid))
 			return null;
-		this.clientTimeZone = TimeZone.getTimeZone(clientTimeZone);
-		Date clientLocalTime = toClientTimeZone(new Date());
+		this.clientTimeZone = TimeZone.getTimeZone(clientTimeZoneId);
+		Date clientLocalTime = DateParserUtil.toClientTimeZone(new Date(),
+				clientTimeZone);
 		List<MeetingDTO> responseList = new ArrayList<MeetingDTO>();
 		List<Meeting> meetings = accountRepository.findMeetingsById(accountId);
 		for (Meeting meeting : meetings) {
@@ -164,7 +167,8 @@ public class MeetingServiceImpl implements MeetingService {
 				for (Participant participant : meeting.getParticipants()) {
 					if (participant.getAccountId() == accountId
 							&& participant.getParticipationAnswer() == ParticipationAnswer.PARTICIPATING) {
-						responseList.add(toDTO(meeting));
+						responseList
+								.add(meeting.toDTO(meeting, clientTimeZone));
 						break;
 					}
 				}
@@ -176,11 +180,12 @@ public class MeetingServiceImpl implements MeetingService {
 
 	@Override
 	public List<MeetingDTO> getInvitationsRequest(int accountId,
-			String clientTimeZone, String sid) {
+			String clientTimeZoneId, String sid) {
 		if (!isValidSID(accountId, sid))
 			return null;
-		this.clientTimeZone = TimeZone.getTimeZone(clientTimeZone);
-		Date clientLocalTime = toClientTimeZone(new Date());
+		clientTimeZone = TimeZone.getTimeZone(clientTimeZoneId);
+		Date clientLocalTime = DateParserUtil.toClientTimeZone(new Date(),
+				clientTimeZone);
 		List<MeetingDTO> responseList = new ArrayList<MeetingDTO>();
 		List<Meeting> meetings = accountRepository.findMeetingsById(accountId);
 		for (Meeting meeting : meetings) {
@@ -188,7 +193,8 @@ public class MeetingServiceImpl implements MeetingService {
 				for (Participant participant : meeting.getParticipants()) {
 					if (participant.getAccountId() == accountId
 							&& participant.getParticipationAnswer() == ParticipationAnswer.NOT_ANSWERED) {
-						responseList.add(toDTO(meeting));
+						responseList
+								.add(meeting.toDTO(meeting, clientTimeZone));
 						break;
 					}
 				}
@@ -203,51 +209,6 @@ public class MeetingServiceImpl implements MeetingService {
 		if (account != null && account.getSid().equals(sid))
 			return true;
 		return false;
-	}
-
-	private MeetingDTO toDTO(Meeting meeting) {
-		MeetingDTO meetingDTO = new MeetingDTO(meeting.getLeaderId(),
-				meeting.getTitle(), meeting.getDescription(),
-				fromClientTimeZone(meeting.getStartDateTime()),
-				fromClientTimeZone(meeting.getEndDateTime()),
-				meeting.getLocationLatitude(), meeting.getLocationLongitude(),
-				meeting.getLocationType());
-		for (Participant participant : meeting.getParticipants()) {
-			ParticipantDTO participantDTO = new ParticipantDTO(
-					participant.getAccountId(), participant.getName(),
-					participant.getEmail(), participant.getPhoneNumber(),
-					participant.getParticipationAnswer(),
-					participant.getLocationLatitude(),
-					participant.getLocationLongitude());
-			meetingDTO.addParticipant(participantDTO);
-		}
-		return meetingDTO;
-	}
-
-	private Date fromClientTimeZone(Date date) {
-		SimpleDateFormat clientTimeZoneFormat = (SimpleDateFormat) Constants.URL_DATETIME_FORMAT
-				.clone();
-		clientTimeZoneFormat.setTimeZone(clientTimeZone);
-		try {
-			return clientTimeZoneFormat.parse(Constants.URL_DATETIME_FORMAT
-					.format(date));
-		} catch (ParseException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	private Date toClientTimeZone(Date date) {
-		SimpleDateFormat clientTimeZoneFormat = (SimpleDateFormat) Constants.URL_DATETIME_FORMAT
-				.clone();
-		clientTimeZoneFormat.setTimeZone(clientTimeZone);
-		try {
-			return Constants.URL_DATETIME_FORMAT.parse(clientTimeZoneFormat
-					.format(date));
-		} catch (ParseException e) {
-			e.printStackTrace();
-			return null;
-		}
 	}
 
 }
