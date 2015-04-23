@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ee.juhan.meetingorganizer.server.rest.domain.MeetingDTO;
-import ee.juhan.meetingorganizer.server.rest.domain.ServerResponse;
+import ee.juhan.meetingorganizer.server.rest.domain.ServerResult;
 import ee.juhan.meetingorganizer.server.service.MeetingService;
 
 @RestController
@@ -29,27 +29,27 @@ public class MeetingController {
 	MeetingService meetingService;
 
 	@RequestMapping(method = RequestMethod.POST, value = "/new")
-	public ResponseEntity<ServerResponse> newMeetingRequest(
+	public ResponseEntity<ServerResult> newMeetingRequest(
 			@RequestBody MeetingDTO meetingDTO,
 			@CookieValue(value = "sid", defaultValue = "cookie") String cookie) {
 		LOG.info("New meeting request: " + meetingDTO.getTitle());
-		ServerResponse response = meetingService.newMeetingRequest(meetingDTO,
+		ServerResult response = meetingService.newMeetingRequest(meetingDTO,
 				cookie);
 		LOG.info("New meeting request completed.");
 		if (response == null)
-			return new ResponseEntity<ServerResponse>(HttpStatus.FORBIDDEN);
-		return new ResponseEntity<ServerResponse>(response, HttpStatus.OK);
+			return new ResponseEntity<ServerResult>(HttpStatus.FORBIDDEN);
+		return new ResponseEntity<ServerResult>(response, HttpStatus.OK);
 
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/ongoing-meetings")
 	public ResponseEntity<List<MeetingDTO>> getOngoingMeetingsRequest(
 			@RequestParam(value = "accountId") String accountId,
-			@RequestParam(value = "clientLocalTime") String clientLocalTime,
+			@RequestParam(value = "clientTimeZone") String clientTimeZone,
 			@CookieValue(value = "sid", defaultValue = "cookie") String cookie) {
 		LOG.info("Get ongoing meetings request for user " + accountId);
 		List<MeetingDTO> response = meetingService.getOngoingMeetingsRequest(
-				Integer.parseInt(accountId), clientLocalTime, cookie);
+				Integer.parseInt(accountId), clientTimeZone, cookie);
 		LOG.info("Get ongoing meetings request completed.");
 		if (response == null)
 			return new ResponseEntity<List<MeetingDTO>>(HttpStatus.FORBIDDEN);
@@ -60,11 +60,11 @@ public class MeetingController {
 	@RequestMapping(method = RequestMethod.GET, value = "/future-meetings")
 	public ResponseEntity<List<MeetingDTO>> getFutureMeetingsRequest(
 			@RequestParam(value = "accountId") String accountId,
-			@RequestParam(value = "clientLocalTime") String clientLocalTime,
+			@RequestParam(value = "clientTimeZone") String clientTimeZone,
 			@CookieValue(value = "sid", defaultValue = "cookie") String cookie) {
 		LOG.info("Get future meetings request for user " + accountId);
 		List<MeetingDTO> response = meetingService.getFutureMeetingsRequest(
-				Integer.parseInt(accountId), clientLocalTime, cookie);
+				Integer.parseInt(accountId), clientTimeZone, cookie);
 		LOG.info("Get future meetings request completed.");
 		if (response == null)
 			return new ResponseEntity<List<MeetingDTO>>(HttpStatus.FORBIDDEN);
@@ -75,11 +75,11 @@ public class MeetingController {
 	@RequestMapping(method = RequestMethod.GET, value = "/past-meetings")
 	public ResponseEntity<List<MeetingDTO>> getPastMeetingsRequest(
 			@RequestParam(value = "accountId") String accountId,
-			@RequestParam(value = "clientLocalTime") String clientLocalTime,
+			@RequestParam(value = "clientTimeZone") String clientTimeZone,
 			@CookieValue(value = "sid", defaultValue = "cookie") String cookie) {
 		LOG.info("Get past meetings request for user " + accountId);
 		List<MeetingDTO> response = meetingService.getPastMeetingsRequest(
-				Integer.parseInt(accountId), clientLocalTime, cookie);
+				Integer.parseInt(accountId), clientTimeZone, cookie);
 		LOG.info("Get past meetings request completed.");
 		if (response == null)
 			return new ResponseEntity<List<MeetingDTO>>(HttpStatus.FORBIDDEN);
@@ -90,11 +90,11 @@ public class MeetingController {
 	@RequestMapping(method = RequestMethod.GET, value = "/invitations")
 	public ResponseEntity<List<MeetingDTO>> getInvitationsRequest(
 			@RequestParam(value = "accountId") String accountId,
-			@RequestParam(value = "clientLocalTime") String clientLocalTime,
+			@RequestParam(value = "clientTimeZone") String clientTimeZone,
 			@CookieValue(value = "sid", defaultValue = "cookie") String cookie) {
 		LOG.info("Get invitations request for user " + accountId);
 		List<MeetingDTO> response = meetingService.getInvitationsRequest(
-				Integer.parseInt(accountId), clientLocalTime, cookie);
+				Integer.parseInt(accountId), clientTimeZone, cookie);
 		LOG.info("Get invitations request completed.");
 		if (response == null)
 			return new ResponseEntity<List<MeetingDTO>>(HttpStatus.FORBIDDEN);

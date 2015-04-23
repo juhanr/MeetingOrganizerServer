@@ -13,8 +13,8 @@ public class MeetingDTO {
 	private int leaderId;
 	private String title;
 	private String description;
-	private Date startTime;
-	private Date endTime;
+	private Date startDateTime;
+	private Date endDateTime;
 	private double locationLatitude;
 	private double locationLongitude;
 	private LocationType locationType;
@@ -25,13 +25,13 @@ public class MeetingDTO {
 	}
 
 	public MeetingDTO(int leaderId, String title, String description,
-			Date startTime, Date endTime, double locationLatitude,
+			Date startDateTime, Date endDateTime, double locationLatitude,
 			double locationLongitude, LocationType locationType) {
 		this.leaderId = leaderId;
 		this.title = title;
 		this.description = description;
-		this.startTime = startTime;
-		this.endTime = endTime;
+		this.startDateTime = startDateTime;
+		this.endDateTime = endDateTime;
 		this.locationLatitude = locationLatitude;
 		this.locationLongitude = locationLongitude;
 		this.locationType = locationType;
@@ -49,12 +49,12 @@ public class MeetingDTO {
 		return description;
 	}
 
-	public Date getStartTime() {
-		return startTime;
+	public Date getStartDateTime() {
+		return startDateTime;
 	}
 
-	public Date getEndTime() {
-		return endTime;
+	public Date getEndDateTime() {
+		return endDateTime;
 	}
 
 	public double getLocationLatitude() {
@@ -86,13 +86,13 @@ public class MeetingDTO {
 	}
 
 	@JsonDeserialize(using = JsonDateDeserializer.class)
-	public void setStartTime(Date startTime) {
-		this.startTime = startTime;
+	public void setStartDateTime(Date startDateTime) {
+		this.startDateTime = startDateTime;
 	}
 
 	@JsonDeserialize(using = JsonDateDeserializer.class)
-	public void setEndTime(Date endTime) {
-		this.endTime = endTime;
+	public void setEndDateTime(Date endDateTime) {
+		this.endDateTime = endDateTime;
 	}
 
 	public void setLocationLatitude(double locationLatitude) {

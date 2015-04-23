@@ -1,10 +1,12 @@
 package ee.juhan.meetingorganizer.server.service.impl;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,12 +22,13 @@ import ee.juhan.meetingorganizer.server.core.util.MeetingDTOComparator;
 import ee.juhan.meetingorganizer.server.rest.domain.MeetingDTO;
 import ee.juhan.meetingorganizer.server.rest.domain.ParticipantDTO;
 import ee.juhan.meetingorganizer.server.rest.domain.ParticipationAnswer;
-import ee.juhan.meetingorganizer.server.rest.domain.ServerResponse;
 import ee.juhan.meetingorganizer.server.rest.domain.ServerResult;
 import ee.juhan.meetingorganizer.server.service.MeetingService;
 
 @Service
 public class MeetingServiceImpl implements MeetingService {
+
+	private TimeZone clientTimeZone = null;
 
 	@Autowired
 	private MeetingRepository meetingRepository;
@@ -37,20 +40,21 @@ public class MeetingServiceImpl implements MeetingService {
 	private AccountRepository accountRepository;
 
 	@Override
-	public ServerResponse newMeetingRequest(MeetingDTO meetingDTO, String sid) {
+	public ServerResult newMeetingRequest(MeetingDTO meetingDTO, String sid) {
 		if (!isValidSID(meetingDTO.getLeaderId(), sid))
 			return null;
 		Meeting meeting = createMeeting(meetingDTO);
 		meeting = addParticipants(meeting, meetingDTO);
 		meetingRepository.save(meeting);
 		addMeetingToParticipantAccounts(meeting);
-		return new ServerResponse(ServerResult.SUCCESS);
+		return ServerResult.SUCCESS;
 	}
 
 	private Meeting createMeeting(MeetingDTO meetingDTO) {
+
 		Meeting meeting = new Meeting(meetingDTO.getLeaderId(),
 				meetingDTO.getTitle(), meetingDTO.getDescription(),
-				meetingDTO.getStartTime(), meetingDTO.getEndTime(),
+				meetingDTO.getStartDateTime(), meetingDTO.getEndDateTime(),
 				meetingDTO.getLocationType());
 		if (meetingDTO.getLocationLatitude() != 0) {
 			meeting.setLocationLatitude(meetingDTO.getLocationLatitude());
@@ -97,127 +101,101 @@ public class MeetingServiceImpl implements MeetingService {
 
 	@Override
 	public List<MeetingDTO> getOngoingMeetingsRequest(int accountId,
-			String clientLocalTime, String sid) {
+			String clientTimeZone, String sid) {
 		if (!isValidSID(accountId, sid))
 			return null;
-		try {
-			Date clientLocalTimeDate = Constants.URL_DATETIME_FORMAT
-					.parse(clientLocalTime);
-			List<MeetingDTO> responseList = new ArrayList<MeetingDTO>();
-			List<Meeting> meetings = accountRepository
-					.findMeetingsById(accountId);
-			for (Meeting meeting : meetings) {
-				if (meeting.getStartTime().before(clientLocalTimeDate)
-						&& meeting.getEndTime().after(clientLocalTimeDate)) {
-					for (Participant participant : meeting.getParticipants()) {
-						if (participant.getAccountId() == accountId
-								&& participant.getParticipationAnswer() == ParticipationAnswer.PARTICIPATING) {
-							responseList.add(toDTO(meeting));
-							break;
-						}
+		this.clientTimeZone = TimeZone.getTimeZone(clientTimeZone);
+		Date clientLocalTime = toClientTimeZone(new Date());
+		List<MeetingDTO> responseList = new ArrayList<MeetingDTO>();
+		List<Meeting> meetings = accountRepository.findMeetingsById(accountId);
+		for (Meeting meeting : meetings) {
+			if ((meeting.getStartDateTime().before(clientLocalTime) || meeting
+					.getStartDateTime().equals(clientLocalTime))
+					&& (meeting.getEndDateTime().after(clientLocalTime) || meeting
+							.getEndDateTime().equals(clientLocalTime))) {
+				for (Participant participant : meeting.getParticipants()) {
+					if (participant.getAccountId() == accountId
+							&& participant.getParticipationAnswer() == ParticipationAnswer.PARTICIPATING) {
+						responseList.add(toDTO(meeting));
+						break;
 					}
 				}
 			}
-			Collections.sort(responseList, new MeetingDTOComparator());
-			return responseList;
-
-		} catch (ParseException e) {
-			e.printStackTrace();
-			return null;
 		}
+		Collections.sort(responseList, new MeetingDTOComparator());
+		return responseList;
 	}
 
 	@Override
 	public List<MeetingDTO> getFutureMeetingsRequest(int accountId,
-			String clientLocalTime, String sid) {
+			String clientTimeZone, String sid) {
 		if (!isValidSID(accountId, sid))
 			return null;
-		try {
-			Date clientLocalTimeDate = Constants.URL_DATETIME_FORMAT
-					.parse(clientLocalTime);
-			List<MeetingDTO> responseList = new ArrayList<MeetingDTO>();
-			List<Meeting> meetings = accountRepository
-					.findMeetingsById(accountId);
-			for (Meeting meeting : meetings) {
-				if (meeting.getStartTime().after(clientLocalTimeDate)) {
-					for (Participant participant : meeting.getParticipants()) {
-						if (participant.getAccountId() == accountId
-								&& participant.getParticipationAnswer() == ParticipationAnswer.PARTICIPATING) {
-							responseList.add(toDTO(meeting));
-							break;
-						}
+		this.clientTimeZone = TimeZone.getTimeZone(clientTimeZone);
+		Date clientLocalTime = toClientTimeZone(new Date());
+		List<MeetingDTO> responseList = new ArrayList<MeetingDTO>();
+		List<Meeting> meetings = accountRepository.findMeetingsById(accountId);
+		for (Meeting meeting : meetings) {
+			if (meeting.getStartDateTime().after(clientLocalTime)) {
+				for (Participant participant : meeting.getParticipants()) {
+					if (participant.getAccountId() == accountId
+							&& participant.getParticipationAnswer() == ParticipationAnswer.PARTICIPATING) {
+						responseList.add(toDTO(meeting));
+						break;
 					}
 				}
 			}
-			Collections.sort(responseList, new MeetingDTOComparator());
-			return responseList;
-
-		} catch (ParseException e) {
-			e.printStackTrace();
-			return null;
 		}
+		Collections.sort(responseList, new MeetingDTOComparator());
+		return responseList;
 	}
 
 	@Override
 	public List<MeetingDTO> getPastMeetingsRequest(int accountId,
-			String clientLocalTime, String sid) {
+			String clientTimeZone, String sid) {
 		if (!isValidSID(accountId, sid))
 			return null;
-		try {
-			Date clientLocalTimeDate = Constants.URL_DATETIME_FORMAT
-					.parse(clientLocalTime);
-			List<MeetingDTO> responseList = new ArrayList<MeetingDTO>();
-			List<Meeting> meetings = accountRepository
-					.findMeetingsById(accountId);
-			for (Meeting meeting : meetings) {
-				if (meeting.getEndTime().before(clientLocalTimeDate)) {
-					for (Participant participant : meeting.getParticipants()) {
-						if (participant.getAccountId() == accountId
-								&& participant.getParticipationAnswer() == ParticipationAnswer.PARTICIPATING) {
-							responseList.add(toDTO(meeting));
-							break;
-						}
+		this.clientTimeZone = TimeZone.getTimeZone(clientTimeZone);
+		Date clientLocalTime = toClientTimeZone(new Date());
+		List<MeetingDTO> responseList = new ArrayList<MeetingDTO>();
+		List<Meeting> meetings = accountRepository.findMeetingsById(accountId);
+		for (Meeting meeting : meetings) {
+			if (meeting.getEndDateTime().before(clientLocalTime)) {
+				for (Participant participant : meeting.getParticipants()) {
+					if (participant.getAccountId() == accountId
+							&& participant.getParticipationAnswer() == ParticipationAnswer.PARTICIPATING) {
+						responseList.add(toDTO(meeting));
+						break;
 					}
 				}
 			}
-			Collections.sort(responseList, new MeetingDTOComparator());
-			return responseList;
-
-		} catch (ParseException e) {
-			e.printStackTrace();
-			return null;
 		}
+		Collections.sort(responseList, new MeetingDTOComparator());
+		return responseList;
 	}
 
 	@Override
 	public List<MeetingDTO> getInvitationsRequest(int accountId,
-			String clientLocalTime, String sid) {
+			String clientTimeZone, String sid) {
 		if (!isValidSID(accountId, sid))
 			return null;
-		try {
-			Date clientLocalTimeDate = Constants.URL_DATETIME_FORMAT
-					.parse(clientLocalTime);
-			List<MeetingDTO> responseList = new ArrayList<MeetingDTO>();
-			List<Meeting> meetings = accountRepository
-					.findMeetingsById(accountId);
-			for (Meeting meeting : meetings) {
-				if (meeting.getEndTime().after(clientLocalTimeDate)) {
-					for (Participant participant : meeting.getParticipants()) {
-						if (participant.getAccountId() == accountId
-								&& participant.getParticipationAnswer() == ParticipationAnswer.NOT_ANSWERED) {
-							responseList.add(toDTO(meeting));
-							break;
-						}
+		this.clientTimeZone = TimeZone.getTimeZone(clientTimeZone);
+		Date clientLocalTime = toClientTimeZone(new Date());
+		List<MeetingDTO> responseList = new ArrayList<MeetingDTO>();
+		List<Meeting> meetings = accountRepository.findMeetingsById(accountId);
+		for (Meeting meeting : meetings) {
+			if (meeting.getEndDateTime().after(clientLocalTime)) {
+				for (Participant participant : meeting.getParticipants()) {
+					if (participant.getAccountId() == accountId
+							&& participant.getParticipationAnswer() == ParticipationAnswer.NOT_ANSWERED) {
+						responseList.add(toDTO(meeting));
+						break;
 					}
 				}
 			}
-			Collections.sort(responseList, new MeetingDTOComparator());
-			return responseList;
-
-		} catch (ParseException e) {
-			e.printStackTrace();
-			return null;
 		}
+		Collections.sort(responseList, new MeetingDTOComparator());
+		return responseList;
 	}
 
 	private boolean isValidSID(int accountId, String sid) {
@@ -230,7 +208,8 @@ public class MeetingServiceImpl implements MeetingService {
 	private MeetingDTO toDTO(Meeting meeting) {
 		MeetingDTO meetingDTO = new MeetingDTO(meeting.getLeaderId(),
 				meeting.getTitle(), meeting.getDescription(),
-				meeting.getStartTime(), meeting.getEndTime(),
+				fromClientTimeZone(meeting.getStartDateTime()),
+				fromClientTimeZone(meeting.getEndDateTime()),
 				meeting.getLocationLatitude(), meeting.getLocationLongitude(),
 				meeting.getLocationType());
 		for (Participant participant : meeting.getParticipants()) {
@@ -243,6 +222,32 @@ public class MeetingServiceImpl implements MeetingService {
 			meetingDTO.addParticipant(participantDTO);
 		}
 		return meetingDTO;
+	}
+
+	private Date fromClientTimeZone(Date date) {
+		SimpleDateFormat clientTimeZoneFormat = (SimpleDateFormat) Constants.URL_DATETIME_FORMAT
+				.clone();
+		clientTimeZoneFormat.setTimeZone(clientTimeZone);
+		try {
+			return clientTimeZoneFormat.parse(Constants.URL_DATETIME_FORMAT
+					.format(date));
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	private Date toClientTimeZone(Date date) {
+		SimpleDateFormat clientTimeZoneFormat = (SimpleDateFormat) Constants.URL_DATETIME_FORMAT
+				.clone();
+		clientTimeZoneFormat.setTimeZone(clientTimeZone);
+		try {
+			return Constants.URL_DATETIME_FORMAT.parse(clientTimeZoneFormat
+					.format(date));
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 }

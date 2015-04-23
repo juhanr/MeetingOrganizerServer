@@ -36,11 +36,11 @@ public class Meeting implements Serializable {
 
 	@Column(nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date startTime;
+	private Date startDateTime;
 
 	@Column(nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date endTime;
+	private Date endDateTime;
 
 	private double locationLatitude;
 
@@ -57,13 +57,13 @@ public class Meeting implements Serializable {
 	}
 
 	public Meeting(int leaderId, String title, String description,
-			Date startTime, Date endTime, LocationType locationType) {
+			Date startDateTime, Date endDateTime, LocationType locationType) {
 		super();
 		this.leaderId = leaderId;
 		this.title = title;
 		this.description = description;
-		this.startTime = startTime;
-		this.endTime = endTime;
+		this.startDateTime = startDateTime;
+		this.endDateTime = endDateTime;
 		this.locationType = locationType;
 	}
 
@@ -83,12 +83,12 @@ public class Meeting implements Serializable {
 		return description;
 	}
 
-	public Date getStartTime() {
-		return startTime;
+	public Date getStartDateTime() {
+		return startDateTime;
 	}
 
-	public Date getEndTime() {
-		return endTime;
+	public Date getEndDateTime() {
+		return endDateTime;
 	}
 
 	public double getLocationLatitude() {

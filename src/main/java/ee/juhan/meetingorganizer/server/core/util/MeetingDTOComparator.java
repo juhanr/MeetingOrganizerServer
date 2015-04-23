@@ -8,7 +8,7 @@ public class MeetingDTOComparator implements Comparator<MeetingDTO> {
 
 	@Override
 	public int compare(MeetingDTO o1, MeetingDTO o2) {
-		return o1.getStartTime().compareTo(o2.getStartTime());
+		return o1.getStartDateTime().compareTo(o2.getStartDateTime());
 	}
 
 }
