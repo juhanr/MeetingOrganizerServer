@@ -32,7 +32,8 @@ public class AccountController {
 			@RequestParam(value = "accountId") String accountId,
 			@RequestBody List<ContactDTO> contacts,
 			@CookieValue(value = "sid", defaultValue = "cookie") String cookie) {
-		LOG.info("Check contacts request: " + accountId);
+		LOG.info("Check contacts request: accountId=" + accountId
+				+ ", list size=" + contacts.size() + ", sid=" + cookie);
 		List<ContactDTO> response = accountService.checkContactsRequest(
 				Integer.parseInt(accountId), contacts, cookie);
 		LOG.info("Check contacts request completed.");
