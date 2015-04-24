@@ -8,10 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ee.juhan.meetingorganizer.server.rest.domain.ContactDTO;
@@ -27,15 +27,15 @@ public class AccountController {
 	@Autowired
 	AccountService accountService;
 
-	@RequestMapping(method = RequestMethod.POST, value = "/check-contacts")
+	@RequestMapping(method = RequestMethod.POST, value = "/{id}/check-contacts")
 	public ResponseEntity<List<ContactDTO>> CheckContactsRequest(
-			@RequestParam(value = "accountId") String accountId,
+			@PathVariable("id") String accountId,
 			@RequestBody List<ContactDTO> contacts,
-			@CookieValue(value = "sid", defaultValue = "cookie") String cookie) {
+			@CookieValue(value = "sid") String sid) {
 		LOG.info("Check contacts request: accountId=" + accountId
-				+ ", list size=" + contacts.size() + ", sid=" + cookie);
+				+ ", sid=" + sid);
 		List<ContactDTO> response = accountService.checkContactsRequest(
-				Integer.parseInt(accountId), contacts, cookie);
+				Integer.parseInt(accountId), contacts, sid);
 		LOG.info("Check contacts request completed.");
 		if (response == null)
 			return new ResponseEntity<List<ContactDTO>>(HttpStatus.FORBIDDEN);

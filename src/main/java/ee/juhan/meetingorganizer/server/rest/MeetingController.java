@@ -31,10 +31,10 @@ public class MeetingController {
 	@RequestMapping(method = RequestMethod.POST, value = "/new")
 	public ResponseEntity<ServerResult> newMeetingRequest(
 			@RequestBody MeetingDTO meetingDTO,
-			@CookieValue(value = "sid", defaultValue = "cookie") String cookie) {
+			@CookieValue(value = "sid") String sid) {
 		LOG.info("New meeting request: " + meetingDTO.getTitle());
 		ServerResult response = meetingService.newMeetingRequest(meetingDTO,
-				cookie);
+				sid);
 		LOG.info("New meeting request completed.");
 		if (response == null)
 			return new ResponseEntity<ServerResult>(HttpStatus.FORBIDDEN);
@@ -46,10 +46,10 @@ public class MeetingController {
 	public ResponseEntity<List<MeetingDTO>> getOngoingMeetingsRequest(
 			@RequestParam(value = "accountId") String accountId,
 			@RequestParam(value = "clientTimeZone") String clientTimeZone,
-			@CookieValue(value = "sid", defaultValue = "cookie") String cookie) {
+			@CookieValue(value = "sid") String sid) {
 		LOG.info("Get ongoing meetings request for user " + accountId);
 		List<MeetingDTO> response = meetingService.getOngoingMeetingsRequest(
-				Integer.parseInt(accountId), clientTimeZone, cookie);
+				Integer.parseInt(accountId), clientTimeZone, sid);
 		LOG.info("Get ongoing meetings request completed.");
 		if (response == null)
 			return new ResponseEntity<List<MeetingDTO>>(HttpStatus.FORBIDDEN);
@@ -61,10 +61,10 @@ public class MeetingController {
 	public ResponseEntity<List<MeetingDTO>> getFutureMeetingsRequest(
 			@RequestParam(value = "accountId") String accountId,
 			@RequestParam(value = "clientTimeZone") String clientTimeZone,
-			@CookieValue(value = "sid", defaultValue = "cookie") String cookie) {
+			@CookieValue(value = "sid") String sid) {
 		LOG.info("Get future meetings request for user " + accountId);
 		List<MeetingDTO> response = meetingService.getFutureMeetingsRequest(
-				Integer.parseInt(accountId), clientTimeZone, cookie);
+				Integer.parseInt(accountId), clientTimeZone, sid);
 		LOG.info("Get future meetings request completed.");
 		if (response == null)
 			return new ResponseEntity<List<MeetingDTO>>(HttpStatus.FORBIDDEN);
@@ -76,10 +76,10 @@ public class MeetingController {
 	public ResponseEntity<List<MeetingDTO>> getPastMeetingsRequest(
 			@RequestParam(value = "accountId") String accountId,
 			@RequestParam(value = "clientTimeZone") String clientTimeZone,
-			@CookieValue(value = "sid", defaultValue = "cookie") String cookie) {
+			@CookieValue(value = "sid") String sid) {
 		LOG.info("Get past meetings request for user " + accountId);
 		List<MeetingDTO> response = meetingService.getPastMeetingsRequest(
-				Integer.parseInt(accountId), clientTimeZone, cookie);
+				Integer.parseInt(accountId), clientTimeZone, sid);
 		LOG.info("Get past meetings request completed.");
 		if (response == null)
 			return new ResponseEntity<List<MeetingDTO>>(HttpStatus.FORBIDDEN);
@@ -91,10 +91,10 @@ public class MeetingController {
 	public ResponseEntity<List<MeetingDTO>> getInvitationsRequest(
 			@RequestParam(value = "accountId") String accountId,
 			@RequestParam(value = "clientTimeZone") String clientTimeZone,
-			@CookieValue(value = "sid", defaultValue = "cookie") String cookie) {
+			@CookieValue(value = "sid") String sid) {
 		LOG.info("Get invitations request for user " + accountId);
 		List<MeetingDTO> response = meetingService.getInvitationsRequest(
-				Integer.parseInt(accountId), clientTimeZone, cookie);
+				Integer.parseInt(accountId), clientTimeZone, sid);
 		LOG.info("Get invitations request completed.");
 		if (response == null)
 			return new ResponseEntity<List<MeetingDTO>>(HttpStatus.FORBIDDEN);
