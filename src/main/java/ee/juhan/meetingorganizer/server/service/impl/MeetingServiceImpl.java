@@ -1,7 +1,6 @@
 package ee.juhan.meetingorganizer.server.service.impl;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -110,11 +109,9 @@ public class MeetingServiceImpl implements MeetingService {
 		List<MeetingDTO> responseList = new ArrayList<MeetingDTO>();
 		List<Meeting> meetings = accountRepository.findMeetingsById(accountId);
 		for (Meeting meeting : meetings) {
-			if ((meeting.getStartDateTime().before(clientLocalTime) || meeting
-					.getStartDateTime().equals(nullifySeconds(clientLocalTime)))
-					&& (meeting.getEndDateTime().after(clientLocalTime) || meeting
-							.getEndDateTime().equals(
-									nullifySeconds(clientLocalTime)))) {
+			if (meeting.getStartDateTime().before(addMinute(clientLocalTime))
+					&& addMinute(meeting.getEndDateTime()).after(
+							clientLocalTime)) {
 				for (Participant participant : meeting.getParticipants()) {
 					if (participant.getAccountId() == accountId
 							&& participant.getParticipationAnswer() == ParticipationAnswer.PARTICIPATING) {
@@ -210,12 +207,8 @@ public class MeetingServiceImpl implements MeetingService {
 		return false;
 	}
 
-	private Date nullifySeconds(Date date) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(date);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
-		return cal.getTime();
+	private Date addMinute(Date date) {
+		return new Date(date.getTime() + 60000);
 	}
 
 }
