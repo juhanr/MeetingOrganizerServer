@@ -8,10 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ee.juhan.meetingorganizer.server.rest.domain.MeetingDTO;
@@ -42,10 +43,10 @@ public class MeetingController {
 
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/ongoing-meetings")
+	@RequestMapping(method = RequestMethod.GET, value = "/ongoing-meetings/{id}")
 	public ResponseEntity<List<MeetingDTO>> getOngoingMeetingsRequest(
-			@RequestParam(value = "accountId") String accountId,
-			@RequestParam(value = "clientTimeZone") String clientTimeZone,
+			@PathVariable("id") String accountId,
+			@RequestHeader(value = "Client-Time-Zone") String clientTimeZone,
 			@CookieValue(value = "sid") String sid) {
 		LOG.info("Get ongoing meetings request for user " + accountId);
 		List<MeetingDTO> response = meetingService.getOngoingMeetingsRequest(
@@ -57,10 +58,10 @@ public class MeetingController {
 
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/future-meetings")
+	@RequestMapping(method = RequestMethod.GET, value = "/future-meetings/{id}")
 	public ResponseEntity<List<MeetingDTO>> getFutureMeetingsRequest(
-			@RequestParam(value = "accountId") String accountId,
-			@RequestParam(value = "clientTimeZone") String clientTimeZone,
+			@PathVariable("id") String accountId,
+			@RequestHeader(value = "Client-Time-Zone") String clientTimeZone,
 			@CookieValue(value = "sid") String sid) {
 		LOG.info("Get future meetings request for user " + accountId);
 		List<MeetingDTO> response = meetingService.getFutureMeetingsRequest(
@@ -72,10 +73,10 @@ public class MeetingController {
 
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/past-meetings")
+	@RequestMapping(method = RequestMethod.GET, value = "/past-meetings/{id}")
 	public ResponseEntity<List<MeetingDTO>> getPastMeetingsRequest(
-			@RequestParam(value = "accountId") String accountId,
-			@RequestParam(value = "clientTimeZone") String clientTimeZone,
+			@PathVariable("id") String accountId,
+			@RequestHeader(value = "Client-Time-Zone") String clientTimeZone,
 			@CookieValue(value = "sid") String sid) {
 		LOG.info("Get past meetings request for user " + accountId);
 		List<MeetingDTO> response = meetingService.getPastMeetingsRequest(
@@ -87,10 +88,10 @@ public class MeetingController {
 
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/invitations")
+	@RequestMapping(method = RequestMethod.GET, value = "/invitations/{id}")
 	public ResponseEntity<List<MeetingDTO>> getInvitationsRequest(
-			@RequestParam(value = "accountId") String accountId,
-			@RequestParam(value = "clientTimeZone") String clientTimeZone,
+			@PathVariable("id") String accountId,
+			@RequestHeader(value = "Client-Time-Zone") String clientTimeZone,
 			@CookieValue(value = "sid") String sid) {
 		LOG.info("Get invitations request for user " + accountId);
 		List<MeetingDTO> response = meetingService.getInvitationsRequest(
