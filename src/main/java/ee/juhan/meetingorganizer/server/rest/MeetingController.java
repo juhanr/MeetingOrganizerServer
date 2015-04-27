@@ -31,9 +31,11 @@ public class MeetingController {
 	@RequestMapping(method = RequestMethod.POST, value = "/new")
 	public ResponseEntity<MeetingDTO> newMeetingRequest(
 			@RequestBody MeetingDTO meetingDTO,
+			@RequestHeader(value = "Client-Time-Zone") String clientTimeZone,
 			@CookieValue(value = "sid") String sid) {
 		LOG.info("New meeting request: " + meetingDTO.getTitle());
-		MeetingDTO response = meetingService.newMeetingRequest(meetingDTO, sid);
+		MeetingDTO response = meetingService.newMeetingRequest(meetingDTO,
+				clientTimeZone, sid);
 		LOG.info("New meeting request completed.");
 		if (response == null)
 			return new ResponseEntity<MeetingDTO>(HttpStatus.FORBIDDEN);

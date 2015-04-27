@@ -38,9 +38,11 @@ public class MeetingServiceImpl implements MeetingService {
 	private AccountRepository accountRepository;
 
 	@Override
-	public MeetingDTO newMeetingRequest(MeetingDTO meetingDTO, String sid) {
+	public MeetingDTO newMeetingRequest(MeetingDTO meetingDTO,
+			String clientTimeZoneId, String sid) {
 		if (!isValidSID(meetingDTO.getLeaderId(), sid))
 			return null;
+		this.clientTimeZone = TimeZone.getTimeZone(clientTimeZoneId);
 		Meeting meeting = createMeeting(meetingDTO);
 		meeting = addParticipants(meeting, meetingDTO);
 		meetingRepository.save(meeting);
