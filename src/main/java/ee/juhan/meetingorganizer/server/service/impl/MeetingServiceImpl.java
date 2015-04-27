@@ -1,6 +1,7 @@
 package ee.juhan.meetingorganizer.server.service.impl;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -20,7 +21,6 @@ import ee.juhan.meetingorganizer.server.core.util.MeetingDTOComparator;
 import ee.juhan.meetingorganizer.server.rest.domain.MeetingDTO;
 import ee.juhan.meetingorganizer.server.rest.domain.ParticipantDTO;
 import ee.juhan.meetingorganizer.server.rest.domain.ParticipationAnswer;
-import ee.juhan.meetingorganizer.server.rest.domain.ServerResult;
 import ee.juhan.meetingorganizer.server.service.MeetingService;
 
 @Service
@@ -38,14 +38,14 @@ public class MeetingServiceImpl implements MeetingService {
 	private AccountRepository accountRepository;
 
 	@Override
-	public ServerResult newMeetingRequest(MeetingDTO meetingDTO, String sid) {
+	public MeetingDTO newMeetingRequest(MeetingDTO meetingDTO, String sid) {
 		if (!isValidSID(meetingDTO.getLeaderId(), sid))
 			return null;
 		Meeting meeting = createMeeting(meetingDTO);
 		meeting = addParticipants(meeting, meetingDTO);
 		meetingRepository.save(meeting);
 		addMeetingToParticipantAccounts(meeting);
-		return ServerResult.SUCCESS;
+		return meeting.toDTO(clientTimeZone);
 	}
 
 	private Meeting createMeeting(MeetingDTO meetingDTO) {
@@ -109,14 +109,14 @@ public class MeetingServiceImpl implements MeetingService {
 		List<Meeting> meetings = accountRepository.findMeetingsById(accountId);
 		for (Meeting meeting : meetings) {
 			if ((meeting.getStartDateTime().before(clientLocalTime) || meeting
-					.getStartDateTime().equals(clientLocalTime))
+					.getStartDateTime().equals(nullifySeconds(clientLocalTime)))
 					&& (meeting.getEndDateTime().after(clientLocalTime) || meeting
-							.getEndDateTime().equals(clientLocalTime))) {
+							.getEndDateTime().equals(
+									nullifySeconds(clientLocalTime)))) {
 				for (Participant participant : meeting.getParticipants()) {
 					if (participant.getAccountId() == accountId
 							&& participant.getParticipationAnswer() == ParticipationAnswer.PARTICIPATING) {
-						responseList
-								.add(meeting.toDTO(meeting, clientTimeZone));
+						responseList.add(meeting.toDTO(clientTimeZone));
 						break;
 					}
 				}
@@ -141,8 +141,7 @@ public class MeetingServiceImpl implements MeetingService {
 				for (Participant participant : meeting.getParticipants()) {
 					if (participant.getAccountId() == accountId
 							&& participant.getParticipationAnswer() == ParticipationAnswer.PARTICIPATING) {
-						responseList
-								.add(meeting.toDTO(meeting, clientTimeZone));
+						responseList.add(meeting.toDTO(clientTimeZone));
 						break;
 					}
 				}
@@ -167,8 +166,7 @@ public class MeetingServiceImpl implements MeetingService {
 				for (Participant participant : meeting.getParticipants()) {
 					if (participant.getAccountId() == accountId
 							&& participant.getParticipationAnswer() == ParticipationAnswer.PARTICIPATING) {
-						responseList
-								.add(meeting.toDTO(meeting, clientTimeZone));
+						responseList.add(meeting.toDTO(clientTimeZone));
 						break;
 					}
 				}
@@ -193,8 +191,7 @@ public class MeetingServiceImpl implements MeetingService {
 				for (Participant participant : meeting.getParticipants()) {
 					if (participant.getAccountId() == accountId
 							&& participant.getParticipationAnswer() == ParticipationAnswer.NOT_ANSWERED) {
-						responseList
-								.add(meeting.toDTO(meeting, clientTimeZone));
+						responseList.add(meeting.toDTO(clientTimeZone));
 						break;
 					}
 				}
@@ -209,6 +206,14 @@ public class MeetingServiceImpl implements MeetingService {
 		if (account != null && account.getSid().equals(sid))
 			return true;
 		return false;
+	}
+
+	private Date nullifySeconds(Date date) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		return cal.getTime();
 	}
 
 }

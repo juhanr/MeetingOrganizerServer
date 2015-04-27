@@ -127,15 +127,13 @@ public class Meeting implements Serializable {
 		return participants.add(participant);
 	}
 
-	public MeetingDTO toDTO(Meeting meeting, TimeZone clientTimeZone) {
-		MeetingDTO meetingDTO = new MeetingDTO(meeting.getLeaderId(),
-				meeting.getTitle(), meeting.getDescription(),
-				DateParserUtil.fromClientTimeZone(meeting.getStartDateTime(),
-						clientTimeZone), DateParserUtil.fromClientTimeZone(
-						meeting.getEndDateTime(), clientTimeZone),
-				meeting.getLocationLatitude(), meeting.getLocationLongitude(),
-				meeting.getLocationType());
-		for (Participant participant : meeting.getParticipants()) {
+	public MeetingDTO toDTO(TimeZone clientTimeZone) {
+		MeetingDTO meetingDTO = new MeetingDTO(leaderId, title, description,
+				DateParserUtil
+						.fromClientTimeZone(startDateTime, clientTimeZone),
+				DateParserUtil.fromClientTimeZone(endDateTime, clientTimeZone),
+				locationLatitude, locationLongitude, locationType);
+		for (Participant participant : participants) {
 			ParticipantDTO participantDTO = new ParticipantDTO(
 					participant.getAccountId(), participant.getName(),
 					participant.getEmail(), participant.getPhoneNumber(),

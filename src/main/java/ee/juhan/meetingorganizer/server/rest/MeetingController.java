@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import ee.juhan.meetingorganizer.server.rest.domain.MeetingDTO;
-import ee.juhan.meetingorganizer.server.rest.domain.ServerResult;
 import ee.juhan.meetingorganizer.server.service.MeetingService;
 
 @RestController
@@ -30,16 +29,15 @@ public class MeetingController {
 	MeetingService meetingService;
 
 	@RequestMapping(method = RequestMethod.POST, value = "/new")
-	public ResponseEntity<ServerResult> newMeetingRequest(
+	public ResponseEntity<MeetingDTO> newMeetingRequest(
 			@RequestBody MeetingDTO meetingDTO,
 			@CookieValue(value = "sid") String sid) {
 		LOG.info("New meeting request: " + meetingDTO.getTitle());
-		ServerResult response = meetingService.newMeetingRequest(meetingDTO,
-				sid);
+		MeetingDTO response = meetingService.newMeetingRequest(meetingDTO, sid);
 		LOG.info("New meeting request completed.");
 		if (response == null)
-			return new ResponseEntity<ServerResult>(HttpStatus.FORBIDDEN);
-		return new ResponseEntity<ServerResult>(response, HttpStatus.OK);
+			return new ResponseEntity<MeetingDTO>(HttpStatus.FORBIDDEN);
+		return new ResponseEntity<MeetingDTO>(response, HttpStatus.OK);
 
 	}
 
