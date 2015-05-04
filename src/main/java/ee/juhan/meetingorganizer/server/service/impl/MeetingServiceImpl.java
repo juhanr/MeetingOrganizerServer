@@ -45,6 +45,7 @@ public class MeetingServiceImpl implements MeetingService {
 		this.clientTimeZone = TimeZone.getTimeZone(clientTimeZoneId);
 		Meeting meeting = createMeeting(meetingDTO);
 		meeting = addParticipants(meeting, meetingDTO);
+		checkLocation(meeting);
 		meetingRepository.save(meeting);
 		addMeetingToParticipantAccounts(meeting);
 		return meeting.toDTO(clientTimeZone);
@@ -55,7 +56,8 @@ public class MeetingServiceImpl implements MeetingService {
 		Meeting meeting = new Meeting(meetingDTO.getLeaderId(),
 				meetingDTO.getTitle(), meetingDTO.getDescription(),
 				meetingDTO.getStartDateTime(), meetingDTO.getEndDateTime(),
-				meetingDTO.getLocation(), meetingDTO.getLocationType());
+				meetingDTO.getLocation(), meetingDTO.getLocationType(),
+				meetingDTO.getPredefinedLocations());
 		return meeting;
 	}
 

@@ -2,6 +2,7 @@ package ee.juhan.meetingorganizer.server.rest.domain;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
@@ -18,6 +19,7 @@ public class MeetingDTO {
 	private MapCoordinate location;
 	private LocationType locationType;
 	private ArrayList<ParticipantDTO> participants = new ArrayList<>();
+	private HashSet<MapCoordinate> predefinedLocations = new HashSet<>();
 
 	public MeetingDTO() {
 
@@ -72,6 +74,10 @@ public class MeetingDTO {
 		return participants;
 	}
 
+	public HashSet<MapCoordinate> getPredefinedLocations() {
+		return predefinedLocations;
+	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -112,6 +118,19 @@ public class MeetingDTO {
 
 	public boolean addParticipant(ParticipantDTO participant) {
 		return participants.add(participant);
+	}
+
+	public void setPredefinedLocations(
+			HashSet<MapCoordinate> predefinedLocations) {
+		this.predefinedLocations = predefinedLocations;
+	}
+
+	public void addPredefinedLocation(MapCoordinate predefinedLocation) {
+		this.predefinedLocations.add(predefinedLocation);
+	}
+
+	public void removePredefinedLocation(MapCoordinate predefinedLocation) {
+		this.predefinedLocations.remove(predefinedLocation);
 	}
 
 }

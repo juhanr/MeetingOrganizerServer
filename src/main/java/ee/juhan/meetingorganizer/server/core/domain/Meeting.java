@@ -3,7 +3,9 @@ package ee.juhan.meetingorganizer.server.core.domain;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.TimeZone;
 
 import javax.persistence.Column;
@@ -54,13 +56,15 @@ public class Meeting implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY)
 	private List<Participant> participants = new ArrayList<>();
 
+	private Set<MapCoordinate> predefinedLocations = new HashSet<>();
+
 	protected Meeting() {
 		super();
 	}
 
 	public Meeting(int leaderId, String title, String description,
 			Date startDateTime, Date endDateTime, MapCoordinate location,
-			LocationType locationType) {
+			LocationType locationType, Set<MapCoordinate> predefinedLocations) {
 		super();
 		this.leaderId = leaderId;
 		this.title = title;
@@ -69,6 +73,7 @@ public class Meeting implements Serializable {
 		this.endDateTime = endDateTime;
 		this.location = location;
 		this.locationType = locationType;
+		this.predefinedLocations = predefinedLocations;
 	}
 
 	public int getId() {
@@ -107,6 +112,10 @@ public class Meeting implements Serializable {
 		return participants;
 	}
 
+	public Set<MapCoordinate> getPredefinedLocations() {
+		return predefinedLocations;
+	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
@@ -117,6 +126,19 @@ public class Meeting implements Serializable {
 
 	public boolean addParticipant(Participant participant) {
 		return participants.add(participant);
+	}
+
+	public void setPredefinedLocations(
+			HashSet<MapCoordinate> predefinedLocations) {
+		this.predefinedLocations = predefinedLocations;
+	}
+
+	public void addPredefinedLocation(MapCoordinate predefinedLocation) {
+		this.predefinedLocations.add(predefinedLocation);
+	}
+
+	public void removePredefinedLocation(MapCoordinate predefinedLocation) {
+		this.predefinedLocations.remove(predefinedLocation);
 	}
 
 	public MeetingDTO toDTO(TimeZone clientTimeZone) {
