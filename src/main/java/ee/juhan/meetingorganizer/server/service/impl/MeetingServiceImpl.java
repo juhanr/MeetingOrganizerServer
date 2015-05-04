@@ -16,6 +16,7 @@ import ee.juhan.meetingorganizer.server.core.repository.AccountRepository;
 import ee.juhan.meetingorganizer.server.core.repository.MeetingRepository;
 import ee.juhan.meetingorganizer.server.core.repository.ParticipantRepository;
 import ee.juhan.meetingorganizer.server.core.util.DateParserUtil;
+import ee.juhan.meetingorganizer.server.core.util.LocationGeneratorUtil;
 import ee.juhan.meetingorganizer.server.core.util.MeetingDTOComparator;
 import ee.juhan.meetingorganizer.server.rest.domain.MeetingDTO;
 import ee.juhan.meetingorganizer.server.rest.domain.ParticipantDTO;
@@ -54,11 +55,7 @@ public class MeetingServiceImpl implements MeetingService {
 		Meeting meeting = new Meeting(meetingDTO.getLeaderId(),
 				meetingDTO.getTitle(), meetingDTO.getDescription(),
 				meetingDTO.getStartDateTime(), meetingDTO.getEndDateTime(),
-				meetingDTO.getLocationType());
-		if (meetingDTO.getLocationLatitude() != 0) {
-			meeting.setLocationLatitude(meetingDTO.getLocationLatitude());
-			meeting.setLocationLongitude(meetingDTO.getLocationLongitude());
-		}
+				meetingDTO.getLocation(), meetingDTO.getLocationType());
 		return meeting;
 	}
 
@@ -73,8 +70,7 @@ public class MeetingServiceImpl implements MeetingService {
 						account.getName(), account.getEmail(),
 						account.getPhoneNumber(),
 						participantDTO.getParticipationAnswer(),
-						participantDTO.getLocationLatitude(),
-						participantDTO.getLocationLongitude());
+						participantDTO.getLocation());
 			} else {
 				participant = new Participant(participantDTO.getName(),
 						participantDTO.getEmail(),
@@ -200,6 +196,21 @@ public class MeetingServiceImpl implements MeetingService {
 		return responseList;
 	}
 
+	@Override
+	public MeetingDTO updateParticipantRequest(ParticipantDTO participantDTO,
+			int meetingId, String clientTimeZoneId, String sid) {
+		if (!isValidSID(participantDTO.getAccountId(), sid))
+			return null;
+		clientTimeZone = TimeZone.getTimeZone(clientTimeZoneId);
+		Participant participant = participantRepository.findById(participantDTO
+				.getId());
+		participant.updateInfo(participantDTO);
+		participantRepository.save(participant);
+		Meeting meeting = meetingRepository.findById(meetingId);
+		checkLocation(meeting);
+		return meeting.toDTO(clientTimeZone);
+	}
+
 	private boolean isValidSID(int accountId, String sid) {
 		Account account = accountRepository.findById(accountId);
 		if (account != null && account.getSid().equals(sid))
@@ -209,6 +220,19 @@ public class MeetingServiceImpl implements MeetingService {
 
 	private Date addMinute(Date date) {
 		return new Date(date.getTime() + 60000);
+	}
+
+	private void checkLocation(Meeting meeting) {
+		if (meeting.getLocation() == null) {
+			for (Participant participant : meeting.getParticipants()) {
+				if (participant.getParticipationAnswer() == ParticipationAnswer.NOT_ANSWERED) {
+					return;
+				}
+			}
+			meeting.setLocation(LocationGeneratorUtil
+					.findOptimalLocation(meeting));
+			meetingRepository.save(meeting);
+		}
 	}
 
 }

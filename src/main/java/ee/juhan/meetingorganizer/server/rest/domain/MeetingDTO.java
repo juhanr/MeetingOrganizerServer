@@ -1,8 +1,7 @@
 package ee.juhan.meetingorganizer.server.rest.domain;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
@@ -10,31 +9,35 @@ import ee.juhan.meetingorganizer.server.core.util.JsonDateDeserializer;
 
 public class MeetingDTO {
 
+	private int id;
 	private int leaderId;
 	private String title;
 	private String description;
 	private Date startDateTime;
 	private Date endDateTime;
-	private double locationLatitude;
-	private double locationLongitude;
+	private MapCoordinate location;
 	private LocationType locationType;
-	private Set<ParticipantDTO> participants = new HashSet<>();
+	private ArrayList<ParticipantDTO> participants = new ArrayList<>();
 
 	public MeetingDTO() {
 
 	}
 
-	public MeetingDTO(int leaderId, String title, String description,
-			Date startDateTime, Date endDateTime, double locationLatitude,
-			double locationLongitude, LocationType locationType) {
+	public MeetingDTO(int id, int leaderId, String title, String description,
+			Date startDateTime, Date endDateTime, MapCoordinate location,
+			LocationType locationType) {
+		this.id = id;
 		this.leaderId = leaderId;
 		this.title = title;
 		this.description = description;
 		this.startDateTime = startDateTime;
 		this.endDateTime = endDateTime;
-		this.locationLatitude = locationLatitude;
-		this.locationLongitude = locationLongitude;
+		this.location = location;
 		this.locationType = locationType;
+	}
+
+	public int getId() {
+		return id;
 	}
 
 	public int getLeaderId() {
@@ -57,20 +60,20 @@ public class MeetingDTO {
 		return endDateTime;
 	}
 
-	public double getLocationLatitude() {
-		return locationLatitude;
-	}
-
-	public double getLocationLongitude() {
-		return locationLongitude;
+	public MapCoordinate getLocation() {
+		return location;
 	}
 
 	public LocationType getLocationType() {
 		return locationType;
 	}
 
-	public Set<ParticipantDTO> getParticipants() {
+	public ArrayList<ParticipantDTO> getParticipants() {
 		return participants;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public void setLeaderId(int leaderId) {
@@ -95,19 +98,15 @@ public class MeetingDTO {
 		this.endDateTime = endDateTime;
 	}
 
-	public void setLocationLatitude(double locationLatitude) {
-		this.locationLatitude = locationLatitude;
-	}
-
-	public void setLocationLongitude(double locationLongitude) {
-		this.locationLongitude = locationLongitude;
+	public void setLocation(MapCoordinate location) {
+		this.location = location;
 	}
 
 	public void setLocationType(LocationType locationType) {
 		this.locationType = locationType;
 	}
 
-	public void setParticipants(Set<ParticipantDTO> participants) {
+	public void setParticipants(ArrayList<ParticipantDTO> participants) {
 		this.participants = participants;
 	}
 

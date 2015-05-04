@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import ee.juhan.meetingorganizer.server.rest.domain.MapCoordinate;
+import ee.juhan.meetingorganizer.server.rest.domain.ParticipantDTO;
 import ee.juhan.meetingorganizer.server.rest.domain.ParticipationAnswer;
 
 @Entity
@@ -32,9 +34,7 @@ public class Participant implements Serializable {
 	@Column(nullable = false)
 	private ParticipationAnswer participationAnswer = ParticipationAnswer.NOT_ANSWERED;
 
-	private double locationLatitude;
-
-	private double locationLongitude;
+	private MapCoordinate location;
 
 	protected Participant() {
 		super();
@@ -42,15 +42,14 @@ public class Participant implements Serializable {
 
 	public Participant(int accountId, String name, String email,
 			String phoneNumber, ParticipationAnswer participationAnswer,
-			double locationLatitude, double locationLongitude) {
+			MapCoordinate location) {
 		super();
 		this.accountId = accountId;
 		this.name = name;
 		this.email = email;
 		this.phoneNumber = phoneNumber;
 		this.participationAnswer = participationAnswer;
-		this.locationLatitude = locationLatitude;
-		this.locationLongitude = locationLongitude;
+		this.location = location;
 	}
 
 	public Participant(int accountId, String name, String email,
@@ -90,12 +89,8 @@ public class Participant implements Serializable {
 		return participationAnswer;
 	}
 
-	public double getLocationLatitude() {
-		return locationLatitude;
-	}
-
-	public double getLocationLongitude() {
-		return locationLongitude;
+	public MapCoordinate getLocation() {
+		return location;
 	}
 
 	public void setAccountId(int accountId) {
@@ -106,12 +101,19 @@ public class Participant implements Serializable {
 		this.participationAnswer = participationAnswer;
 	}
 
-	public void setLocationLatitude(double locationLatitude) {
-		this.locationLatitude = locationLatitude;
+	public void setLocation(MapCoordinate location) {
+		this.location = location;
 	}
 
-	public void setLocationLongitude(double locationLongitude) {
-		this.locationLongitude = locationLongitude;
+	public ParticipantDTO toDTO() {
+		return new ParticipantDTO(id, accountId, name, email, phoneNumber,
+				participationAnswer, location);
+	}
+
+	public Participant updateInfo(ParticipantDTO participantDTO) {
+		this.participationAnswer = participantDTO.getParticipationAnswer();
+		this.location = participantDTO.getLocation();
+		return this;
 	}
 
 }

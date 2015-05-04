@@ -1,9 +1,8 @@
 package ee.juhan.meetingorganizer.server.core.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.TimeZone;
 
 import javax.persistence.Column;
@@ -18,8 +17,8 @@ import javax.persistence.TemporalType;
 
 import ee.juhan.meetingorganizer.server.core.util.DateParserUtil;
 import ee.juhan.meetingorganizer.server.rest.domain.LocationType;
+import ee.juhan.meetingorganizer.server.rest.domain.MapCoordinate;
 import ee.juhan.meetingorganizer.server.rest.domain.MeetingDTO;
-import ee.juhan.meetingorganizer.server.rest.domain.ParticipantDTO;
 
 @Entity
 public class Meeting implements Serializable {
@@ -46,28 +45,28 @@ public class Meeting implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date endDateTime;
 
-	private double locationLatitude;
-
-	private double locationLongitude;
+	private MapCoordinate location;
 
 	@Column(nullable = false)
 	private LocationType locationType;
 
 	@OneToMany(fetch = FetchType.LAZY)
-	private Set<Participant> participants = new HashSet<>();
+	private ArrayList<Participant> participants = new ArrayList<>();
 
 	protected Meeting() {
 		super();
 	}
 
 	public Meeting(int leaderId, String title, String description,
-			Date startDateTime, Date endDateTime, LocationType locationType) {
+			Date startDateTime, Date endDateTime, MapCoordinate location,
+			LocationType locationType) {
 		super();
 		this.leaderId = leaderId;
 		this.title = title;
 		this.description = description;
 		this.startDateTime = startDateTime;
 		this.endDateTime = endDateTime;
+		this.location = location;
 		this.locationType = locationType;
 	}
 
@@ -95,19 +94,15 @@ public class Meeting implements Serializable {
 		return endDateTime;
 	}
 
-	public double getLocationLatitude() {
-		return locationLatitude;
-	}
-
-	public double getLocationLongitude() {
-		return locationLongitude;
+	public MapCoordinate getLocation() {
+		return location;
 	}
 
 	public LocationType getLocationType() {
 		return locationType;
 	}
 
-	public Set<Participant> getParticipants() {
+	public ArrayList<Participant> getParticipants() {
 		return participants;
 	}
 
@@ -115,12 +110,8 @@ public class Meeting implements Serializable {
 		this.description = description;
 	}
 
-	public void setLocationLatitude(double locationLatitude) {
-		this.locationLatitude = locationLatitude;
-	}
-
-	public void setLocationLongitude(double locationLongitude) {
-		this.locationLongitude = locationLongitude;
+	public void setLocation(MapCoordinate location) {
+		this.location = location;
 	}
 
 	public boolean addParticipant(Participant participant) {
@@ -128,19 +119,12 @@ public class Meeting implements Serializable {
 	}
 
 	public MeetingDTO toDTO(TimeZone clientTimeZone) {
-		MeetingDTO meetingDTO = new MeetingDTO(leaderId, title, description,
-				DateParserUtil
-						.fromClientTimeZone(startDateTime, clientTimeZone),
-				DateParserUtil.fromClientTimeZone(endDateTime, clientTimeZone),
-				locationLatitude, locationLongitude, locationType);
+		MeetingDTO meetingDTO = new MeetingDTO(id, leaderId, title,
+				description, DateParserUtil.fromClientTimeZone(startDateTime,
+						clientTimeZone), DateParserUtil.fromClientTimeZone(
+						endDateTime, clientTimeZone), location, locationType);
 		for (Participant participant : participants) {
-			ParticipantDTO participantDTO = new ParticipantDTO(
-					participant.getAccountId(), participant.getName(),
-					participant.getEmail(), participant.getPhoneNumber(),
-					participant.getParticipationAnswer(),
-					participant.getLocationLatitude(),
-					participant.getLocationLongitude());
-			meetingDTO.addParticipant(participantDTO);
+			meetingDTO.addParticipant(participant.toDTO());
 		}
 		return meetingDTO;
 	}

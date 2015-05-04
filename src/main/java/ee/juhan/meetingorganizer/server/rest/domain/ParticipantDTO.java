@@ -2,28 +2,32 @@ package ee.juhan.meetingorganizer.server.rest.domain;
 
 public class ParticipantDTO {
 
+	private int id;
 	private int accountId;
 	private String name;
 	private String email;
 	private String phoneNumber;
 	private ParticipationAnswer participationAnswer = ParticipationAnswer.NOT_ANSWERED;
-	private double locationLatitude;
-	private double locationLongitude;
+	private MapCoordinate location;
 
 	public ParticipantDTO() {
 
 	}
 
-	public ParticipantDTO(int accountId, String name, String email,
+	public ParticipantDTO(int id, int accountId, String name, String email,
 			String phoneNumber, ParticipationAnswer participationAnswer,
-			double locationLatitude, double locationLongitude) {
+			MapCoordinate location) {
+		this.id = id;
 		this.accountId = accountId;
 		this.name = name;
 		this.email = email;
 		this.phoneNumber = phoneNumber;
 		this.participationAnswer = participationAnswer;
-		this.locationLatitude = locationLatitude;
-		this.locationLongitude = locationLongitude;
+		this.location = location;
+	}
+
+	public int getId() {
+		return id;
 	}
 
 	public int getAccountId() {
@@ -46,12 +50,12 @@ public class ParticipantDTO {
 		return participationAnswer;
 	}
 
-	public double getLocationLatitude() {
-		return locationLatitude;
+	public MapCoordinate getLocation() {
+		return location;
 	}
 
-	public double getLocationLongitude() {
-		return locationLongitude;
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public void setAccountId(int accountId) {
@@ -74,12 +78,8 @@ public class ParticipantDTO {
 		this.participationAnswer = participationAnswer;
 	}
 
-	public void setLocationLatitude(double locationLatitude) {
-		this.locationLatitude = locationLatitude;
-	}
-
-	public void setLocationLongitude(double locationLongitude) {
-		this.locationLongitude = locationLongitude;
+	public void setLocation(MapCoordinate location) {
+		this.location = location;
 	}
 
 }
