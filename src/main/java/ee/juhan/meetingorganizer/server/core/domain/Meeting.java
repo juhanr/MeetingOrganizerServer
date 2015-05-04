@@ -3,6 +3,7 @@ package ee.juhan.meetingorganizer.server.core.domain;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 import javax.persistence.Column;
@@ -51,7 +52,7 @@ public class Meeting implements Serializable {
 	private LocationType locationType;
 
 	@OneToMany(fetch = FetchType.LAZY)
-	private ArrayList<Participant> participants = new ArrayList<>();
+	private List<Participant> participants = new ArrayList<>();
 
 	protected Meeting() {
 		super();
@@ -102,7 +103,7 @@ public class Meeting implements Serializable {
 		return locationType;
 	}
 
-	public ArrayList<Participant> getParticipants() {
+	public List<Participant> getParticipants() {
 		return participants;
 	}
 
