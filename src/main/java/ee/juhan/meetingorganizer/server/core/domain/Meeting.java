@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.TimeZone;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -56,6 +57,7 @@ public class Meeting implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY)
 	private List<Participant> participants = new ArrayList<>();
 
+	@ElementCollection
 	private Set<MapCoordinate> predefinedLocations = new HashSet<>();
 
 	protected Meeting() {

@@ -97,6 +97,14 @@ public class Participant implements Serializable {
 		this.accountId = accountId;
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	public void setParticipationAnswer(ParticipationAnswer participationAnswer) {
 		this.participationAnswer = participationAnswer;
 	}

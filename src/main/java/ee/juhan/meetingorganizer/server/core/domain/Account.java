@@ -10,7 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 
 @Entity
 public class Account implements Serializable {
@@ -36,7 +36,7 @@ public class Account implements Serializable {
 	@Column(nullable = false)
 	private String sid;
 
-	@OneToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.LAZY)
 	private Set<Meeting> meetings = new HashSet<>();
 
 	protected Account() {
