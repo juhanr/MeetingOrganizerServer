@@ -18,20 +18,20 @@ public class MapCoordinate implements Serializable {
 		this.longitude = longitude;
 	}
 
-	public Double getLatitude() {
-		return latitude;
-	}
+	public final Double getLatitude() {
+        return latitude;
+    }
 
-	public Double getLongitude() {
-		return longitude;
-	}
+    public final void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
 
-	public void setLatitude(Double latitude) {
-		this.latitude = latitude;
-	}
+    public final Double getLongitude() {
+        return longitude;
+    }
 
-	public void setLongitude(Double longitude) {
-		this.longitude = longitude;
-	}
+    public final void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
 
 }

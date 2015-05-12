@@ -18,8 +18,8 @@ public class MeetingDTO {
 	private Date endDateTime;
 	private MapCoordinate location;
 	private LocationType locationType;
-	private ArrayList<ParticipantDTO> participants = new ArrayList<>();
-	private HashSet<MapCoordinate> predefinedLocations = new HashSet<>();
+	private List<ParticipantDTO> participants = new ArrayList<>();
+	private Set<MapCoordinate> predefinedLocations = new HashSet<>();
 
 	public MeetingDTO() {
 
@@ -37,100 +37,99 @@ public class MeetingDTO {
 		this.location = location;
 		this.locationType = locationType;
 	}
+	
+	public final int getId() {
+        return id;
+    }
 
-	public int getId() {
-		return id;
-	}
+    public final void setId(int id) {
+        this.id = id;
+    }
 
-	public int getLeaderId() {
-		return leaderId;
-	}
+    public final int getLeaderId() {
+        return leaderId;
+    }
 
-	public String getTitle() {
-		return title;
-	}
+    public final void setLeaderId(int leaderId) {
+        this.leaderId = leaderId;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public final String getTitle() {
+        return title;
+    }
 
-	public Date getStartDateTime() {
-		return startDateTime;
-	}
+    public final void setTitle(String title) {
+        this.title = title;
+    }
 
-	public Date getEndDateTime() {
-		return endDateTime;
-	}
+    public final String getDescription() {
+        return description;
+    }
 
-	public MapCoordinate getLocation() {
-		return location;
-	}
+    public final void setDescription(String description) {
+        this.description = description;
+    }
 
-	public LocationType getLocationType() {
-		return locationType;
-	}
+    public final Date getStartDateTime() {
+        return startDateTime;
+    }
 
-	public ArrayList<ParticipantDTO> getParticipants() {
-		return participants;
-	}
+    @JsonDeserialize(using = JsonDateDeserializer.class)
+    public final void setStartDateTime(Date startTime) {
+        this.startDateTime = startTime;
+    }
 
-	public HashSet<MapCoordinate> getPredefinedLocations() {
-		return predefinedLocations;
-	}
+    public final Date getEndDateTime() {
+        return endDateTime;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    @JsonDeserialize(using = JsonDateDeserializer.class)
+    public final void setEndDateTime(Date endTime) {
+        this.endDateTime = endTime;
+    }
 
-	public void setLeaderId(int leaderId) {
-		this.leaderId = leaderId;
-	}
+    public final  MapCoordinate getLocation() {
+        return location;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public final void setLocation(MapCoordinate location) {
+        this.location = location;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public final LocationType getLocationType() {
+        return locationType;
+    }
 
-	@JsonDeserialize(using = JsonDateDeserializer.class)
-	public void setStartDateTime(Date startDateTime) {
-		this.startDateTime = startDateTime;
-	}
+    public final void setLocationType(LocationType locationType) {
+        this.locationType = locationType;
+    }
 
-	@JsonDeserialize(using = JsonDateDeserializer.class)
-	public void setEndDateTime(Date endDateTime) {
-		this.endDateTime = endDateTime;
-	}
+    public final List<ParticipantDTO> getParticipants() {
+        return participants;
+    }
 
-	public void setLocation(MapCoordinate location) {
-		this.location = location;
-	}
+    public final void setParticipants(List<ParticipantDTO> participants) {
+        this.participants = participants;
+    }
 
-	public void setLocationType(LocationType locationType) {
-		this.locationType = locationType;
-	}
+    public final boolean addParticipant(ParticipantDTO participant) {
+        return participants.add(participant);
+    }
 
-	public void setParticipants(ArrayList<ParticipantDTO> participants) {
-		this.participants = participants;
-	}
+    public final Set<MapCoordinate> getPredefinedLocations() {
+        return predefinedLocations;
+    }
 
-	public boolean addParticipant(ParticipantDTO participant) {
-		return participants.add(participant);
-	}
+    public final void setPredefinedLocations(Set<MapCoordinate> predefinedLocations) {
+        this.predefinedLocations = predefinedLocations;
+    }
 
-	public void setPredefinedLocations(
-			HashSet<MapCoordinate> predefinedLocations) {
-		this.predefinedLocations = predefinedLocations;
-	}
+    public final void addPredefinedLocation(MapCoordinate predefinedLocation) {
+        this.predefinedLocations.add(predefinedLocation);
+    }
 
-	public void addPredefinedLocation(MapCoordinate predefinedLocation) {
-		this.predefinedLocations.add(predefinedLocation);
-	}
-
-	public void removePredefinedLocation(MapCoordinate predefinedLocation) {
-		this.predefinedLocations.remove(predefinedLocation);
-	}
+    public final void removePredefinedLocation(MapCoordinate predefinedLocation) {
+        this.predefinedLocations.remove(predefinedLocation);
+    }
 
 }
