@@ -1,8 +1,6 @@
 package ee.juhan.meetingorganizer.server.rest.domain;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
+import java.util.*;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
