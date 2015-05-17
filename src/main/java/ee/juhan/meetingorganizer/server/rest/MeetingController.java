@@ -1,7 +1,5 @@
 package ee.juhan.meetingorganizer.server.rest;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,109 +13,79 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 import ee.juhan.meetingorganizer.server.rest.domain.MeetingDTO;
 import ee.juhan.meetingorganizer.server.rest.domain.ParticipantDTO;
 import ee.juhan.meetingorganizer.server.service.MeetingService;
 
 @RestController
-@RequestMapping("/meeting")
+@RequestMapping(ControllerConstants.MEETING_PATH)
 public class MeetingController {
 
-	private static Logger LOG = LoggerFactory
-			.getLogger(MeetingController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MeetingController.class);
 
 	@Autowired
-	MeetingService meetingService;
+    private MeetingService meetingService;
 
-	@RequestMapping(method = RequestMethod.POST, value = "/new")
-	public ResponseEntity<MeetingDTO> newMeetingRequest(
-			@RequestBody MeetingDTO meetingDTO,
-			@RequestHeader(value = "Client-Time-Zone") String clientTimeZone,
-			@CookieValue(value = "sid") String sid) {
-		LOG.info("New meeting request: " + meetingDTO.getTitle());
-		MeetingDTO response = meetingService.newMeetingRequest(meetingDTO,
-				clientTimeZone, sid);
-		LOG.info("New meeting request completed.");
-		if (response == null)
-			return new ResponseEntity<MeetingDTO>(HttpStatus.FORBIDDEN);
-		return new ResponseEntity<MeetingDTO>(response, HttpStatus.OK);
+    @RequestMapping(method = RequestMethod.POST, value = ControllerConstants.NEW_PATH)
+    public final ResponseEntity<MeetingDTO> newMeetingRequest(@RequestBody MeetingDTO meetingDTO,
+            @RequestHeader(value = ControllerConstants.CLIENT_TIME_ZONE) String clientTimeZone,
+            @CookieValue(value = ControllerConstants.SID) String sid) {
+        LOG.info("New meeting request: " + meetingDTO.getTitle());
+        MeetingDTO response = meetingService.newMeetingRequest(meetingDTO, clientTimeZone, sid);
+        LOG.info("New meeting request completed.");
+        if (response == null) { return new ResponseEntity<>(HttpStatus.FORBIDDEN); }
+        return new ResponseEntity<>(response, HttpStatus.OK);
 
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/ongoing-meetings/account/{accountId}")
-	public ResponseEntity<List<MeetingDTO>> getOngoingMeetingsRequest(
-			@PathVariable("accountId") String accountId,
-			@RequestHeader(value = "Client-Time-Zone") String clientTimeZone,
-			@CookieValue(value = "sid") String sid) {
-		LOG.info("Get ongoing meetings request for user " + accountId);
-		List<MeetingDTO> response = meetingService.getOngoingMeetingsRequest(
-				Integer.parseInt(accountId), clientTimeZone, sid);
-		LOG.info("Get ongoing meetings request completed.");
-		if (response == null)
-			return new ResponseEntity<List<MeetingDTO>>(HttpStatus.FORBIDDEN);
-		return new ResponseEntity<List<MeetingDTO>>(response, HttpStatus.OK);
+    @RequestMapping(method = RequestMethod.GET,
+            value = "/{" + ControllerConstants.MEETINGS_TYPE + "}" +
+                    ControllerConstants.ACCOUNT_PATH + "/{" +
+                    ControllerConstants.ACCOUNT_ID + "}")
+    public final ResponseEntity<List<MeetingDTO>> getMeetingsRequest(
+            @PathVariable(ControllerConstants.MEETINGS_TYPE) String meetingsType,
+            @PathVariable(ControllerConstants.ACCOUNT_ID) int accountId,
+            @RequestHeader(value = ControllerConstants.CLIENT_TIME_ZONE) String clientTimeZone,
+            @CookieValue(value = ControllerConstants.SID) String sid) {
+        LOG.info("Get meetings request for user " + accountId);
+        List<MeetingDTO> response = null;
+        switch (meetingsType) {
+            case ControllerConstants.ONGOING_MEETINGS:
+                response = meetingService.getOngoingMeetingsRequest(accountId, clientTimeZone, sid);
+                break;
+            case ControllerConstants.FUTURE_MEETINGS:
+                response = meetingService.getFutureMeetingsRequest(accountId, clientTimeZone, sid);
+                break;
+            case ControllerConstants.PAST_MEETINGS:
+                response = meetingService.getPastMeetingsRequest(accountId, clientTimeZone, sid);
+                break;
+            case ControllerConstants.INVITATIONS:
+                response = meetingService.getInvitationsRequest(accountId, clientTimeZone, sid);
+                break;
+        }
+        LOG.info("Get meetings request completed.");
+        if (response == null) { return new ResponseEntity<>(HttpStatus.FORBIDDEN); }
+        return new ResponseEntity<>(response, HttpStatus.OK);
 
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/future-meetings/account/{accountId}")
-	public ResponseEntity<List<MeetingDTO>> getFutureMeetingsRequest(
-			@PathVariable("accountId") String accountId,
-			@RequestHeader(value = "Client-Time-Zone") String clientTimeZone,
-			@CookieValue(value = "sid") String sid) {
-		LOG.info("Get future meetings request for user " + accountId);
-		List<MeetingDTO> response = meetingService.getFutureMeetingsRequest(
-				Integer.parseInt(accountId), clientTimeZone, sid);
-		LOG.info("Get future meetings request completed.");
-		if (response == null)
-			return new ResponseEntity<List<MeetingDTO>>(HttpStatus.FORBIDDEN);
-		return new ResponseEntity<List<MeetingDTO>>(response, HttpStatus.OK);
-
-	}
-
-	@RequestMapping(method = RequestMethod.GET, value = "/past-meetings/account/{accountId}")
-	public ResponseEntity<List<MeetingDTO>> getPastMeetingsRequest(
-			@PathVariable("accountId") String accountId,
-			@RequestHeader(value = "Client-Time-Zone") String clientTimeZone,
-			@CookieValue(value = "sid") String sid) {
-		LOG.info("Get past meetings request for user " + accountId);
-		List<MeetingDTO> response = meetingService.getPastMeetingsRequest(
-				Integer.parseInt(accountId), clientTimeZone, sid);
-		LOG.info("Get past meetings request completed.");
-		if (response == null)
-			return new ResponseEntity<List<MeetingDTO>>(HttpStatus.FORBIDDEN);
-		return new ResponseEntity<List<MeetingDTO>>(response, HttpStatus.OK);
-
-	}
-
-	@RequestMapping(method = RequestMethod.GET, value = "/invitations/account/{accountId}")
-	public ResponseEntity<List<MeetingDTO>> getInvitationsRequest(
-			@PathVariable("accountId") String accountId,
-			@RequestHeader(value = "Client-Time-Zone") String clientTimeZone,
-			@CookieValue(value = "sid") String sid) {
-		LOG.info("Get invitations request for user " + accountId);
-		List<MeetingDTO> response = meetingService.getInvitationsRequest(
-				Integer.parseInt(accountId), clientTimeZone, sid);
-		LOG.info("Get invitations request completed.");
-		if (response == null)
-			return new ResponseEntity<List<MeetingDTO>>(HttpStatus.FORBIDDEN);
-		return new ResponseEntity<List<MeetingDTO>>(response, HttpStatus.OK);
-
-	}
-
-	@RequestMapping(method = RequestMethod.POST, value = "/{meetingId}/update-participant")
-	public ResponseEntity<MeetingDTO> updateParticipantRequest(
-			@RequestBody ParticipantDTO participantDTO,
-			@PathVariable("meetingId") String meetingId,
-			@RequestHeader(value = "Client-Time-Zone") String clientTimeZone,
-			@CookieValue(value = "sid") String sid) {
-		LOG.info("Update participant request for participant " + participantDTO);
-		MeetingDTO response = meetingService.updateParticipantRequest(
-				participantDTO, Integer.parseInt(meetingId), clientTimeZone,
-				sid);
-		LOG.info("Update participant request completed.");
-		if (response == null)
-			return new ResponseEntity<MeetingDTO>(HttpStatus.FORBIDDEN);
-		return new ResponseEntity<MeetingDTO>(response, HttpStatus.OK);
+    @RequestMapping(method = RequestMethod.POST,
+            value = "/{" + ControllerConstants.MEETING_ID + "}" +
+                    ControllerConstants.UPDATE_PARTICIPANT_PATH)
+    public final ResponseEntity<MeetingDTO> updateParticipantRequest(
+            @RequestBody ParticipantDTO participantDTO,
+            @PathVariable(ControllerConstants.MEETING_ID) String meetingId,
+            @RequestHeader(value = ControllerConstants.CLIENT_TIME_ZONE) String clientTimeZone,
+            @CookieValue(value = ControllerConstants.SID) String sid) {
+        LOG.info("Update participant request for participant " + participantDTO);
+        MeetingDTO response = meetingService
+                .updateParticipantRequest(participantDTO, Integer.parseInt(meetingId),
+                        clientTimeZone, sid);
+        LOG.info("Update participant request completed.");
+        if (response == null) { return new ResponseEntity<>(HttpStatus.FORBIDDEN); }
+        return new ResponseEntity<>(response, HttpStatus.OK);
 
 	}
 

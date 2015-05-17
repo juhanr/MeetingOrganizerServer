@@ -1,7 +1,5 @@
 package ee.juhan.meetingorganizer.server.util;
 
-import javax.sql.DataSource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -9,22 +7,22 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
+import javax.sql.DataSource;
+
 /**
- * Configuration for Heroku. <br>
- * Retrieves connection details from System Enviroment variable. <br>
- * 
+ * Configuration for Heroku. <br> Retrieves connection details from System Enviroment variable.
+ * <br>
+ * <p>
  * For example <code>mysql://root:root@localhost:3306/test</code>.
- * 
+ *
  * @author TKasekamp
- * 
  */
 @Configuration
 @Profile("default")
 public class HerokuConfiguration {
 
 	@SuppressWarnings("unused")
-	private static Logger LOG = LoggerFactory
-			.getLogger(HerokuConfiguration.class);
+	private static final Logger LOG = LoggerFactory.getLogger(HerokuConfiguration.class);
 
 	@Bean
 	public DataSource dataSource() {

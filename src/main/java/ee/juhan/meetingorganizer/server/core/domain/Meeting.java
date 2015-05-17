@@ -60,94 +60,90 @@ public class Meeting implements Serializable {
 	@ElementCollection
 	private Set<MapCoordinate> predefinedLocations = new HashSet<>();
 
-	protected Meeting() {
-		super();
-	}
+	protected Meeting() {}
 
-	public Meeting(int leaderId, String title, String description,
-			Date startDateTime, Date endDateTime, MapCoordinate location,
-			LocationType locationType, Set<MapCoordinate> predefinedLocations) {
-		super();
+	public Meeting(int leaderId, String title, String description, Date startDateTime,
+			Date endDateTime, MapCoordinate location, LocationType locationType,
+			Set<MapCoordinate> predefinedLocations) {
 		this.leaderId = leaderId;
 		this.title = title;
 		this.description = description;
-		this.startDateTime = startDateTime;
-		this.endDateTime = endDateTime;
+		this.startDateTime = (Date) startDateTime.clone();
+		this.endDateTime = (Date) endDateTime.clone();
 		this.location = location;
 		this.locationType = locationType;
 		this.predefinedLocations = predefinedLocations;
 	}
 
-	public int getId() {
+	public final int getId() {
 		return id;
 	}
 
-	public int getLeaderId() {
+	public final int getLeaderId() {
 		return leaderId;
 	}
 
-	public String getTitle() {
+	public final String getTitle() {
 		return title;
 	}
 
-	public String getDescription() {
+	public final String getDescription() {
 		return description;
 	}
 
-	public Date getStartDateTime() {
-		return startDateTime;
-	}
-
-	public Date getEndDateTime() {
-		return endDateTime;
-	}
-
-	public MapCoordinate getLocation() {
-		return location;
-	}
-
-	public LocationType getLocationType() {
-		return locationType;
-	}
-
-	public List<Participant> getParticipants() {
-		return participants;
-	}
-
-	public Set<MapCoordinate> getPredefinedLocations() {
-		return predefinedLocations;
-	}
-
-	public void setDescription(String description) {
+	public final void setDescription(String description) {
 		this.description = description;
 	}
 
-	public void setLocation(MapCoordinate location) {
+	public final Date getStartDateTime() {
+		return (Date) startDateTime.clone();
+	}
+
+	public final Date getEndDateTime() {
+		return (Date) endDateTime.clone();
+	}
+
+	public final MapCoordinate getLocation() {
+		return location;
+	}
+
+	public final void setLocation(MapCoordinate location) {
 		this.location = location;
 	}
 
-	public boolean addParticipant(Participant participant) {
-		return participants.add(participant);
+	public final LocationType getLocationType() {
+		return locationType;
 	}
 
-	public void setPredefinedLocations(
-			HashSet<MapCoordinate> predefinedLocations) {
+	public final List<Participant> getParticipants() {
+		return participants;
+	}
+
+	public final Set<MapCoordinate> getPredefinedLocations() {
+		return predefinedLocations;
+	}
+
+	public final void setPredefinedLocations(Set<MapCoordinate> predefinedLocations) {
 		this.predefinedLocations = predefinedLocations;
 	}
 
-	public void addPredefinedLocation(MapCoordinate predefinedLocation) {
+	public final boolean addParticipant(Participant participant) {
+		return participants.add(participant);
+	}
+
+	public final void addPredefinedLocation(MapCoordinate predefinedLocation) {
 		this.predefinedLocations.add(predefinedLocation);
 	}
 
-	public void removePredefinedLocation(MapCoordinate predefinedLocation) {
+	public final void removePredefinedLocation(MapCoordinate predefinedLocation) {
 		this.predefinedLocations.remove(predefinedLocation);
 	}
 
-	public MeetingDTO toDTO(TimeZone clientTimeZone) {
-		MeetingDTO meetingDTO = new MeetingDTO(id, leaderId, title,
-				description, DateParserUtil.fromClientTimeZone(startDateTime,
-						clientTimeZone), DateParserUtil.fromClientTimeZone(
-						endDateTime, clientTimeZone), location, locationType);
+	public final MeetingDTO toDTO(TimeZone clientTimeZone) {
+		MeetingDTO meetingDTO = new MeetingDTO(id, leaderId, title, description,
+				DateParserUtil.fromClientTimeZone(startDateTime, clientTimeZone),
+				DateParserUtil.fromClientTimeZone(endDateTime, clientTimeZone), location,
+				locationType);
 		for (Participant participant : participants) {
 			meetingDTO.addParticipant(participant.toDTO());
 		}

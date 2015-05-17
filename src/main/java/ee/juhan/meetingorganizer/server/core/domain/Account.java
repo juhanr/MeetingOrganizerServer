@@ -39,13 +39,9 @@ public class Account implements Serializable {
 	@ManyToMany(fetch = FetchType.LAZY)
 	private Set<Meeting> meetings = new HashSet<>();
 
-	protected Account() {
-		super();
-	}
+	protected Account() {}
 
-	public Account(String name, String email, String hash, String phoneNumber,
-			String sid) {
-		super();
+	public Account(String name, String email, String hash, String phoneNumber, String sid) {
 		this.name = name;
 		this.email = email;
 		this.hash = hash;
@@ -53,35 +49,35 @@ public class Account implements Serializable {
 		this.sid = sid;
 	}
 
-	public int getId() {
+	public final int getId() {
 		return id;
 	}
 
-	public String getName() {
+	public final String getName() {
 		return name;
 	}
 
-	public String getEmail() {
+	public final String getEmail() {
 		return email;
 	}
 
-	public String getHash() {
+	public final String getHash() {
 		return hash;
 	}
 
-	public String getPhoneNumber() {
+	public final String getPhoneNumber() {
 		return phoneNumber;
 	}
 
-	public String getSid() {
+	public final String getSid() {
 		return sid;
 	}
 
-	public Set<Meeting> getMeetings() {
+	public final Set<Meeting> getMeetings() {
 		return meetings;
 	}
 
-	public boolean addMeeting(Meeting meeting) {
+	public final boolean addMeeting(Meeting meeting) {
 		return meetings.add(meeting);
 	}
 

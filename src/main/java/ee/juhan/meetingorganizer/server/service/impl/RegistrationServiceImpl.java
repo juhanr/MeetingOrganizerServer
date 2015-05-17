@@ -1,11 +1,11 @@
 package ee.juhan.meetingorganizer.server.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import ee.juhan.meetingorganizer.server.core.domain.Account;
 import ee.juhan.meetingorganizer.server.core.domain.Meeting;
@@ -33,25 +33,25 @@ public class RegistrationServiceImpl implements RegistrationService {
 	private ParticipantRepository participantRepository;
 
 	@Override
-	public ServerResponse registrationRequest(AccountDTO accountDTO) {
-		if (accountRepository.findByEmail(accountDTO.getEmail()) != null)
+	public final ServerResponse registrationRequest(AccountDTO accountDTO) {
+		if (accountRepository.findByEmail(accountDTO.getEmail()) != null) {
 			return new ServerResponse(ServerResult.EMAIL_IN_USE);
-		if (accountRepository.findByPhoneNumber(accountDTO.getPhoneNumber()) != null)
+		}
+		if (accountRepository.findByPhoneNumber(accountDTO.getPhoneNumber()) != null) {
 			return new ServerResponse(ServerResult.PHONE_NUMBER_IN_USE);
+		}
 
 		Account account = createAccount(accountDTO);
-		if (account == null)
-			return new ServerResponse(ServerResult.FAIL);
-		return new ServerResponse(ServerResult.SUCCESS, account.getSid(),
-				account.getId());
+		if (account == null) { return new ServerResponse(ServerResult.FAIL); }
+		return new ServerResponse(ServerResult.SUCCESS, account.getSid(), account.getId());
 	}
 
 	private Account createAccount(AccountDTO accountDTO) {
 		try {
 			String sid = SIDGeneratorUtil.generateSID();
-			Account account = new Account(accountDTO.getName(),
-					accountDTO.getEmail(), HasherUtil.createHash(accountDTO
-							.getPassword()), accountDTO.getPhoneNumber(), sid);
+			Account account = new Account(accountDTO.getName(), accountDTO.getEmail(),
+					HasherUtil.createHash(accountDTO.getPassword()), accountDTO.getPhoneNumber(),
+					sid);
 			accountRepository.save(account);
 			account = addExistingInvitations(account);
 			accountRepository.save(account);
@@ -63,13 +63,12 @@ public class RegistrationServiceImpl implements RegistrationService {
 	}
 
 	private Account addExistingInvitations(Account account) {
-		List<Meeting> meetings = meetingRepository
-				.findByParticipantPhoneNumber(account.getPhoneNumber());
+		List<Meeting> meetings =
+				meetingRepository.findByParticipantPhoneNumber(account.getPhoneNumber());
 		for (Meeting meeting : meetings) {
 			account.addMeeting(meeting);
 			for (Participant participant : meeting.getParticipants()) {
-				if (participant.getPhoneNumber().equals(
-						account.getPhoneNumber())) {
+				if (participant.getPhoneNumber().equals(account.getPhoneNumber())) {
 					participant.setAccountId(account.getId());
 					participant.setName(account.getName());
 					participant.setEmail(account.getEmail());

@@ -15,21 +15,21 @@ import ee.juhan.meetingorganizer.server.rest.domain.ServerResponse;
 import ee.juhan.meetingorganizer.server.service.LoginService;
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping(ControllerConstants.LOGIN_PATH)
 public class LoginController {
 
-	private static Logger LOG = LoggerFactory.getLogger(LoginController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(LoginController.class);
 
 	@Autowired
-	LoginService loginService;
+	private LoginService loginService;
 
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<ServerResponse> registrationRequest(
+	public final ResponseEntity<ServerResponse> registrationRequest(
 			@RequestBody AccountDTO accountDTO) {
 		LOG.info("Log in request: " + accountDTO.getEmail());
 		ServerResponse response = loginService.loginRequest(accountDTO);
 		LOG.info("Log in request completed.");
-		return new ResponseEntity<ServerResponse>(response, HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 
 	}
 

@@ -1,9 +1,9 @@
 package ee.juhan.meetingorganizer.server.service.impl;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import ee.juhan.meetingorganizer.server.core.domain.Account;
 import ee.juhan.meetingorganizer.server.core.repository.AccountRepository;
@@ -13,25 +13,24 @@ import ee.juhan.meetingorganizer.server.service.AccountService;
 @Service
 public class AccountServiceImpl implements AccountService {
 
+	private static final int AREA_CODE_LENGTH = 3;
+
 	@Autowired
 	private AccountRepository accountRepository;
 
 	@Override
-	public List<ContactDTO> checkContactsRequest(int accountId,
-			List<ContactDTO> contacts, String sid) {
-		if (!isValidSID(accountId, sid))
-			return null;
+	public final List<ContactDTO> checkContactsRequest(int accountId, List<ContactDTO> contacts,
+			String sid) {
+		if (!isValidSID(accountId, sid)) { return null; }
 		for (int i = 0; i < contacts.size(); i++) {
 			ContactDTO contact = contacts.get(i);
-			if (contact.getPhoneNumber() != null
-					&& !contact.getPhoneNumber().equals("")) {
+			if (contact.getPhoneNumber() != null && !contact.getPhoneNumber().equals("")) {
 				if (!isWithAreaNumber(contact.getPhoneNumber())) {
-					contact.setPhoneNumber(addAreaNumber(
-							contact.getPhoneNumber(), accountId));
+					contact.setPhoneNumber(addAreaNumber(contact.getPhoneNumber(), accountId));
 				}
 
-				Account contactAccount = accountRepository
-						.findByPhoneNumber(contact.getPhoneNumber());
+				Account contactAccount =
+						accountRepository.findByPhoneNumber(contact.getPhoneNumber());
 				if (contactAccount != null) {
 					contact.setAccountId(contactAccount.getId());
 				}
@@ -47,9 +46,8 @@ public class AccountServiceImpl implements AccountService {
 
 	private String addAreaNumber(String phoneNumber, int accountId) {
 		Account account = accountRepository.findById(accountId);
-		if (account != null
-				&& account.getPhoneNumber().substring(0, 1).equals("+")) {
-			String areaNumber = account.getPhoneNumber().substring(0, 4);
+		if (account != null && account.getPhoneNumber().substring(0, 1).equals("+")) {
+			String areaNumber = account.getPhoneNumber().substring(0, AREA_CODE_LENGTH + 1);
 			return areaNumber + phoneNumber;
 		}
 		return phoneNumber;
@@ -57,8 +55,7 @@ public class AccountServiceImpl implements AccountService {
 
 	private boolean isValidSID(int accountId, String sid) {
 		Account account = accountRepository.findById(accountId);
-		if (account != null && account.getSid().equals(sid))
-			return true;
+		if (account != null && account.getSid().equals(sid)) { return true; }
 		return false;
 	}
 

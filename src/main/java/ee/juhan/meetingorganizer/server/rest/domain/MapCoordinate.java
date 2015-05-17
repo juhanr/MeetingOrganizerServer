@@ -9,9 +9,7 @@ public class MapCoordinate implements Serializable {
 	private Double latitude;
 	private Double longitude;
 
-	public MapCoordinate() {
-
-	}
+	public MapCoordinate() {}
 
 	public MapCoordinate(Double latitude, Double longitude) {
 		this.latitude = latitude;
@@ -19,19 +17,19 @@ public class MapCoordinate implements Serializable {
 	}
 
 	public final Double getLatitude() {
-        return latitude;
-    }
+		return latitude;
+	}
 
-    public final void setLatitude(Double latitude) {
-        this.latitude = latitude;
-    }
+	public final void setLatitude(Double latitude) {
+		this.latitude = latitude;
+	}
 
-    public final Double getLongitude() {
-        return longitude;
-    }
+	public final Double getLongitude() {
+		return longitude;
+	}
 
-    public final void setLongitude(Double longitude) {
-        this.longitude = longitude;
-    }
+	public final void setLongitude(Double longitude) {
+		this.longitude = longitude;
+	}
 
 }

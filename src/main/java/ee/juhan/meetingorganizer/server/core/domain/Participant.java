@@ -36,27 +36,16 @@ public class Participant implements Serializable {
 
 	private MapCoordinate location;
 
-	protected Participant() {
-		super();
-	}
+	protected Participant() {}
 
-	public Participant(int accountId, String name, String email,
-			String phoneNumber, ParticipationAnswer participationAnswer,
-			MapCoordinate location) {
-		super();
+	public Participant(int accountId, String name, String email, String phoneNumber,
+			ParticipationAnswer participationAnswer, MapCoordinate location) {
 		this.accountId = accountId;
 		this.name = name;
 		this.email = email;
 		this.phoneNumber = phoneNumber;
 		this.participationAnswer = participationAnswer;
 		this.location = location;
-	}
-
-	public Participant(int accountId, String name, String email,
-			String phoneNumber) {
-		this.name = name;
-		this.email = email;
-		this.phoneNumber = phoneNumber;
 	}
 
 	public Participant(String name, String email, String phoneNumber) {
@@ -65,60 +54,60 @@ public class Participant implements Serializable {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public int getId() {
+	public final int getId() {
 		return id;
 	}
 
-	public int getAccountId() {
+	public final int getAccountId() {
 		return accountId;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
-
-	public ParticipationAnswer getParticipationAnswer() {
-		return participationAnswer;
-	}
-
-	public MapCoordinate getLocation() {
-		return location;
-	}
-
-	public void setAccountId(int accountId) {
+	public final void setAccountId(int accountId) {
 		this.accountId = accountId;
 	}
 
-	public void setName(String name) {
+	public final String getName() {
+		return name;
+	}
+
+	public final void setName(String name) {
 		this.name = name;
 	}
 
-	public void setEmail(String email) {
+	public final String getEmail() {
+		return email;
+	}
+
+	public final void setEmail(String email) {
 		this.email = email;
 	}
 
-	public void setParticipationAnswer(ParticipationAnswer participationAnswer) {
+	public final String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public final ParticipationAnswer getParticipationAnswer() {
+		return participationAnswer;
+	}
+
+	public final void setParticipationAnswer(ParticipationAnswer participationAnswer) {
 		this.participationAnswer = participationAnswer;
 	}
 
-	public void setLocation(MapCoordinate location) {
+	public final MapCoordinate getLocation() {
+		return location;
+	}
+
+	public final void setLocation(MapCoordinate location) {
 		this.location = location;
 	}
 
-	public ParticipantDTO toDTO() {
-		return new ParticipantDTO(id, accountId, name, email, phoneNumber,
-				participationAnswer, location);
+	public final ParticipantDTO toDTO() {
+		return new ParticipantDTO(id, accountId, name, email, phoneNumber, participationAnswer,
+				location);
 	}
 
-	public Participant updateInfo(ParticipantDTO participantDTO) {
+	public final Participant updateInfo(ParticipantDTO participantDTO) {
 		this.participationAnswer = participantDTO.getParticipationAnswer();
 		this.location = participantDTO.getLocation();
 		return this;

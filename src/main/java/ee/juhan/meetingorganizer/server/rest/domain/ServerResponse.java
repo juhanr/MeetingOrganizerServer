@@ -15,28 +15,28 @@ public class ServerResponse {
 	public ServerResponse(ServerResult result) {
 		this.result = result;
 	}
-	
+
 	public final ServerResult getResult() {
-        return result;
-    }
+		return result;
+	}
 
 	public final void setResult(ServerResult result) {
-        this.result = result;
-    }
+		this.result = result;
+	}
 
-    public final String getSid() {
-        return sid;
-    }
+	public final String getSid() {
+		return sid;
+	}
 
-    public final void setSid(String sid) {
-        this.sid = sid;
-    }
+	public final void setSid(String sid) {
+		this.sid = sid;
+	}
 
-    public final Integer getUserId() {
-        return userId;
-    }
+	public final Integer getUserId() {
+		return userId;
+	}
 
-    public final void setUserId(Integer userId) {
-        this.userId = userId;
-    }
+	public final void setUserId(Integer userId) {
+		this.userId = userId;
+	}
 }

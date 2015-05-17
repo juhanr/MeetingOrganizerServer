@@ -8,29 +8,28 @@ import ee.juhan.meetingorganizer.server.core.domain.Participant;
 import ee.juhan.meetingorganizer.server.rest.domain.LocationType;
 import ee.juhan.meetingorganizer.server.rest.domain.MapCoordinate;
 
-public class LocationGeneratorUtil {
+public final class LocationGeneratorUtil {
+
+	private LocationGeneratorUtil() {}
 
 	public static MapCoordinate findOptimalLocation(Meeting meeting) {
 		MapCoordinate centerCoordinate = getCenterCoordinate(meeting);
 		if (meeting.getLocationType() == LocationType.GENERATED_FROM_PREDEFINED_LOCATIONS) {
-			return getNearestLocation(centerCoordinate,
-					meeting.getPredefinedLocations());
+			return getNearestLocation(centerCoordinate, meeting.getPredefinedLocations());
 		}
 		return centerCoordinate;
 	}
 
 	private static MapCoordinate getCenterCoordinate(Meeting meeting) {
-		ArrayList<Double> xCoordinates = new ArrayList<Double>();
-		ArrayList<Double> yCoordinates = new ArrayList<Double>();
-		ArrayList<Double> zCoordinates = new ArrayList<Double>();
+		ArrayList<Double> xCoordinates = new ArrayList<>();
+		ArrayList<Double> yCoordinates = new ArrayList<>();
+		ArrayList<Double> zCoordinates = new ArrayList<>();
 
 		// Convert lat/lon to Cartesian coordinates for each location.
 		for (Participant participant : meeting.getParticipants()) {
 			if (participant.getLocation() != null) {
-				Double latitude = Math.toRadians(participant.getLocation()
-						.getLatitude());
-				Double longitude = Math.toRadians(participant.getLocation()
-						.getLongitude());
+				Double latitude = Math.toRadians(participant.getLocation().getLatitude());
+				Double longitude = Math.toRadians(participant.getLocation().getLongitude());
 				xCoordinates.add(Math.cos(latitude) * Math.cos(longitude));
 				yCoordinates.add(Math.cos(latitude) * Math.sin(longitude));
 				zCoordinates.add(Math.sin(latitude));
@@ -62,7 +61,7 @@ public class LocationGeneratorUtil {
 	private static MapCoordinate getNearestLocation(MapCoordinate coordinate,
 			Set<MapCoordinate> locations) {
 		MapCoordinate nearestLocation = null;
-		Double smallestDistance = 100000.0;
+		Double smallestDistance = Double.POSITIVE_INFINITY;
 		for (MapCoordinate location : locations) {
 			Double distance = getDistance(coordinate, location);
 			if (distance < smallestDistance) {
@@ -73,16 +72,14 @@ public class LocationGeneratorUtil {
 		return nearestLocation;
 	}
 
-	private static Double getDistance(MapCoordinate coord1, MapCoordinate coord2) {
+	private static Double getDistance(MapCoordinate coordinate1, MapCoordinate coordinate2) {
 		final int earthRadius = 6371;
-		Double dLat = Math.toRadians(coord2.getLatitude()
-				- coord1.getLatitude());
-		Double dLon = Math.toRadians(coord2.getLongitude()
-				- coord1.getLongitude());
-		Double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
-				+ Math.cos(Math.toRadians(coord1.getLatitude()))
-				* Math.cos(Math.toRadians(coord2.getLatitude()))
-				* Math.sin(dLon / 2) * Math.sin(dLon / 2);
+		Double dLat = Math.toRadians(coordinate2.getLatitude() - coordinate1.getLatitude());
+		Double dLon = Math.toRadians(coordinate2.getLongitude() - coordinate1.getLongitude());
+		Double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+				Math.cos(Math.toRadians(coordinate1.getLatitude())) *
+						Math.cos(Math.toRadians(coordinate2.getLatitude())) * Math.sin(dLon / 2) *
+						Math.sin(dLon / 2);
 		Double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 		return earthRadius * c;
 	}

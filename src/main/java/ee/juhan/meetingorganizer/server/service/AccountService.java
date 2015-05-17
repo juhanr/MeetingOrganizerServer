@@ -6,7 +6,6 @@ import ee.juhan.meetingorganizer.server.rest.domain.ContactDTO;
 
 public interface AccountService {
 
-	public List<ContactDTO> checkContactsRequest(int accountId,
-			List<ContactDTO> contacts, String sid);
+	List<ContactDTO> checkContactsRequest(int accountId, List<ContactDTO> contacts, String sid);
 
 }

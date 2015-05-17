@@ -1,10 +1,10 @@
 package ee.juhan.meetingorganizer.server.service.impl;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 import ee.juhan.meetingorganizer.server.core.domain.Account;
 import ee.juhan.meetingorganizer.server.core.repository.AccountRepository;
@@ -21,18 +21,13 @@ public class LoginServiceImpl implements LoginService {
 	private AccountRepository accountRepository;
 
 	@Override
-	public ServerResponse loginRequest(AccountDTO accountDTO) {
+	public final ServerResponse loginRequest(AccountDTO accountDTO) {
 		Account account = accountRepository.findByEmail(accountDTO.getEmail());
-		if (account == null)
-			return new ServerResponse(ServerResult.NO_ACCOUNT_FOUND);
-
+		if (account == null) { return new ServerResponse(ServerResult.NO_ACCOUNT_FOUND); }
 		try {
-			if (HasherUtil.validatePassword(accountDTO.getPassword(),
-					account.getHash()))
-				return new ServerResponse(ServerResult.SUCCESS,
-						account.getSid(), account.getId());
-			else
-				return new ServerResponse(ServerResult.WRONG_PASSWORD);
+			if (HasherUtil.validatePassword(accountDTO.getPassword(), account.getHash())) {
+				return new ServerResponse(ServerResult.SUCCESS, account.getSid(), account.getId());
+			} else { return new ServerResponse(ServerResult.WRONG_PASSWORD); }
 		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
 			e.printStackTrace();
 			return new ServerResponse(ServerResult.FAIL);

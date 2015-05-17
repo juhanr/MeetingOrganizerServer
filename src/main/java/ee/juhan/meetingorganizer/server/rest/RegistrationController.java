@@ -15,23 +15,21 @@ import ee.juhan.meetingorganizer.server.rest.domain.ServerResponse;
 import ee.juhan.meetingorganizer.server.service.RegistrationService;
 
 @RestController
-@RequestMapping("/register")
+@RequestMapping(ControllerConstants.REGISTER_PATH)
 public class RegistrationController {
 
-	private static Logger LOG = LoggerFactory
-			.getLogger(RegistrationController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(RegistrationController.class);
 
 	@Autowired
-	RegistrationService registrationService;
+	private RegistrationService registrationService;
 
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<ServerResponse> registrationRequest(
+	public final ResponseEntity<ServerResponse> registrationRequest(
 			@RequestBody AccountDTO accountDTO) {
 		LOG.info("Registration request: " + accountDTO.getEmail());
-		ServerResponse response = registrationService
-				.registrationRequest(accountDTO);
+		ServerResponse response = registrationService.registrationRequest(accountDTO);
 		LOG.info("Registration request completed.");
-		return new ResponseEntity<ServerResponse>(response, HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 
 	}
 

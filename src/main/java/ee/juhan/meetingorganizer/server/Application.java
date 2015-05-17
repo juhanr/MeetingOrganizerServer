@@ -15,11 +15,10 @@ import org.springframework.context.annotation.Configuration;
 public class Application {
 
 	@SuppressWarnings("unused")
-	private static Logger LOG = LoggerFactory.getLogger(Application.class);
+	private static final Logger LOG = LoggerFactory.getLogger(Application.class);
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
-
 	}
 
 }

@@ -1,7 +1,5 @@
 package ee.juhan.meetingorganizer.server.rest;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,32 +12,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 import ee.juhan.meetingorganizer.server.rest.domain.ContactDTO;
 import ee.juhan.meetingorganizer.server.service.AccountService;
 
 @RestController
-@RequestMapping("/account")
+@RequestMapping(ControllerConstants.ACCOUNT_PATH)
 public class AccountController {
 
-	private static Logger LOG = LoggerFactory
-			.getLogger(AccountController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AccountController.class);
 
 	@Autowired
-	AccountService accountService;
+	private AccountService accountService;
 
-	@RequestMapping(method = RequestMethod.POST, value = "/{id}/check-contacts")
-	public ResponseEntity<List<ContactDTO>> CheckContactsRequest(
-			@PathVariable("id") String accountId,
+	@RequestMapping(method = RequestMethod.POST,
+			value = "/{" + ControllerConstants.ACCOUNT_ID + "}" +
+					ControllerConstants.CHECK_CONTACTS_PATH)
+	public final ResponseEntity<List<ContactDTO>> checkContactsRequest(
+			@PathVariable(ControllerConstants.ACCOUNT_ID) String accountId,
 			@RequestBody List<ContactDTO> contacts,
-			@CookieValue(value = "sid") String sid) {
-		LOG.info("Check contacts request: accountId=" + accountId + ", sid="
-				+ sid);
-		List<ContactDTO> response = accountService.checkContactsRequest(
-				Integer.parseInt(accountId), contacts, sid);
+			@CookieValue(value = ControllerConstants.SID) String sid) {
+		LOG.info("Check contacts request: accountId=" + accountId + ", sid=" + sid);
+		List<ContactDTO> response =
+				accountService.checkContactsRequest(Integer.parseInt(accountId), contacts, sid);
 		LOG.info("Check contacts request completed.");
-		if (response == null)
-			return new ResponseEntity<List<ContactDTO>>(HttpStatus.FORBIDDEN);
-		return new ResponseEntity<List<ContactDTO>>(response, HttpStatus.OK);
+		if (response == null) { return new ResponseEntity<>(HttpStatus.FORBIDDEN); }
+		return new ResponseEntity<>(response, HttpStatus.OK);
 
 	}
 

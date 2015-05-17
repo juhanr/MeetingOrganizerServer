@@ -1,8 +1,12 @@
 package ee.juhan.meetingorganizer.server.rest.domain;
 
-import java.util.*;
-
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import ee.juhan.meetingorganizer.server.core.util.JsonDateDeserializer;
 
@@ -19,115 +23,112 @@ public class MeetingDTO {
 	private List<ParticipantDTO> participants = new ArrayList<>();
 	private Set<MapCoordinate> predefinedLocations = new HashSet<>();
 
-	public MeetingDTO() {
+	public MeetingDTO() {}
 
-	}
-
-	public MeetingDTO(int id, int leaderId, String title, String description,
-			Date startDateTime, Date endDateTime, MapCoordinate location,
-			LocationType locationType) {
+	public MeetingDTO(int id, int leaderId, String title, String description, Date startDateTime,
+			Date endDateTime, MapCoordinate location, LocationType locationType) {
 		this.id = id;
 		this.leaderId = leaderId;
 		this.title = title;
 		this.description = description;
-		this.startDateTime = startDateTime;
-		this.endDateTime = endDateTime;
+		this.startDateTime = (Date) startDateTime.clone();
+		this.endDateTime = (Date) endDateTime.clone();
 		this.location = location;
 		this.locationType = locationType;
 	}
-	
+
 	public final int getId() {
-        return id;
-    }
+		return id;
+	}
 
-    public final void setId(int id) {
-        this.id = id;
-    }
+	public final void setId(int id) {
+		this.id = id;
+	}
 
-    public final int getLeaderId() {
-        return leaderId;
-    }
+	public final int getLeaderId() {
+		return leaderId;
+	}
 
-    public final void setLeaderId(int leaderId) {
-        this.leaderId = leaderId;
-    }
+	public final void setLeaderId(int leaderId) {
+		this.leaderId = leaderId;
+	}
 
-    public final String getTitle() {
-        return title;
-    }
+	public final String getTitle() {
+		return title;
+	}
 
-    public final void setTitle(String title) {
-        this.title = title;
-    }
+	public final void setTitle(String title) {
+		this.title = title;
+	}
 
-    public final String getDescription() {
-        return description;
-    }
+	public final String getDescription() {
+		return description;
+	}
 
-    public final void setDescription(String description) {
-        this.description = description;
-    }
+	public final void setDescription(String description) {
+		this.description = description;
+	}
 
-    public final Date getStartDateTime() {
-        return startDateTime;
-    }
+	public final Date getStartDateTime() {
+		return (Date) startDateTime.clone();
+	}
 
-    @JsonDeserialize(using = JsonDateDeserializer.class)
-    public final void setStartDateTime(Date startTime) {
-        this.startDateTime = startTime;
-    }
+	@JsonDeserialize(using = JsonDateDeserializer.class)
+	public final void setStartDateTime(Date startTime) {
+		this.startDateTime = (Date) startTime.clone();
+	}
 
-    public final Date getEndDateTime() {
-        return endDateTime;
-    }
+	public final Date getEndDateTime() {
+		return (Date) endDateTime.clone();
+	}
 
-    @JsonDeserialize(using = JsonDateDeserializer.class)
-    public final void setEndDateTime(Date endTime) {
-        this.endDateTime = endTime;
-    }
+	@JsonDeserialize(using = JsonDateDeserializer.class)
+	public final void setEndDateTime(Date endTime) {
+		this.endDateTime = (Date) endTime.clone();
+	}
 
-    public final  MapCoordinate getLocation() {
-        return location;
-    }
+	public final MapCoordinate getLocation() {
+		return location;
+	}
 
-    public final void setLocation(MapCoordinate location) {
-        this.location = location;
-    }
+	public final void setLocation(MapCoordinate location) {
+		this.location = location;
+	}
 
-    public final LocationType getLocationType() {
-        return locationType;
-    }
+	public final LocationType getLocationType() {
+		return locationType;
+	}
 
-    public final void setLocationType(LocationType locationType) {
-        this.locationType = locationType;
-    }
+	public final void setLocationType(LocationType locationType) {
+		this.locationType = locationType;
+	}
 
-    public final List<ParticipantDTO> getParticipants() {
-        return participants;
-    }
+	public final List<ParticipantDTO> getParticipants() {
+		return participants;
+	}
 
-    public final void setParticipants(List<ParticipantDTO> participants) {
-        this.participants = participants;
-    }
+	public final void setParticipants(List<ParticipantDTO> participants) {
+		this.participants = participants;
+	}
 
-    public final boolean addParticipant(ParticipantDTO participant) {
-        return participants.add(participant);
-    }
+	public final boolean addParticipant(ParticipantDTO participant) {
+		return participants.add(participant);
+	}
 
-    public final Set<MapCoordinate> getPredefinedLocations() {
-        return predefinedLocations;
-    }
+	public final Set<MapCoordinate> getPredefinedLocations() {
+		return predefinedLocations;
+	}
 
-    public final void setPredefinedLocations(Set<MapCoordinate> predefinedLocations) {
-        this.predefinedLocations = predefinedLocations;
-    }
+	public final void setPredefinedLocations(Set<MapCoordinate> predefinedLocations) {
+		this.predefinedLocations = predefinedLocations;
+	}
 
-    public final void addPredefinedLocation(MapCoordinate predefinedLocation) {
-        this.predefinedLocations.add(predefinedLocation);
-    }
+	public final void addPredefinedLocation(MapCoordinate predefinedLocation) {
+		this.predefinedLocations.add(predefinedLocation);
+	}
 
-    public final void removePredefinedLocation(MapCoordinate predefinedLocation) {
-        this.predefinedLocations.remove(predefinedLocation);
-    }
+	public final void removePredefinedLocation(MapCoordinate predefinedLocation) {
+		this.predefinedLocations.remove(predefinedLocation);
+	}
 
 }
