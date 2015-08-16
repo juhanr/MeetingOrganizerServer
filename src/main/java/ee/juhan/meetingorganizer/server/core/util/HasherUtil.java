@@ -63,8 +63,7 @@ public final class HasherUtil {
 	 *
 	 * @return a salted PBKDF2 hash of the password
 	 */
-	public static String createHash(String password)
-			throws NoSuchAlgorithmException, InvalidKeySpecException {
+	public static String createHash(String password) {
 		return createHash(password.toCharArray());
 	}
 
@@ -76,17 +75,21 @@ public final class HasherUtil {
 	 *
 	 * @return a salted PBKDF2 hash of the password
 	 */
-	public static String createHash(char[] password)
-			throws NoSuchAlgorithmException, InvalidKeySpecException {
+	public static String createHash(char[] password) {
 		// Generate a random salt
 		SecureRandom random = new SecureRandom();
 		byte[] salt = new byte[SALT_BYTE_SIZE];
 		random.nextBytes(salt);
 
-		// Hash the password
-		byte[] hash = pbkdf2(password, salt, PBKDF2_ITERATIONS, HASH_BYTE_SIZE);
-		// format iterations:salt:hash
-		return PBKDF2_ITERATIONS + ":" + toHex(salt) + ":" + toHex(hash);
+		try {
+			// Hash the password
+			byte[] hash = pbkdf2(password, salt, PBKDF2_ITERATIONS, HASH_BYTE_SIZE);
+			// format iterations:salt:hash
+			return PBKDF2_ITERATIONS + ":" + toHex(salt) + ":" + toHex(hash);
+		} catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	/**

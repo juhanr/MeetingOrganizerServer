@@ -30,12 +30,11 @@ public class AccountController {
 			value = "/{" + ControllerConstants.ACCOUNT_ID + "}" +
 					ControllerConstants.CHECK_CONTACTS_PATH)
 	public final ResponseEntity<List<ContactDTO>> checkContactsRequest(
-			@PathVariable(ControllerConstants.ACCOUNT_ID) String accountId,
+			@PathVariable(ControllerConstants.ACCOUNT_ID) int accountId,
 			@RequestBody List<ContactDTO> contacts,
 			@CookieValue(value = ControllerConstants.SID) String sid) {
 		LOG.info("Check contacts request: accountId=" + accountId + ", sid=" + sid);
-		List<ContactDTO> response =
-				accountService.checkContactsRequest(Integer.parseInt(accountId), contacts, sid);
+		List<ContactDTO> response = accountService.checkContactsRequest(accountId, contacts, sid);
 		LOG.info("Check contacts request completed.");
 		if (response == null) { return new ResponseEntity<>(HttpStatus.FORBIDDEN); }
 		return new ResponseEntity<>(response, HttpStatus.OK);

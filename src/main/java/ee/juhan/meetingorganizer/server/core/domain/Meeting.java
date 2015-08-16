@@ -75,6 +75,17 @@ public class Meeting implements Serializable {
 		this.predefinedLocations = predefinedLocations;
 	}
 
+	public Meeting(int leaderId, String title, String description, Date startDateTime,
+			Date endDateTime, MapCoordinate location, LocationType locationType) {
+		this.leaderId = leaderId;
+		this.title = title;
+		this.description = description;
+		this.startDateTime = (Date) startDateTime.clone();
+		this.endDateTime = (Date) endDateTime.clone();
+		this.location = location;
+		this.locationType = locationType;
+	}
+
 	public final int getId() {
 		return id;
 	}
@@ -83,8 +94,16 @@ public class Meeting implements Serializable {
 		return leaderId;
 	}
 
+	public final void setLeaderId(int leaderId) {
+		this.leaderId = leaderId;
+	}
+
 	public final String getTitle() {
 		return title;
+	}
+
+	public final void setTitle(String title) {
+		this.title = title;
 	}
 
 	public final String getDescription() {
@@ -99,8 +118,16 @@ public class Meeting implements Serializable {
 		return (Date) startDateTime.clone();
 	}
 
+	public final void setStartDateTime(Date startDateTime) {
+		this.startDateTime = (Date) startDateTime.clone();
+	}
+
 	public final Date getEndDateTime() {
 		return (Date) endDateTime.clone();
+	}
+
+	public final void setEndDateTime(Date endDateTime) {
+		this.endDateTime = (Date) endDateTime.clone();
 	}
 
 	public final MapCoordinate getLocation() {
@@ -115,8 +142,16 @@ public class Meeting implements Serializable {
 		return locationType;
 	}
 
+	public final void setLocationType(LocationType locationType) {
+		this.locationType = locationType;
+	}
+
 	public final List<Participant> getParticipants() {
 		return participants;
+	}
+
+	public final void setParticipants(List<Participant> participants) {
+		this.participants = participants;
 	}
 
 	public final Set<MapCoordinate> getPredefinedLocations() {

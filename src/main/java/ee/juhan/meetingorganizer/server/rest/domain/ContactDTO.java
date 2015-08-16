@@ -9,6 +9,13 @@ public class ContactDTO {
 
 	public ContactDTO() {}
 
+	public ContactDTO(int accountId, String name, String email, String phoneNumber) {
+		this.accountId = accountId;
+		this.name = name;
+		this.email = email;
+		this.phoneNumber = phoneNumber;
+	}
+
 	public final int getAccountId() {
 		return accountId;
 	}

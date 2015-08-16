@@ -57,28 +57,54 @@ public class Account implements Serializable {
 		return name;
 	}
 
+	public final void setName(String name) {
+		this.name = name;
+	}
+
 	public final String getEmail() {
 		return email;
+	}
+
+	public final void setEmail(String email) {
+		this.email = email;
 	}
 
 	public final String getHash() {
 		return hash;
 	}
 
+	public final void setHash(String hash) {
+		this.hash = hash;
+	}
+
 	public final String getPhoneNumber() {
 		return phoneNumber;
+	}
+
+	public final void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 
 	public final String getSid() {
 		return sid;
 	}
 
+	public final void setSid(String sid) {
+		this.sid = sid;
+	}
+
 	public final Set<Meeting> getMeetings() {
 		return meetings;
+	}
+
+	public final void setMeetings(Set<Meeting> meetings) {
+		this.meetings = meetings;
 	}
 
 	public final boolean addMeeting(Meeting meeting) {
 		return meetings.add(meeting);
 	}
+
+
 
 }

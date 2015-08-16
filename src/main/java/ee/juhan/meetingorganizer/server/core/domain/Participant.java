@@ -86,6 +86,10 @@ public class Participant implements Serializable {
 		return phoneNumber;
 	}
 
+	public final void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
 	public final ParticipationAnswer getParticipationAnswer() {
 		return participationAnswer;
 	}

@@ -55,8 +55,7 @@ public class AccountServiceImpl implements AccountService {
 
 	private boolean isValidSID(int accountId, String sid) {
 		Account account = accountRepository.findById(accountId);
-		if (account != null && account.getSid().equals(sid)) { return true; }
-		return false;
+		return account != null && account.getSid().equals(sid);
 	}
 
 }
