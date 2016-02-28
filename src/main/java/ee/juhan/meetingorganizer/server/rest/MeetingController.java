@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,10 +29,9 @@ public class MeetingController {
 
 	@RequestMapping(method = RequestMethod.POST, value = ControllerConstants.NEW_PATH)
 	public final ResponseEntity<MeetingDTO> newMeetingRequest(@RequestBody MeetingDTO meetingDTO,
-			@RequestHeader(value = ControllerConstants.CLIENT_TIME_ZONE) String clientTimeZone,
 			@CookieValue(value = ControllerConstants.SID) String sid) {
 		LOG.info("New meeting request: " + meetingDTO.getTitle());
-		MeetingDTO response = meetingService.newMeetingRequest(meetingDTO, clientTimeZone, sid);
+		MeetingDTO response = meetingService.newMeetingRequest(meetingDTO, sid);
 		LOG.info("New meeting request completed.");
 		if (response == null) { return new ResponseEntity<>(HttpStatus.FORBIDDEN); }
 		return new ResponseEntity<>(response, HttpStatus.OK);
@@ -47,22 +45,21 @@ public class MeetingController {
 	public final ResponseEntity<List<MeetingDTO>> getMeetingsRequest(
 			@PathVariable(ControllerConstants.MEETINGS_TYPE) String meetingsType,
 			@PathVariable(ControllerConstants.ACCOUNT_ID) int accountId,
-			@RequestHeader(value = ControllerConstants.CLIENT_TIME_ZONE) String clientTimeZone,
 			@CookieValue(value = ControllerConstants.SID) String sid) {
 		LOG.info("Get meetings request for user " + accountId);
 		List<MeetingDTO> response = null;
 		switch (meetingsType) {
 			case ControllerConstants.ONGOING_MEETINGS:
-				response = meetingService.getOngoingMeetingsRequest(accountId, clientTimeZone, sid);
+				response = meetingService.getCurrentMeetingsRequest(accountId, sid);
 				break;
 			case ControllerConstants.FUTURE_MEETINGS:
-				response = meetingService.getFutureMeetingsRequest(accountId, clientTimeZone, sid);
+				response = meetingService.getFutureMeetingsRequest(accountId, sid);
 				break;
 			case ControllerConstants.PAST_MEETINGS:
-				response = meetingService.getPastMeetingsRequest(accountId, clientTimeZone, sid);
+				response = meetingService.getPastMeetingsRequest(accountId, sid);
 				break;
 			case ControllerConstants.INVITATIONS:
-				response = meetingService.getInvitationsRequest(accountId, clientTimeZone, sid);
+				response = meetingService.getInvitationsRequest(accountId, sid);
 				break;
 		}
 		LOG.info("Get meetings request completed.");
@@ -77,11 +74,10 @@ public class MeetingController {
 	public final ResponseEntity<MeetingDTO> updateParticipantRequest(
 			@RequestBody ParticipantDTO participantDTO,
 			@PathVariable(ControllerConstants.MEETING_ID) int meetingId,
-			@RequestHeader(value = ControllerConstants.CLIENT_TIME_ZONE) String clientTimeZone,
 			@CookieValue(value = ControllerConstants.SID) String sid) {
 		LOG.info("Update participant request for participant " + participantDTO);
-		MeetingDTO response = meetingService
-				.updateParticipantRequest(participantDTO, meetingId, clientTimeZone, sid);
+		MeetingDTO response =
+				meetingService.updateParticipantRequest(participantDTO, meetingId, sid);
 		LOG.info("Update participant request completed.");
 		if (response == null) { return new ResponseEntity<>(HttpStatus.FORBIDDEN); }
 		return new ResponseEntity<>(response, HttpStatus.OK);

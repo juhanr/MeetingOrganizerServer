@@ -19,8 +19,6 @@ public final class ControllerConstants {
 	public static final String FUTURE_MEETINGS = "future-meetings";
 	public static final String PAST_MEETINGS = "past-meetings";
 	public static final String INVITATIONS = "invitations";
-	// Headers
-	public static final String CLIENT_TIME_ZONE = "Client-Time-Zone";
 	// Cookies
 	public static final String SID = "sid";
 

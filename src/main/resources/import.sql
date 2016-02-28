@@ -1,0 +1,1 @@
+INSERT into account values (default,'juhan@risti.eu','1000:be79c21c1d3bc2af548d222e4eeccfe9222e073d6ecf0b83:691db50968d360b6063ca54ae2a4bf672038c5892e96e4f7','Juhan Test','+37253974840','m46gq9t2331gh54rvp02nn2a0r')

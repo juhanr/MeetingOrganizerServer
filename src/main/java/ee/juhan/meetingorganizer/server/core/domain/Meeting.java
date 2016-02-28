@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TimeZone;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -19,7 +18,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import ee.juhan.meetingorganizer.server.core.util.DateParserUtil;
 import ee.juhan.meetingorganizer.server.rest.domain.LocationType;
 import ee.juhan.meetingorganizer.server.rest.domain.MapCoordinate;
 import ee.juhan.meetingorganizer.server.rest.domain.MeetingDTO;
@@ -174,11 +172,10 @@ public class Meeting implements Serializable {
 		this.predefinedLocations.remove(predefinedLocation);
 	}
 
-	public final MeetingDTO toDTO(TimeZone clientTimeZone) {
-		MeetingDTO meetingDTO = new MeetingDTO(id, leaderId, title, description,
-				DateParserUtil.fromClientTimeZone(startDateTime, clientTimeZone),
-				DateParserUtil.fromClientTimeZone(endDateTime, clientTimeZone), location,
-				locationType);
+	public final MeetingDTO toDTO() {
+		MeetingDTO meetingDTO =
+				new MeetingDTO(id, leaderId, title, description, startDateTime, endDateTime,
+						location, locationType);
 		for (Participant participant : participants) {
 			meetingDTO.addParticipant(participant.toDTO());
 		}

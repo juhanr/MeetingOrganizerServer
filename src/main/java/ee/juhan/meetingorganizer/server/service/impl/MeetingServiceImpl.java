@@ -4,10 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import ee.juhan.meetingorganizer.server.core.domain.Account;
@@ -16,9 +14,7 @@ import ee.juhan.meetingorganizer.server.core.domain.Participant;
 import ee.juhan.meetingorganizer.server.core.repository.AccountRepository;
 import ee.juhan.meetingorganizer.server.core.repository.MeetingRepository;
 import ee.juhan.meetingorganizer.server.core.repository.ParticipantRepository;
-import ee.juhan.meetingorganizer.server.core.util.DateParserUtil;
 import ee.juhan.meetingorganizer.server.core.util.LocationGeneratorUtil;
-import ee.juhan.meetingorganizer.server.core.util.MeetingDTOComparator;
 import ee.juhan.meetingorganizer.server.rest.domain.MeetingDTO;
 import ee.juhan.meetingorganizer.server.rest.domain.ParticipantDTO;
 import ee.juhan.meetingorganizer.server.rest.domain.ParticipationAnswer;
@@ -37,134 +33,81 @@ public class MeetingServiceImpl implements MeetingService {
 	private AccountRepository accountRepository;
 
 	@Override
-	public final MeetingDTO newMeetingRequest(MeetingDTO meetingDTO, String clientTimeZoneId,
-			String sid) {
+	public final MeetingDTO newMeetingRequest(MeetingDTO meetingDTO, String sid) {
 		if (!isValidSID(meetingDTO.getLeaderId(), sid)) { return null; }
-		TimeZone clientTimeZone = TimeZone.getTimeZone(clientTimeZoneId);
 		Meeting meeting = createMeeting(meetingDTO);
 		meeting = addParticipants(meeting, meetingDTO);
 		checkLocation(meeting);
 		meetingRepository.save(meeting);
 		addMeetingToParticipantAccounts(meeting);
-		return meeting.toDTO(clientTimeZone);
+		return meeting.toDTO();
 	}
 
 	@Override
-	public final List<MeetingDTO> getOngoingMeetingsRequest(int accountId, String clientTimeZoneId,
-			String sid) {
+	public final List<MeetingDTO> getCurrentMeetingsRequest(int accountId, String sid) {
 		if (!isValidSID(accountId, sid)) { return null; }
-		TimeZone clientTimeZone = TimeZone.getTimeZone(clientTimeZoneId);
-		Date clientLocalTime = DateParserUtil.toClientTimeZone(new Date(), clientTimeZone);
-		List<MeetingDTO> responseList = new ArrayList<MeetingDTO>();
-		List<Meeting> meetings = accountRepository.findMeetingsById(accountId);
-		for (Meeting meeting : meetings) {
-			if (meeting.getStartDateTime().before(addMinute(clientLocalTime)) &&
-					addMinute(meeting.getEndDateTime()).after(clientLocalTime)) {
-				for (Participant participant : meeting.getParticipants()) {
-					if (participant.getAccountId() == accountId &&
-							participant.getParticipationAnswer() ==
-									ParticipationAnswer.PARTICIPATING) {
-						responseList.add(meeting.toDTO(clientTimeZone));
-						break;
-					}
-				}
-			}
+		List<Meeting> currentMeetings =
+				accountRepository.findCurrentMeetings(accountId, ParticipationAnswer.PARTICIPATING);
+		List<MeetingDTO> currentMeetingsDTO = new ArrayList<>();
+		for (Meeting meeting : currentMeetings) {
+			currentMeetingsDTO.add(meeting.toDTO());
 		}
-		Collections.sort(responseList, new MeetingDTOComparator());
-		return responseList;
+		return currentMeetingsDTO;
 	}
 
 	@Override
-	public final List<MeetingDTO> getFutureMeetingsRequest(int accountId, String clientTimeZoneId,
-			String sid) {
+	public final List<MeetingDTO> getFutureMeetingsRequest(int accountId, String sid) {
 		if (!isValidSID(accountId, sid)) { return null; }
-		TimeZone clientTimeZone = TimeZone.getTimeZone(clientTimeZoneId);
-		Date clientLocalTime = DateParserUtil.toClientTimeZone(new Date(), clientTimeZone);
-		List<MeetingDTO> responseList = new ArrayList<MeetingDTO>();
-		List<Meeting> meetings = accountRepository.findMeetingsById(accountId);
-		for (Meeting meeting : meetings) {
-			if (meeting.getStartDateTime().after(clientLocalTime)) {
-				for (Participant participant : meeting.getParticipants()) {
-					if (participant.getAccountId() == accountId &&
-							participant.getParticipationAnswer() ==
-									ParticipationAnswer.PARTICIPATING) {
-						responseList.add(meeting.toDTO(clientTimeZone));
-						break;
-					}
-				}
-			}
+		List<Meeting> currentMeetings =
+				accountRepository.findFutureMeetings(accountId, ParticipationAnswer.PARTICIPATING);
+		List<MeetingDTO> currentMeetingsDTO = new ArrayList<>();
+		for (Meeting meeting : currentMeetings) {
+			currentMeetingsDTO.add(meeting.toDTO());
 		}
-		Collections.sort(responseList, new MeetingDTOComparator());
-		return responseList;
+		return currentMeetingsDTO;
 	}
 
 	@Override
-	public final List<MeetingDTO> getPastMeetingsRequest(int accountId, String clientTimeZoneId,
-			String sid) {
+	public final List<MeetingDTO> getPastMeetingsRequest(int accountId, String sid) {
 		if (!isValidSID(accountId, sid)) { return null; }
-		TimeZone clientTimeZone = TimeZone.getTimeZone(clientTimeZoneId);
-		Date clientLocalTime = DateParserUtil.toClientTimeZone(new Date(), clientTimeZone);
-		List<MeetingDTO> responseList = new ArrayList<MeetingDTO>();
-		List<Meeting> meetings = accountRepository.findMeetingsById(accountId);
-		for (Meeting meeting : meetings) {
-			if (meeting.getEndDateTime().before(clientLocalTime)) {
-				for (Participant participant : meeting.getParticipants()) {
-					if (participant.getAccountId() == accountId &&
-							participant.getParticipationAnswer() ==
-									ParticipationAnswer.PARTICIPATING) {
-						responseList.add(meeting.toDTO(clientTimeZone));
-						break;
-					}
-				}
-			}
+		List<Meeting> currentMeetings =
+				accountRepository.findPastMeetings(accountId, ParticipationAnswer.PARTICIPATING);
+		List<MeetingDTO> currentMeetingsDTO = new ArrayList<>();
+		for (Meeting meeting : currentMeetings) {
+			currentMeetingsDTO.add(meeting.toDTO());
 		}
-		Collections.sort(responseList, new MeetingDTOComparator());
-		return responseList;
+		return currentMeetingsDTO;
 	}
 
 	@Override
-	public final List<MeetingDTO> getInvitationsRequest(int accountId, String clientTimeZoneId,
-			String sid) {
+	public final List<MeetingDTO> getInvitationsRequest(int accountId, String sid) {
 		if (!isValidSID(accountId, sid)) { return null; }
-		TimeZone clientTimeZone = TimeZone.getTimeZone(clientTimeZoneId);
-		Date clientLocalTime = DateParserUtil.toClientTimeZone(new Date(), clientTimeZone);
-		List<MeetingDTO> responseList = new ArrayList<MeetingDTO>();
-		List<Meeting> meetings = accountRepository.findMeetingsById(accountId);
-		for (Meeting meeting : meetings) {
-			if (meeting.getEndDateTime().after(clientLocalTime)) {
-				for (Participant participant : meeting.getParticipants()) {
-					if (participant.getAccountId() == accountId &&
-							participant.getParticipationAnswer() ==
-									ParticipationAnswer.NOT_ANSWERED) {
-						responseList.add(meeting.toDTO(clientTimeZone));
-						break;
-					}
-				}
-			}
+		List<Meeting> currentMeetings =
+				accountRepository.findCurrentMeetings(accountId, ParticipationAnswer.NOT_ANSWERED);
+		List<MeetingDTO> currentMeetingsDTO = new ArrayList<>();
+		for (Meeting meeting : currentMeetings) {
+			currentMeetingsDTO.add(meeting.toDTO());
 		}
-		Collections.sort(responseList, new MeetingDTOComparator());
-		return responseList;
+		return currentMeetingsDTO;
 	}
 
 	@Override
 	public final MeetingDTO updateParticipantRequest(ParticipantDTO participantDTO, int meetingId,
-			String clientTimeZoneId, String sid) {
+			String sid) {
 		if (!isValidSID(participantDTO.getAccountId(), sid)) { return null; }
-		TimeZone clientTimeZone = TimeZone.getTimeZone(clientTimeZoneId);
 		Participant participant = participantRepository.findById(participantDTO.getId());
 		participant.updateInfo(participantDTO);
 		participantRepository.save(participant);
 		Meeting meeting = meetingRepository.findById(meetingId);
 		checkLocation(meeting);
-		return meeting.toDTO(clientTimeZone);
+		return meeting.toDTO();
 	}
 
 	private Meeting createMeeting(MeetingDTO meetingDTO) {
-		Meeting meeting = new Meeting(meetingDTO.getLeaderId(), meetingDTO.getTitle(),
+		return new Meeting(meetingDTO.getLeaderId(), meetingDTO.getTitle(),
 				meetingDTO.getDescription(), meetingDTO.getStartDateTime(),
 				meetingDTO.getEndDateTime(), meetingDTO.getLocation(), meetingDTO.getLocationType(),
 				meetingDTO.getPredefinedLocations());
-		return meeting;
 	}
 
 	private Meeting addParticipants(Meeting meeting, MeetingDTO meetingDTO) {
@@ -199,8 +142,7 @@ public class MeetingServiceImpl implements MeetingService {
 
 	private boolean isValidSID(int accountId, String sid) {
 		Account account = accountRepository.findById(accountId);
-		if (account != null && account.getSid().equals(sid)) { return true; }
-		return false;
+		return account != null && account.getSid().equals(sid);
 	}
 
 	private Date addMinute(Date date) {
