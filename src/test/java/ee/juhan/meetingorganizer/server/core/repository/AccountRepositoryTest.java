@@ -43,7 +43,7 @@ public class AccountRepositoryTest {
 	@Test
 	public void findById() {
 		Account testAccount = TestUtil.generateTestAccount(accountRepository);
-
+		assertNotNull(testAccount);
 		Account account = accountRepository.findById(testAccount.getId());
 		assertNotNull(account);
 		assertEquals("Account name", testAccount.getName(), account.getName());

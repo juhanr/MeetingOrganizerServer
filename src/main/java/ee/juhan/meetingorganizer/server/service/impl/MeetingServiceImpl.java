@@ -4,9 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import ee.juhan.meetingorganizer.server.core.domain.Account;
 import ee.juhan.meetingorganizer.server.core.domain.Meeting;
@@ -46,49 +44,37 @@ public class MeetingServiceImpl implements MeetingService {
 	@Override
 	public final List<MeetingDTO> getCurrentMeetingsRequest(int accountId, String sid) {
 		if (!isValidSID(accountId, sid)) { return null; }
-		List<Meeting> currentMeetings =
-				accountRepository.findCurrentMeetings(accountId, ParticipationAnswer.PARTICIPATING);
-		List<MeetingDTO> currentMeetingsDTO = new ArrayList<>();
-		for (Meeting meeting : currentMeetings) {
-			currentMeetingsDTO.add(meeting.toDTO());
-		}
-		return currentMeetingsDTO;
+		return meetingsListToDTO(accountRepository
+				.findCurrentMeetings(accountId, ParticipationAnswer.PARTICIPATING));
 	}
 
 	@Override
 	public final List<MeetingDTO> getFutureMeetingsRequest(int accountId, String sid) {
 		if (!isValidSID(accountId, sid)) { return null; }
-		List<Meeting> currentMeetings =
-				accountRepository.findFutureMeetings(accountId, ParticipationAnswer.PARTICIPATING);
-		List<MeetingDTO> currentMeetingsDTO = new ArrayList<>();
-		for (Meeting meeting : currentMeetings) {
-			currentMeetingsDTO.add(meeting.toDTO());
-		}
-		return currentMeetingsDTO;
+		return meetingsListToDTO(
+				accountRepository.findFutureMeetings(accountId, ParticipationAnswer.PARTICIPATING));
 	}
 
 	@Override
 	public final List<MeetingDTO> getPastMeetingsRequest(int accountId, String sid) {
 		if (!isValidSID(accountId, sid)) { return null; }
-		List<Meeting> currentMeetings =
-				accountRepository.findPastMeetings(accountId, ParticipationAnswer.PARTICIPATING);
-		List<MeetingDTO> currentMeetingsDTO = new ArrayList<>();
-		for (Meeting meeting : currentMeetings) {
-			currentMeetingsDTO.add(meeting.toDTO());
-		}
-		return currentMeetingsDTO;
+		return meetingsListToDTO(
+				accountRepository.findPastMeetings(accountId, ParticipationAnswer.PARTICIPATING));
 	}
 
 	@Override
 	public final List<MeetingDTO> getInvitationsRequest(int accountId, String sid) {
 		if (!isValidSID(accountId, sid)) { return null; }
-		List<Meeting> currentMeetings =
-				accountRepository.findCurrentMeetings(accountId, ParticipationAnswer.NOT_ANSWERED);
-		List<MeetingDTO> currentMeetingsDTO = new ArrayList<>();
-		for (Meeting meeting : currentMeetings) {
-			currentMeetingsDTO.add(meeting.toDTO());
+		return meetingsListToDTO(
+				accountRepository.findInvitations(accountId, ParticipationAnswer.NOT_ANSWERED));
+	}
+
+	private List<MeetingDTO> meetingsListToDTO(List<Meeting> meetings) {
+		List<MeetingDTO> meetingsDTO = new ArrayList<>();
+		for (Meeting meeting : meetings) {
+			meetingsDTO.add(meeting.toDTO());
 		}
-		return currentMeetingsDTO;
+		return meetingsDTO;
 	}
 
 	@Override
@@ -143,10 +129,6 @@ public class MeetingServiceImpl implements MeetingService {
 	private boolean isValidSID(int accountId, String sid) {
 		Account account = accountRepository.findById(accountId);
 		return account != null && account.getSid().equals(sid);
-	}
-
-	private Date addMinute(Date date) {
-		return new Date(date.getTime() + TimeUnit.MINUTES.toMillis(1));
 	}
 
 	private void checkLocation(Meeting meeting) {

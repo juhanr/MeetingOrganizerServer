@@ -29,6 +29,7 @@ import ee.juhan.meetingorganizer.server.rest.domain.ContactDTO;
 import ee.juhan.meetingorganizer.server.service.AccountService;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
@@ -63,6 +64,7 @@ public class AccountControllerTest {
 	@SuppressWarnings("unchecked")
 	public void checkContactsSuccess() throws Exception {
 		Account testAccount = TestUtil.generateTestAccount(accountRepository);
+		assertNotNull(testAccount);
 		List<ContactDTO> testContacts = TestUtil.generateTestContactsList(1);
 		ContactDTO testContact = testContacts.get(0);
 		Cookie goodCookie = new Cookie("sid", testAccount.getSid());
@@ -87,6 +89,7 @@ public class AccountControllerTest {
 	@SuppressWarnings("unchecked")
 	public void checkContactsFail() throws Exception {
 		Account testAccount = TestUtil.generateTestAccount(accountRepository);
+		assertNotNull(testAccount);
 		List<ContactDTO> testContacts = TestUtil.generateTestContactsList(1);
 		Cookie badCookie = new Cookie("sid", testAccount.getSid() + "j");
 		when(accountService

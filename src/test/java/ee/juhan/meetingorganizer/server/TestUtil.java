@@ -3,6 +3,8 @@ package ee.juhan.meetingorganizer.server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -54,15 +56,20 @@ public final class TestUtil {
 	}
 
 	public static Account generateTestAccount(AccountRepository accountRepository) {
-		Account account = new Account(TEST_USER_NAME, TEST_EMAIL,
-				HasherUtil.createHash(TEST_ACCOUNT_PASSWORD), TEST_PHONE_NUMBER,
-				SIDGeneratorUtil.generateSID());
-		accountRepository.save(account);
-		account.setName(account.getName() + account.getId());
-		account.setEmail(account.getEmail() + account.getId());
-		account.setPhoneNumber(account.getPhoneNumber() + account.getId());
-		accountRepository.save(account);
-		return account;
+		try {
+			Account account = new Account(TEST_USER_NAME, TEST_EMAIL,
+					HasherUtil.createHash(TEST_ACCOUNT_PASSWORD), TEST_PHONE_NUMBER,
+					SIDGeneratorUtil.generateSID());
+			accountRepository.save(account);
+			account.setName(account.getName() + account.getId());
+			account.setEmail(account.getEmail() + account.getId());
+			account.setPhoneNumber(account.getPhoneNumber() + account.getId());
+			accountRepository.save(account);
+			return account;
+		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public static Meeting generateTestMeeting(MeetingRepository meetingRepository) {

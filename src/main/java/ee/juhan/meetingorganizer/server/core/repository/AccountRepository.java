@@ -19,7 +19,7 @@ public interface AccountRepository extends CrudRepository<Account, Integer> {
 
 	Account findByPhoneNumber(String phoneNumber);
 
-	@Query("select m from Account a where (a.id = ?1)")
+	@Query("select meetings from Account a where a.id = ?1")
 	List<Meeting> findMeetingsById(int id);
 
 	@Query("select m from Account a join a.meetings m join m.participants p " +
