@@ -1,16 +1,12 @@
 package ee.juhan.meetingorganizer.server.core.domain;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 
 @Entity
 public class Account implements Serializable {
@@ -35,9 +31,6 @@ public class Account implements Serializable {
 
 	@Column(nullable = false)
 	private String sid;
-
-	@ManyToMany(fetch = FetchType.LAZY)
-	private Set<Meeting> meetings = new HashSet<>();
 
 	protected Account() {}
 
@@ -92,18 +85,5 @@ public class Account implements Serializable {
 	public final void setSid(String sid) {
 		this.sid = sid;
 	}
-
-	public final Set<Meeting> getMeetings() {
-		return meetings;
-	}
-
-	public final void setMeetings(Set<Meeting> meetings) {
-		this.meetings = meetings;
-	}
-
-	public final boolean addMeeting(Meeting meeting) {
-		return meetings.add(meeting);
-	}
-
 
 }

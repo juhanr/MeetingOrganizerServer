@@ -15,8 +15,7 @@ public final class ControllerConstants {
 	public static final String MEETING_ID = "meetingId";
 	public static final String MEETINGS_TYPE = "meetingsType";
 	// Path variable values
-	public static final String ONGOING_MEETINGS = "ongoing-meetings";
-	public static final String FUTURE_MEETINGS = "future-meetings";
+	public static final String ACTIVE_MEETINGS = "active-meetings";
 	public static final String PAST_MEETINGS = "past-meetings";
 	public static final String INVITATIONS = "invitations";
 	// Cookies

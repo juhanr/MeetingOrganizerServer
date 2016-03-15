@@ -34,45 +34,37 @@ public class MeetingServiceImpl implements MeetingService {
 	public final MeetingDTO newMeetingRequest(MeetingDTO meetingDTO, String sid) {
 		if (!isValidSID(meetingDTO.getLeaderId(), sid)) { return null; }
 		Meeting meeting = createMeeting(meetingDTO);
-		meeting = addParticipants(meeting, meetingDTO);
 		checkLocation(meeting);
 		meetingRepository.save(meeting);
-		addMeetingToParticipantAccounts(meeting);
-		return meeting.toDTO();
+		addParticipants(meeting, meetingDTO);
+		return meeting.toDTO(participantRepository);
 	}
 
 	@Override
-	public final List<MeetingDTO> getCurrentMeetingsRequest(int accountId, String sid) {
+	public final List<MeetingDTO> getActiveMeetingsRequest(int accountId, String sid) {
 		if (!isValidSID(accountId, sid)) { return null; }
-		return meetingsListToDTO(accountRepository
-				.findCurrentMeetings(accountId, ParticipationAnswer.PARTICIPATING));
-	}
-
-	@Override
-	public final List<MeetingDTO> getFutureMeetingsRequest(int accountId, String sid) {
-		if (!isValidSID(accountId, sid)) { return null; }
-		return meetingsListToDTO(
-				accountRepository.findFutureMeetings(accountId, ParticipationAnswer.PARTICIPATING));
+		return meetingsListToDTO(participantRepository
+				.findActiveMeetings(accountId, ParticipationAnswer.PARTICIPATING));
 	}
 
 	@Override
 	public final List<MeetingDTO> getPastMeetingsRequest(int accountId, String sid) {
 		if (!isValidSID(accountId, sid)) { return null; }
-		return meetingsListToDTO(
-				accountRepository.findPastMeetings(accountId, ParticipationAnswer.PARTICIPATING));
+		return meetingsListToDTO(participantRepository
+				.findPastMeetings(accountId, ParticipationAnswer.PARTICIPATING));
 	}
 
 	@Override
 	public final List<MeetingDTO> getInvitationsRequest(int accountId, String sid) {
 		if (!isValidSID(accountId, sid)) { return null; }
 		return meetingsListToDTO(
-				accountRepository.findInvitations(accountId, ParticipationAnswer.NOT_ANSWERED));
+				participantRepository.findInvitations(accountId, ParticipationAnswer.NOT_ANSWERED));
 	}
 
 	private List<MeetingDTO> meetingsListToDTO(List<Meeting> meetings) {
 		List<MeetingDTO> meetingsDTO = new ArrayList<>();
 		for (Meeting meeting : meetings) {
-			meetingsDTO.add(meeting.toDTO());
+			meetingsDTO.add(meeting.toDTO(participantRepository));
 		}
 		return meetingsDTO;
 	}
@@ -86,7 +78,7 @@ public class MeetingServiceImpl implements MeetingService {
 		participantRepository.save(participant);
 		Meeting meeting = meetingRepository.findById(meetingId);
 		checkLocation(meeting);
-		return meeting.toDTO();
+		return meeting.toDTO(participantRepository);
 	}
 
 	private Meeting createMeeting(MeetingDTO meetingDTO) {
@@ -103,27 +95,16 @@ public class MeetingServiceImpl implements MeetingService {
 			if (participantAccountId != 0) {
 				Account account = accountRepository.findById(participantAccountId);
 				participant =
-						new Participant(participantAccountId, account.getName(), account.getEmail(),
+						new Participant(account, meeting, account.getName(), account.getEmail(),
 								account.getPhoneNumber(), participantDTO.getParticipationAnswer(),
 								participantDTO.getLocation());
 			} else {
-				participant = new Participant(participantDTO.getName(), participantDTO.getEmail(),
+				participant = new Participant(meeting, participantDTO.getEmail(),
 						participantDTO.getPhoneNumber());
 			}
 			participantRepository.save(participant);
-			meeting.addParticipant(participant);
 		}
 		return meeting;
-	}
-
-	private void addMeetingToParticipantAccounts(Meeting meeting) {
-		for (Participant participant : meeting.getParticipants()) {
-			if (participant.getAccountId() != 0) {
-				Account account = accountRepository.findById(participant.getAccountId());
-				account.addMeeting(meeting);
-				accountRepository.save(account);
-			}
-		}
 	}
 
 	private boolean isValidSID(int accountId, String sid) {
@@ -133,12 +114,14 @@ public class MeetingServiceImpl implements MeetingService {
 
 	private void checkLocation(Meeting meeting) {
 		if (meeting.getLocation() == null) {
-			for (Participant participant : meeting.getParticipants()) {
+			List<Participant> participants =
+					participantRepository.findParticipantsByMeetingId(meeting.getId());
+			for (Participant participant : participants) {
 				if (participant.getParticipationAnswer() == ParticipationAnswer.NOT_ANSWERED) {
 					return;
 				}
 			}
-			meeting.setLocation(LocationGeneratorUtil.findOptimalLocation(meeting));
+			meeting.setLocation(LocationGeneratorUtil.findOptimalLocation(meeting, participants));
 			meetingRepository.save(meeting);
 		}
 	}

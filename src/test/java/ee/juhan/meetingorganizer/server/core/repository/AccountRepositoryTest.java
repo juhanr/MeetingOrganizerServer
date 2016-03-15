@@ -19,7 +19,6 @@ import ee.juhan.meetingorganizer.server.Application;
 import ee.juhan.meetingorganizer.server.TestUtil;
 import ee.juhan.meetingorganizer.server.core.domain.Account;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @SpringApplicationConfiguration(classes = Application.class)
@@ -32,8 +31,8 @@ import static org.junit.Assert.assertNotNull;
 public class AccountRepositoryTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TestUtil.class);
-	private static Account testAccount;
 	private static boolean isDatabaseSetUp = false;
+
 	@Autowired
 	private AccountRepository accountRepository;
 
@@ -41,22 +40,11 @@ public class AccountRepositoryTest {
 	private MeetingRepository meetingRepository;
 
 	@Test
-	public void findById() {
+	public void findMeetingsById() {
 		Account testAccount = TestUtil.generateTestAccount(accountRepository);
 		assertNotNull(testAccount);
-		Account account = accountRepository.findById(testAccount.getId());
-		assertNotNull(account);
-		assertEquals("Account name", testAccount.getName(), account.getName());
-		assertEquals("Account email", testAccount.getEmail(), account.getEmail());
-		assertEquals("Account phone number", testAccount.getPhoneNumber(),
-				account.getPhoneNumber());
-	}
-
-	@Test
-	public void findMeetingsById() {
-		testAccount = TestUtil.generateTestAccount(accountRepository);
-		testAccount.addMeeting(TestUtil.generateTestMeeting(meetingRepository));
-		testAccount.addMeeting(TestUtil.generateTestMeeting(meetingRepository));
+		TestUtil.generateTestMeeting(meetingRepository, testAccount.getId());
+		TestUtil.generateTestMeeting(meetingRepository, testAccount.getId());
 		accountRepository.save(testAccount);
 
 		Account account = accountRepository.findById(testAccount.getId());

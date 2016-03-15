@@ -4,6 +4,7 @@ public class ParticipantDTO {
 
 	private int id;
 	private int accountId;
+	private int meetingId;
 	private String name;
 	private String email;
 	private String phoneNumber;
@@ -12,10 +13,11 @@ public class ParticipantDTO {
 
 	public ParticipantDTO() {}
 
-	public ParticipantDTO(int id, int accountId, String name, String email, String phoneNumber,
-			ParticipationAnswer participationAnswer, MapCoordinate location) {
+	public ParticipantDTO(int id, int accountId, int meetingId, String name, String email,
+			String phoneNumber, ParticipationAnswer participationAnswer, MapCoordinate location) {
 		this.id = id;
 		this.accountId = accountId;
+		this.meetingId = meetingId;
 		this.name = name;
 		this.email = email;
 		this.phoneNumber = phoneNumber;
@@ -37,6 +39,14 @@ public class ParticipantDTO {
 
 	public final void setAccountId(int accountId) {
 		this.accountId = accountId;
+	}
+
+	public final int getMeetingId() {
+		return meetingId;
+	}
+
+	public final void setMeetingId(int meetingId) {
+		this.meetingId = meetingId;
 	}
 
 	public final String getName() {

@@ -72,10 +72,10 @@ public final class TestUtil {
 		}
 	}
 
-	public static Meeting generateTestMeeting(MeetingRepository meetingRepository) {
+	public static Meeting generateTestMeeting(MeetingRepository meetingRepository, int leaderId) {
 		Meeting meeting =
-				new Meeting(1, TEST_MEETING_TITLE, TEST_MEETING_DESCRIPTION, TEST_DATE, TEST_DATE,
-						TEST_LOCATION, LocationType.SPECIFIC_LOCATION);
+				new Meeting(leaderId, TEST_MEETING_TITLE, TEST_MEETING_DESCRIPTION, TEST_DATE,
+						TEST_DATE, TEST_LOCATION, LocationType.SPECIFIC_LOCATION);
 		meetingRepository.save(meeting);
 		meeting.setTitle(meeting.getTitle() + meeting.getId());
 		meeting.setDescription(meeting.getDescription() + meeting.getId());
@@ -86,9 +86,11 @@ public final class TestUtil {
 		return meeting;
 	}
 
-	public static Participant generateTestParticipant(ParticipantRepository participantRepository) {
-		Participant participant = new Participant(1, TEST_USER_NAME, TEST_EMAIL, TEST_PHONE_NUMBER,
-				ParticipationAnswer.PARTICIPATING, TEST_LOCATION);
+	public static Participant generateTestParticipant(ParticipantRepository participantRepository,
+			Account account, Meeting meeting) {
+		Participant participant =
+				new Participant(account, meeting, TEST_USER_NAME, TEST_EMAIL, TEST_PHONE_NUMBER,
+						ParticipationAnswer.PARTICIPATING, TEST_LOCATION);
 		participantRepository.save(participant);
 		participant.setName(participant.getName() + participant.getId());
 		participant.setEmail(participant.getEmail() + participant.getId());

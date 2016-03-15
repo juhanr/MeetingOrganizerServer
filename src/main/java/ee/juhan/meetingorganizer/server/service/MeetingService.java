@@ -9,9 +9,7 @@ public interface MeetingService {
 
 	MeetingDTO newMeetingRequest(MeetingDTO meetingDTO, String sid);
 
-	List<MeetingDTO> getCurrentMeetingsRequest(int accountId, String sid);
-
-	List<MeetingDTO> getFutureMeetingsRequest(int accountId, String sid);
+	List<MeetingDTO> getActiveMeetingsRequest(int accountId, String sid);
 
 	List<MeetingDTO> getPastMeetingsRequest(int accountId, String sid);
 

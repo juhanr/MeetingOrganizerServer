@@ -1,6 +1,7 @@
 package ee.juhan.meetingorganizer.server.core.util;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import ee.juhan.meetingorganizer.server.core.domain.Meeting;
@@ -12,21 +13,23 @@ public final class LocationGeneratorUtil {
 
 	private LocationGeneratorUtil() {}
 
-	public static MapCoordinate findOptimalLocation(Meeting meeting) {
-		MapCoordinate centerCoordinate = getCenterCoordinate(meeting);
+	public static MapCoordinate findOptimalLocation(Meeting meeting,
+			List<Participant> participants) {
+		MapCoordinate centerCoordinate = getCenterCoordinate(meeting, participants);
 		if (meeting.getLocationType() == LocationType.GENERATED_FROM_PREDEFINED_LOCATIONS) {
 			return getNearestLocation(centerCoordinate, meeting.getPredefinedLocations());
 		}
 		return centerCoordinate;
 	}
 
-	private static MapCoordinate getCenterCoordinate(Meeting meeting) {
+	private static MapCoordinate getCenterCoordinate(Meeting meeting,
+			List<Participant> participants) {
 		ArrayList<Double> xCoordinates = new ArrayList<>();
 		ArrayList<Double> yCoordinates = new ArrayList<>();
 		ArrayList<Double> zCoordinates = new ArrayList<>();
 
 		// Convert lat/lon to Cartesian coordinates for each location.
-		for (Participant participant : meeting.getParticipants()) {
+		for (Participant participant : participants) {
 			if (participant.getLocation() != null) {
 				Double latitude = Math.toRadians(participant.getLocation().getLatitude());
 				Double longitude = Math.toRadians(participant.getLocation().getLongitude());

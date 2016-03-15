@@ -1,7 +1,6 @@
 package ee.juhan.meetingorganizer.server.core.domain;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -10,17 +9,17 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import ee.juhan.meetingorganizer.server.core.repository.ParticipantRepository;
 import ee.juhan.meetingorganizer.server.rest.domain.LocationType;
 import ee.juhan.meetingorganizer.server.rest.domain.MapCoordinate;
 import ee.juhan.meetingorganizer.server.rest.domain.MeetingDTO;
+import ee.juhan.meetingorganizer.server.rest.domain.ParticipantDTO;
 
 @Entity
 public class Meeting implements Serializable {
@@ -51,9 +50,6 @@ public class Meeting implements Serializable {
 
 	@Column(nullable = false)
 	private LocationType locationType;
-
-	@OneToMany(fetch = FetchType.LAZY)
-	private List<Participant> participants = new ArrayList<>();
 
 	@ElementCollection
 	private Set<MapCoordinate> predefinedLocations = new HashSet<>();
@@ -144,24 +140,12 @@ public class Meeting implements Serializable {
 		this.locationType = locationType;
 	}
 
-	public final List<Participant> getParticipants() {
-		return participants;
-	}
-
-	public final void setParticipants(List<Participant> participants) {
-		this.participants = participants;
-	}
-
 	public final Set<MapCoordinate> getPredefinedLocations() {
 		return predefinedLocations;
 	}
 
 	public final void setPredefinedLocations(Set<MapCoordinate> predefinedLocations) {
 		this.predefinedLocations = predefinedLocations;
-	}
-
-	public final boolean addParticipant(Participant participant) {
-		return participants.add(participant);
 	}
 
 	public final void addPredefinedLocation(MapCoordinate predefinedLocation) {
@@ -172,12 +156,14 @@ public class Meeting implements Serializable {
 		this.predefinedLocations.remove(predefinedLocation);
 	}
 
-	public final MeetingDTO toDTO() {
+	public final MeetingDTO toDTO(ParticipantRepository participantRepository) {
 		MeetingDTO meetingDTO =
 				new MeetingDTO(id, leaderId, title, description, startDateTime, endDateTime,
 						location, locationType);
+		List<Participant> participants = participantRepository.findParticipantsByMeetingId(this.id);
 		for (Participant participant : participants) {
-			meetingDTO.addParticipant(participant.toDTO());
+			ParticipantDTO participantDTO = participant.toDTO();
+			meetingDTO.addParticipant(participantDTO);
 		}
 		return meetingDTO;
 	}

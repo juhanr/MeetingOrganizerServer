@@ -49,11 +49,8 @@ public class MeetingController {
 		LOG.info("Get meetings request for user " + accountId);
 		List<MeetingDTO> response = null;
 		switch (meetingsType) {
-			case ControllerConstants.ONGOING_MEETINGS:
-				response = meetingService.getCurrentMeetingsRequest(accountId, sid);
-				break;
-			case ControllerConstants.FUTURE_MEETINGS:
-				response = meetingService.getFutureMeetingsRequest(accountId, sid);
+			case ControllerConstants.ACTIVE_MEETINGS:
+				response = meetingService.getActiveMeetingsRequest(accountId, sid);
 				break;
 			case ControllerConstants.PAST_MEETINGS:
 				response = meetingService.getPastMeetingsRequest(accountId, sid);

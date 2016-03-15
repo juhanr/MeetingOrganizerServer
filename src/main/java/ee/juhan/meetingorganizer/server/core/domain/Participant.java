@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 import ee.juhan.meetingorganizer.server.rest.domain.MapCoordinate;
 import ee.juhan.meetingorganizer.server.rest.domain.ParticipantDTO;
@@ -21,9 +22,12 @@ public class Participant implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	private int accountId;
+	@ManyToOne
+	private Account account;
 
-	@Column(nullable = false)
+	@ManyToOne
+	private Meeting meeting;
+
 	private String name;
 
 	private String email;
@@ -38,9 +42,11 @@ public class Participant implements Serializable {
 
 	protected Participant() {}
 
-	public Participant(int accountId, String name, String email, String phoneNumber,
+	public Participant(Account account, Meeting meeting, String name, String email,
+			String phoneNumber,
 			ParticipationAnswer participationAnswer, MapCoordinate location) {
-		this.accountId = accountId;
+		this.account = account;
+		this.meeting = meeting;
 		this.name = name;
 		this.email = email;
 		this.phoneNumber = phoneNumber;
@@ -48,8 +54,8 @@ public class Participant implements Serializable {
 		this.location = location;
 	}
 
-	public Participant(String name, String email, String phoneNumber) {
-		this.name = name;
+	public Participant(Meeting meeting, String email, String phoneNumber) {
+		this.meeting = meeting;
 		this.email = email;
 		this.phoneNumber = phoneNumber;
 	}
@@ -58,12 +64,20 @@ public class Participant implements Serializable {
 		return id;
 	}
 
-	public final int getAccountId() {
-		return accountId;
+	public final Account getAccount() {
+		return account;
 	}
 
-	public final void setAccountId(int accountId) {
-		this.accountId = accountId;
+	public final void setAccount(Account account) {
+		this.account = account;
+	}
+
+	public final Meeting getMeeting() {
+		return meeting;
+	}
+
+	public final void setMeeting(Meeting meeting) {
+		this.meeting = meeting;
 	}
 
 	public final String getName() {
@@ -107,8 +121,10 @@ public class Participant implements Serializable {
 	}
 
 	public final ParticipantDTO toDTO() {
-		return new ParticipantDTO(id, accountId, name, email, phoneNumber, participationAnswer,
-				location);
+		int accountId = account == null ? 0 : account.getId();
+		int meetingId = meeting == null ? 0 : meeting.getId();
+		return new ParticipantDTO(id, accountId, meetingId, name, email, phoneNumber,
+				participationAnswer, location);
 	}
 
 	public final Participant updateInfo(ParticipantDTO participantDTO) {

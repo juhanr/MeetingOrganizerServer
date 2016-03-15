@@ -8,10 +8,8 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 
 import ee.juhan.meetingorganizer.server.core.domain.Account;
-import ee.juhan.meetingorganizer.server.core.domain.Meeting;
 import ee.juhan.meetingorganizer.server.core.domain.Participant;
 import ee.juhan.meetingorganizer.server.core.repository.AccountRepository;
-import ee.juhan.meetingorganizer.server.core.repository.MeetingRepository;
 import ee.juhan.meetingorganizer.server.core.repository.ParticipantRepository;
 import ee.juhan.meetingorganizer.server.core.util.HasherUtil;
 import ee.juhan.meetingorganizer.server.core.util.SIDGeneratorUtil;
@@ -25,9 +23,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 	@Autowired
 	private AccountRepository accountRepository;
-
-	@Autowired
-	private MeetingRepository meetingRepository;
 
 	@Autowired
 	private ParticipantRepository participantRepository;
@@ -53,8 +48,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 					HasherUtil.createHash(accountDTO.getPassword()), accountDTO.getPhoneNumber(),
 					sid);
 			accountRepository.save(account);
-			account = addExistingInvitations(account);
-			accountRepository.save(account);
+			updateParticipantObjects(account);
 			return account;
 		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
 			e.printStackTrace();
@@ -62,22 +56,15 @@ public class RegistrationServiceImpl implements RegistrationService {
 		}
 	}
 
-	private Account addExistingInvitations(Account account) {
-		List<Meeting> meetings =
-				meetingRepository.findByParticipantPhoneNumber(account.getPhoneNumber());
-		for (Meeting meeting : meetings) {
-			account.addMeeting(meeting);
-			for (Participant participant : meeting.getParticipants()) {
-				if (participant.getPhoneNumber().equals(account.getPhoneNumber())) {
-					participant.setAccountId(account.getId());
-					participant.setName(account.getName());
-					participant.setEmail(account.getEmail());
-					participantRepository.save(participant);
-					break;
-				}
-			}
+	private void updateParticipantObjects(Account account) {
+		List<Participant> participants =
+				participantRepository.findByPhoneNumber(account.getPhoneNumber());
+		for (Participant participant : participants) {
+			participant.setAccount(account);
+			participant.setName(account.getName());
+			participant.setEmail(account.getEmail());
+			participantRepository.save(participant);
 		}
-		return account;
 	}
 
 }
