@@ -61,14 +61,6 @@ public class MeetingServiceImpl implements MeetingService {
 				participantRepository.findInvitations(accountId, ParticipationAnswer.NOT_ANSWERED));
 	}
 
-	private List<MeetingDTO> meetingsListToDTO(List<Meeting> meetings) {
-		List<MeetingDTO> meetingsDTO = new ArrayList<>();
-		for (Meeting meeting : meetings) {
-			meetingsDTO.add(meeting.toDTO(participantRepository));
-		}
-		return meetingsDTO;
-	}
-
 	@Override
 	public final MeetingDTO updateParticipantRequest(ParticipantDTO participantDTO, int meetingId,
 			String sid) {
@@ -79,6 +71,14 @@ public class MeetingServiceImpl implements MeetingService {
 		Meeting meeting = meetingRepository.findById(meetingId);
 		checkLocation(meeting);
 		return meeting.toDTO(participantRepository);
+	}
+
+	private List<MeetingDTO> meetingsListToDTO(List<Meeting> meetings) {
+		List<MeetingDTO> meetingsDTO = new ArrayList<>();
+		for (Meeting meeting : meetings) {
+			meetingsDTO.add(meeting.toDTO(participantRepository));
+		}
+		return meetingsDTO;
 	}
 
 	private Meeting createMeeting(MeetingDTO meetingDTO) {
@@ -99,8 +99,8 @@ public class MeetingServiceImpl implements MeetingService {
 								account.getPhoneNumber(), participantDTO.getParticipationAnswer(),
 								participantDTO.getLocation());
 			} else {
-				participant = new Participant(meeting, participantDTO.getEmail(),
-						participantDTO.getPhoneNumber());
+				participant = new Participant(meeting, participantDTO.getName(),
+						participantDTO.getEmail(), participantDTO.getPhoneNumber());
 			}
 			participantRepository.save(participant);
 		}

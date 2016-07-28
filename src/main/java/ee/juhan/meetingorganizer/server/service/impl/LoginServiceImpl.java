@@ -26,7 +26,9 @@ public class LoginServiceImpl implements LoginService {
 		if (account == null) { return new ServerResponse(ServerResult.NO_ACCOUNT_FOUND); }
 		try {
 			if (HasherUtil.validatePassword(accountDTO.getPassword(), account.getHash())) {
-				return new ServerResponse(ServerResult.SUCCESS, account.getSid(), account.getId());
+				accountDTO.setName(account.getName());
+				accountDTO.setPhoneNumber(account.getPhoneNumber());
+				return new ServerResponse(ServerResult.SUCCESS, account.getSid(), accountDTO);
 			} else { return new ServerResponse(ServerResult.WRONG_PASSWORD); }
 		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
 			e.printStackTrace();

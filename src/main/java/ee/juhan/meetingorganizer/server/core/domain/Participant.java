@@ -43,8 +43,7 @@ public class Participant implements Serializable {
 	protected Participant() {}
 
 	public Participant(Account account, Meeting meeting, String name, String email,
-			String phoneNumber,
-			ParticipationAnswer participationAnswer, MapCoordinate location) {
+			String phoneNumber, ParticipationAnswer participationAnswer, MapCoordinate location) {
 		this.account = account;
 		this.meeting = meeting;
 		this.name = name;
@@ -54,8 +53,9 @@ public class Participant implements Serializable {
 		this.location = location;
 	}
 
-	public Participant(Meeting meeting, String email, String phoneNumber) {
+	public Participant(Meeting meeting, String name, String email, String phoneNumber) {
 		this.meeting = meeting;
+		this.name = name;
 		this.email = email;
 		this.phoneNumber = phoneNumber;
 	}
