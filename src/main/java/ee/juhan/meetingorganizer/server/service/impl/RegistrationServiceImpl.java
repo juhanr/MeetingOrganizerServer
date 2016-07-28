@@ -38,6 +38,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 		Account account = createAccount(accountDTO);
 		if (account == null) { return new ServerResponse(ServerResult.FAIL); }
+		accountDTO.setAccountId(account.getId());
 		return new ServerResponse(ServerResult.SUCCESS, account.getSid(), accountDTO);
 	}
 

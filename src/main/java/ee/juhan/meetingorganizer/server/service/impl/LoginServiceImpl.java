@@ -28,6 +28,7 @@ public class LoginServiceImpl implements LoginService {
 			if (HasherUtil.validatePassword(accountDTO.getPassword(), account.getHash())) {
 				accountDTO.setName(account.getName());
 				accountDTO.setPhoneNumber(account.getPhoneNumber());
+				accountDTO.setAccountId(account.getId());
 				return new ServerResponse(ServerResult.SUCCESS, account.getSid(), accountDTO);
 			} else { return new ServerResponse(ServerResult.WRONG_PASSWORD); }
 		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {

@@ -2,12 +2,21 @@ package ee.juhan.meetingorganizer.server.rest.domain;
 
 public class AccountDTO {
 
+	private int accountId;
 	private String name;
 	private String email;
 	private String password;
 	private String phoneNumber;
 
 	public AccountDTO() {}
+
+	public int getAccountId() {
+		return accountId;
+	}
+
+	public void setAccountId(int accountId) {
+		this.accountId = accountId;
+	}
 
 	public final String getName() {
 		return name;
