@@ -34,7 +34,6 @@ public class MeetingServiceImpl implements MeetingService {
 	public final MeetingDTO newMeetingRequest(MeetingDTO meetingDTO, String sid) {
 		if (!isValidSID(meetingDTO.getLeaderId(), sid)) { return null; }
 		Meeting meeting = createMeeting(meetingDTO);
-		checkLocation(meeting);
 		meetingRepository.save(meeting);
 		addParticipants(meeting, meetingDTO);
 		return meeting.toDTO(participantRepository);
@@ -69,7 +68,6 @@ public class MeetingServiceImpl implements MeetingService {
 		participant.updateInfo(participantDTO);
 		participantRepository.save(participant);
 		Meeting meeting = meetingRepository.findById(meetingId);
-		checkLocation(meeting);
 		return meeting.toDTO(participantRepository);
 	}
 
@@ -85,7 +83,8 @@ public class MeetingServiceImpl implements MeetingService {
 		return new Meeting(meetingDTO.getLeaderId(), meetingDTO.getTitle(),
 				meetingDTO.getDescription(), meetingDTO.getStartDateTime(),
 				meetingDTO.getEndDateTime(), meetingDTO.getLocation(), meetingDTO.getLocationType(),
-				meetingDTO.getPredefinedLocations());
+				meetingDTO.getLocationName(), meetingDTO.getPredefinedLocations(),
+				meetingDTO.getStatus());
 	}
 
 	private Meeting addParticipants(Meeting meeting, MeetingDTO meetingDTO) {

@@ -20,13 +20,16 @@ public class MeetingDTO {
 	private Date endDateTime;
 	private MapCoordinate location;
 	private LocationType locationType;
+	private String locationName;
 	private List<ParticipantDTO> participants = new ArrayList<>();
 	private Set<MapCoordinate> predefinedLocations = new HashSet<>();
+	private MeetingStatus status;
 
 	public MeetingDTO() {}
 
 	public MeetingDTO(int id, int leaderId, String title, String description, Date startDateTime,
-			Date endDateTime, MapCoordinate location, LocationType locationType) {
+			Date endDateTime, MapCoordinate location, LocationType locationType,
+			String locationName, MeetingStatus status) {
 		this.id = id;
 		this.leaderId = leaderId;
 		this.title = title;
@@ -35,6 +38,8 @@ public class MeetingDTO {
 		this.endDateTime = (Date) endDateTime.clone();
 		this.location = location;
 		this.locationType = locationType;
+		this.locationName = locationName;
+		this.status = status;
 	}
 
 	public final int getId() {
@@ -103,6 +108,14 @@ public class MeetingDTO {
 		this.locationType = locationType;
 	}
 
+	public String getLocationName() {
+		return locationName;
+	}
+
+	public void setLocationName(String locationName) {
+		this.locationName = locationName;
+	}
+
 	public final List<ParticipantDTO> getParticipants() {
 		return participants;
 	}
@@ -129,6 +142,14 @@ public class MeetingDTO {
 
 	public final void removePredefinedLocation(MapCoordinate predefinedLocation) {
 		this.predefinedLocations.remove(predefinedLocation);
+	}
+
+	public MeetingStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(MeetingStatus status) {
+		this.status = status;
 	}
 
 }

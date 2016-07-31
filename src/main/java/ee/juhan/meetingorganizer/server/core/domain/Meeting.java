@@ -19,6 +19,7 @@ import ee.juhan.meetingorganizer.server.core.repository.ParticipantRepository;
 import ee.juhan.meetingorganizer.server.rest.domain.LocationType;
 import ee.juhan.meetingorganizer.server.rest.domain.MapCoordinate;
 import ee.juhan.meetingorganizer.server.rest.domain.MeetingDTO;
+import ee.juhan.meetingorganizer.server.rest.domain.MeetingStatus;
 import ee.juhan.meetingorganizer.server.rest.domain.ParticipantDTO;
 
 @Entity
@@ -51,14 +52,19 @@ public class Meeting implements Serializable {
 	@Column(nullable = false)
 	private LocationType locationType;
 
+	private String locationName;
+
 	@ElementCollection
 	private Set<MapCoordinate> predefinedLocations = new HashSet<>();
+
+	@Column(nullable = false)
+	private MeetingStatus status;
 
 	protected Meeting() {}
 
 	public Meeting(int leaderId, String title, String description, Date startDateTime,
 			Date endDateTime, MapCoordinate location, LocationType locationType,
-			Set<MapCoordinate> predefinedLocations) {
+			String locationName, Set<MapCoordinate> predefinedLocations, MeetingStatus status) {
 		this.leaderId = leaderId;
 		this.title = title;
 		this.description = description;
@@ -67,10 +73,12 @@ public class Meeting implements Serializable {
 		this.location = location;
 		this.locationType = locationType;
 		this.predefinedLocations = predefinedLocations;
+		this.status = status;
 	}
 
 	public Meeting(int leaderId, String title, String description, Date startDateTime,
-			Date endDateTime, MapCoordinate location, LocationType locationType) {
+			Date endDateTime, MapCoordinate location, LocationType locationType,
+			String locationName, MeetingStatus status) {
 		this.leaderId = leaderId;
 		this.title = title;
 		this.description = description;
@@ -78,6 +86,7 @@ public class Meeting implements Serializable {
 		this.endDateTime = (Date) endDateTime.clone();
 		this.location = location;
 		this.locationType = locationType;
+		this.status = status;
 	}
 
 	public final int getId() {
@@ -140,6 +149,14 @@ public class Meeting implements Serializable {
 		this.locationType = locationType;
 	}
 
+	public String getLocationName() {
+		return locationName;
+	}
+
+	public void setLocationName(String locationName) {
+		this.locationName = locationName;
+	}
+
 	public final Set<MapCoordinate> getPredefinedLocations() {
 		return predefinedLocations;
 	}
@@ -156,10 +173,18 @@ public class Meeting implements Serializable {
 		this.predefinedLocations.remove(predefinedLocation);
 	}
 
+	public MeetingStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(MeetingStatus status) {
+		this.status = status;
+	}
+
 	public final MeetingDTO toDTO(ParticipantRepository participantRepository) {
 		MeetingDTO meetingDTO =
 				new MeetingDTO(id, leaderId, title, description, startDateTime, endDateTime,
-						location, locationType);
+						location, locationType, locationName, status);
 		List<Participant> participants = participantRepository.findParticipantsByMeetingId(this.id);
 		for (Participant participant : participants) {
 			ParticipantDTO participantDTO = participant.toDTO();

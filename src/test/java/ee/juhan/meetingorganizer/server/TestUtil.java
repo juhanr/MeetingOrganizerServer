@@ -20,6 +20,7 @@ import ee.juhan.meetingorganizer.server.core.util.SIDGeneratorUtil;
 import ee.juhan.meetingorganizer.server.rest.domain.ContactDTO;
 import ee.juhan.meetingorganizer.server.rest.domain.LocationType;
 import ee.juhan.meetingorganizer.server.rest.domain.MapCoordinate;
+import ee.juhan.meetingorganizer.server.rest.domain.MeetingStatus;
 import ee.juhan.meetingorganizer.server.rest.domain.ParticipationAnswer;
 
 @SuppressWarnings("unused")
@@ -32,6 +33,7 @@ public final class TestUtil {
 	private static final String TEST_MEETING_TITLE = "Test Meeting";
 	private static final String TEST_MEETING_DESCRIPTION = "Test Description";
 	private static final MapCoordinate TEST_LOCATION = new MapCoordinate(100.0, 100.0);
+	private static final String TEST_LOCATION_NAME = "Test location";
 	private static final Date TEST_DATE = new Date();
 
 	private static final Logger LOG = LoggerFactory.getLogger(TestUtil.class);
@@ -75,7 +77,8 @@ public final class TestUtil {
 	public static Meeting generateTestMeeting(MeetingRepository meetingRepository, int leaderId) {
 		Meeting meeting =
 				new Meeting(leaderId, TEST_MEETING_TITLE, TEST_MEETING_DESCRIPTION, TEST_DATE,
-						TEST_DATE, TEST_LOCATION, LocationType.SPECIFIC_LOCATION);
+						TEST_DATE, TEST_LOCATION, LocationType.SPECIFIC_LOCATION,
+						TEST_LOCATION_NAME, MeetingStatus.ACTIVE);
 		meetingRepository.save(meeting);
 		meeting.setTitle(meeting.getTitle() + meeting.getId());
 		meeting.setDescription(meeting.getDescription() + meeting.getId());
