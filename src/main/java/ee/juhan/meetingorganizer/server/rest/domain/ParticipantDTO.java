@@ -1,5 +1,11 @@
 package ee.juhan.meetingorganizer.server.rest.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import java.util.Date;
+
+import ee.juhan.meetingorganizer.server.core.util.JsonDateDeserializer;
+
 public class ParticipantDTO {
 
 	private int id;
@@ -10,11 +16,13 @@ public class ParticipantDTO {
 	private String phoneNumber;
 	private ParticipationAnswer participationAnswer = ParticipationAnswer.NOT_ANSWERED;
 	private MapCoordinate location;
+	private Date locationTimestamp;
 
 	public ParticipantDTO() {}
 
 	public ParticipantDTO(int id, int accountId, int meetingId, String name, String email,
-			String phoneNumber, ParticipationAnswer participationAnswer, MapCoordinate location) {
+			String phoneNumber, ParticipationAnswer participationAnswer, MapCoordinate location,
+			Date locationTimestamp) {
 		this.id = id;
 		this.accountId = accountId;
 		this.meetingId = meetingId;
@@ -23,6 +31,7 @@ public class ParticipantDTO {
 		this.phoneNumber = phoneNumber;
 		this.participationAnswer = participationAnswer;
 		this.location = location;
+		this.locationTimestamp = locationTimestamp;
 	}
 
 	public final int getId() {
@@ -89,4 +98,12 @@ public class ParticipantDTO {
 		this.location = location;
 	}
 
+	public Date getLocationTimestamp() {
+		return locationTimestamp;
+	}
+
+	@JsonDeserialize(using = JsonDateDeserializer.class)
+	public void setLocationTimestamp(Date locationTimestamp) {
+		this.locationTimestamp = locationTimestamp;
+	}
 }

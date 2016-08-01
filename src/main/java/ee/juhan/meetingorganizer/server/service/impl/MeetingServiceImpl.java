@@ -96,7 +96,8 @@ public class MeetingServiceImpl implements MeetingService {
 				participant =
 						new Participant(account, meeting, account.getName(), account.getEmail(),
 								account.getPhoneNumber(), participantDTO.getParticipationAnswer(),
-								participantDTO.getLocation());
+								participantDTO.getLocation(),
+								participantDTO.getLocationTimestamp());
 			} else {
 				participant = new Participant(meeting, participantDTO.getName(),
 						participantDTO.getEmail(), participantDTO.getPhoneNumber());

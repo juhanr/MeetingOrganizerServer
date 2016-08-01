@@ -1,6 +1,7 @@
 package ee.juhan.meetingorganizer.server.core.domain;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import ee.juhan.meetingorganizer.server.rest.domain.MapCoordinate;
 import ee.juhan.meetingorganizer.server.rest.domain.ParticipantDTO;
@@ -40,10 +43,14 @@ public class Participant implements Serializable {
 
 	private MapCoordinate location;
 
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date locationTimestamp;
+
 	protected Participant() {}
 
 	public Participant(Account account, Meeting meeting, String name, String email,
-			String phoneNumber, ParticipationAnswer participationAnswer, MapCoordinate location) {
+			String phoneNumber, ParticipationAnswer participationAnswer, MapCoordinate location,
+			Date locationTimestamp) {
 		this.account = account;
 		this.meeting = meeting;
 		this.name = name;
@@ -51,6 +58,7 @@ public class Participant implements Serializable {
 		this.phoneNumber = phoneNumber;
 		this.participationAnswer = participationAnswer;
 		this.location = location;
+		this.locationTimestamp = locationTimestamp;
 	}
 
 	public Participant(Meeting meeting, String name, String email, String phoneNumber) {
@@ -120,16 +128,25 @@ public class Participant implements Serializable {
 		this.location = location;
 	}
 
+	public Date getLocationTimestamp() {
+		return locationTimestamp;
+	}
+
+	public void setLocationTimestamp(Date locationTimestamp) {
+		this.locationTimestamp = locationTimestamp;
+	}
+
 	public final ParticipantDTO toDTO() {
 		int accountId = account == null ? 0 : account.getId();
 		int meetingId = meeting == null ? 0 : meeting.getId();
 		return new ParticipantDTO(id, accountId, meetingId, name, email, phoneNumber,
-				participationAnswer, location);
+				participationAnswer, location, locationTimestamp);
 	}
 
 	public final Participant updateInfo(ParticipantDTO participantDTO) {
 		this.participationAnswer = participantDTO.getParticipationAnswer();
 		this.location = participantDTO.getLocation();
+		this.locationTimestamp = participantDTO.getLocationTimestamp();
 		return this;
 	}
 

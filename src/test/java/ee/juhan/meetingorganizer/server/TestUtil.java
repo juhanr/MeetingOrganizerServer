@@ -93,7 +93,7 @@ public final class TestUtil {
 			Account account, Meeting meeting) {
 		Participant participant =
 				new Participant(account, meeting, TEST_USER_NAME, TEST_EMAIL, TEST_PHONE_NUMBER,
-						ParticipationAnswer.PARTICIPATING, TEST_LOCATION);
+						ParticipationAnswer.PARTICIPATING, TEST_LOCATION, TEST_DATE);
 		participantRepository.save(participant);
 		participant.setName(participant.getName() + participant.getId());
 		participant.setEmail(participant.getEmail() + participant.getId());
