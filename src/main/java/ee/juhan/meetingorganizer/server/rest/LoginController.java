@@ -27,8 +27,7 @@ public class LoginController {
 	public final ResponseEntity<ServerResponse> registrationRequest(
 			@RequestBody AccountDTO accountDTO) {
 		LOG.info("Log in request: " + accountDTO.getEmail());
-		ServerResponse response = loginService.loginRequest(accountDTO);
-		LOG.info("Log in request completed.");
+		ServerResponse response = loginService.login(accountDTO);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 
 	}

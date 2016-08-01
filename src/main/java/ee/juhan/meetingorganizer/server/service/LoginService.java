@@ -5,6 +5,6 @@ import ee.juhan.meetingorganizer.server.rest.domain.ServerResponse;
 
 public interface LoginService {
 
-	ServerResponse loginRequest(AccountDTO accountDTO);
+	ServerResponse login(AccountDTO accountDTO);
 
 }

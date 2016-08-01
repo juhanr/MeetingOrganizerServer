@@ -22,7 +22,8 @@ public class MeetingDTO {
 	private LocationType locationType;
 	private String locationName;
 	private List<ParticipantDTO> participants = new ArrayList<>();
-	private Set<MapCoordinate> predefinedLocations = new HashSet<>();
+	private Set<MapCoordinate> userPreferredLocations = new HashSet<>();
+	private List<MapCoordinate> recommendedLocations = new ArrayList<>();
 	private MeetingStatus status;
 
 	public MeetingDTO() {}
@@ -128,20 +129,28 @@ public class MeetingDTO {
 		return participants.add(participant);
 	}
 
-	public final Set<MapCoordinate> getPredefinedLocations() {
-		return predefinedLocations;
+	public final Set<MapCoordinate> getUserPreferredLocations() {
+		return userPreferredLocations;
 	}
 
-	public final void setPredefinedLocations(Set<MapCoordinate> predefinedLocations) {
-		this.predefinedLocations = predefinedLocations;
+	public final void setUserPreferredLocations(Set<MapCoordinate> userPreferredLocations) {
+		this.userPreferredLocations = userPreferredLocations;
 	}
 
-	public final void addPredefinedLocation(MapCoordinate predefinedLocation) {
-		this.predefinedLocations.add(predefinedLocation);
+	public final void addUserPreferredLocation(MapCoordinate userPreferredLocation) {
+		this.userPreferredLocations.add(userPreferredLocation);
 	}
 
-	public final void removePredefinedLocation(MapCoordinate predefinedLocation) {
-		this.predefinedLocations.remove(predefinedLocation);
+	public final void removeUserPreferredLocation(MapCoordinate userPreferredLocation) {
+		this.userPreferredLocations.remove(userPreferredLocation);
+	}
+
+	public List<MapCoordinate> getRecommendedLocations() {
+		return recommendedLocations;
+	}
+
+	public void setRecommendedLocations(List<MapCoordinate> recommendedLocations) {
+		this.recommendedLocations = recommendedLocations;
 	}
 
 	public MeetingStatus getStatus() {

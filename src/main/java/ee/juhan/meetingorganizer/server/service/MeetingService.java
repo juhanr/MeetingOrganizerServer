@@ -7,14 +7,18 @@ import ee.juhan.meetingorganizer.server.rest.domain.ParticipantDTO;
 
 public interface MeetingService {
 
-	MeetingDTO newMeetingRequest(MeetingDTO meetingDTO, String sid);
+	MeetingDTO newMeeting(MeetingDTO meetingDTO, String sid);
 
-	List<MeetingDTO> getActiveMeetingsRequest(int accountId, String sid);
+	List<MeetingDTO> getActiveMeetings(int accountId, String sid);
 
-	List<MeetingDTO> getPastMeetingsRequest(int accountId, String sid);
+	List<MeetingDTO> getPastMeetings(int accountId, String sid);
 
-	List<MeetingDTO> getInvitationsRequest(int accountId, String sid);
+	List<MeetingDTO> getInvitations(int accountId, String sid);
 
-	MeetingDTO updateParticipantRequest(ParticipantDTO participantDTO, int meetingId, String sid);
+	MeetingDTO updateParticipationAnswer(ParticipantDTO participantDTO, int meetingId, String sid);
+
+	MeetingDTO updateParticipantLocation(ParticipantDTO participantDTO, int meetingId, String sid);
+
+	MeetingDTO generateRecommendedLocations(int meetingId, String sid);
 
 }

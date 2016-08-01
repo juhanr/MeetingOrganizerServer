@@ -14,14 +14,16 @@ public class ParticipantDTO {
 	private String name;
 	private String email;
 	private String phoneNumber;
-	private ParticipationAnswer participationAnswer = ParticipationAnswer.NOT_ANSWERED;
+	private ParticipationAnswer participationAnswer = ParticipationAnswer.NO_ANSWER;
+	private SendGPSLocationAnswer sendGPSLocationAnswer = SendGPSLocationAnswer.NO_ANSWER;
 	private MapCoordinate location;
 	private Date locationTimestamp;
 
 	public ParticipantDTO() {}
 
 	public ParticipantDTO(int id, int accountId, int meetingId, String name, String email,
-			String phoneNumber, ParticipationAnswer participationAnswer, MapCoordinate location,
+			String phoneNumber, ParticipationAnswer participationAnswer,
+			SendGPSLocationAnswer sendGPSLocationAnswer, MapCoordinate location,
 			Date locationTimestamp) {
 		this.id = id;
 		this.accountId = accountId;
@@ -30,6 +32,7 @@ public class ParticipantDTO {
 		this.email = email;
 		this.phoneNumber = phoneNumber;
 		this.participationAnswer = participationAnswer;
+		this.sendGPSLocationAnswer = sendGPSLocationAnswer;
 		this.location = location;
 		this.locationTimestamp = locationTimestamp;
 	}
@@ -88,6 +91,14 @@ public class ParticipantDTO {
 
 	public final void setParticipationAnswer(ParticipationAnswer participationAnswer) {
 		this.participationAnswer = participationAnswer;
+	}
+
+	public SendGPSLocationAnswer getSendGPSLocationAnswer() {
+		return sendGPSLocationAnswer;
+	}
+
+	public void setSendGPSLocationAnswer(SendGPSLocationAnswer sendGPSLocationAnswer) {
+		this.sendGPSLocationAnswer = sendGPSLocationAnswer;
 	}
 
 	public final MapCoordinate getLocation() {

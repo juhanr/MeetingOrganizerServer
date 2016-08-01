@@ -5,7 +5,10 @@ public final class ControllerConstants {
 	// Request paths
 	public static final String MEETING_PATH = "/meeting";
 	public static final String NEW_PATH = "/new";
-	public static final String UPDATE_PARTICIPANT_PATH = "/update-participant";
+	public static final String UPDATE_PARTICIPATION_ANSWER_PATH = "/update-participation-answer";
+	public static final String UPDATE_PARTICIPANT_LOCATION_PATH = "/update-participant-location";
+	public static final String GENERATE_RECOMMENDED_LOCATIONS_PATH =
+			"/generate-recommended-locations";
 	public static final String REGISTER_PATH = "/register";
 	public static final String LOGIN_PATH = "/login";
 	public static final String ACCOUNT_PATH = "/account";

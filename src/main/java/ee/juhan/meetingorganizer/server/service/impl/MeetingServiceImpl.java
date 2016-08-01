@@ -12,8 +12,9 @@ import ee.juhan.meetingorganizer.server.core.domain.Participant;
 import ee.juhan.meetingorganizer.server.core.repository.AccountRepository;
 import ee.juhan.meetingorganizer.server.core.repository.MeetingRepository;
 import ee.juhan.meetingorganizer.server.core.repository.ParticipantRepository;
-import ee.juhan.meetingorganizer.server.core.util.LocationGeneratorUtil;
+import ee.juhan.meetingorganizer.server.rest.domain.LocationType;
 import ee.juhan.meetingorganizer.server.rest.domain.MeetingDTO;
+import ee.juhan.meetingorganizer.server.rest.domain.MeetingStatus;
 import ee.juhan.meetingorganizer.server.rest.domain.ParticipantDTO;
 import ee.juhan.meetingorganizer.server.rest.domain.ParticipationAnswer;
 import ee.juhan.meetingorganizer.server.service.MeetingService;
@@ -31,43 +32,71 @@ public class MeetingServiceImpl implements MeetingService {
 	private AccountRepository accountRepository;
 
 	@Override
-	public final MeetingDTO newMeetingRequest(MeetingDTO meetingDTO, String sid) {
+	public final MeetingDTO newMeeting(MeetingDTO meetingDTO, String sid) {
 		if (!isValidSID(meetingDTO.getLeaderId(), sid)) { return null; }
 		Meeting meeting = createMeeting(meetingDTO);
 		meetingRepository.save(meeting);
 		addParticipants(meeting, meetingDTO);
+		checkLocationType(meeting);
 		return meeting.toDTO(participantRepository);
 	}
 
 	@Override
-	public final List<MeetingDTO> getActiveMeetingsRequest(int accountId, String sid) {
+	public final List<MeetingDTO> getActiveMeetings(int accountId, String sid) {
 		if (!isValidSID(accountId, sid)) { return null; }
 		return meetingsListToDTO(participantRepository
 				.findActiveMeetings(accountId, ParticipationAnswer.PARTICIPATING));
 	}
 
 	@Override
-	public final List<MeetingDTO> getPastMeetingsRequest(int accountId, String sid) {
+	public final List<MeetingDTO> getPastMeetings(int accountId, String sid) {
 		if (!isValidSID(accountId, sid)) { return null; }
 		return meetingsListToDTO(participantRepository
 				.findPastMeetings(accountId, ParticipationAnswer.PARTICIPATING));
 	}
 
 	@Override
-	public final List<MeetingDTO> getInvitationsRequest(int accountId, String sid) {
+	public final List<MeetingDTO> getInvitations(int accountId, String sid) {
 		if (!isValidSID(accountId, sid)) { return null; }
 		return meetingsListToDTO(
-				participantRepository.findInvitations(accountId, ParticipationAnswer.NOT_ANSWERED));
+				participantRepository.findInvitations(accountId, ParticipationAnswer.NO_ANSWER));
 	}
 
 	@Override
-	public final MeetingDTO updateParticipantRequest(ParticipantDTO participantDTO, int meetingId,
+	public final MeetingDTO updateParticipationAnswer(ParticipantDTO participantDTO, int meetingId,
 			String sid) {
 		if (!isValidSID(participantDTO.getAccountId(), sid)) { return null; }
 		Participant participant = participantRepository.findById(participantDTO.getId());
-		participant.updateInfo(participantDTO);
+		participant.setParticipationAnswer(participantDTO.getParticipationAnswer());
 		participantRepository.save(participant);
 		Meeting meeting = meetingRepository.findById(meetingId);
+		return meeting.toDTO(participantRepository);
+	}
+
+	@Override
+	public final MeetingDTO updateParticipantLocation(ParticipantDTO participantDTO, int meetingId,
+			String sid) {
+		if (!isValidSID(participantDTO.getAccountId(), sid)) { return null; }
+		Participant participant = participantRepository.findById(participantDTO.getId());
+		participant.updateLocation(participantDTO);
+		participantRepository.save(participant);
+		Meeting meeting = meetingRepository.findById(meetingId);
+		return meeting.toDTO(participantRepository);
+	}
+
+	@Override
+	public final MeetingDTO generateRecommendedLocations(int meetingId, String sid) {
+		Meeting meeting = meetingRepository.findById(meetingId);
+		if (!isValidSID(meeting.getLeaderId(), sid) ||
+				meeting.getStatus() != MeetingStatus.WAITING_PARTICIPANT_ANSWERS) {
+			return null;
+		}
+		meeting.setStatus(MeetingStatus.WAITING_LOCATION_CHOICE);
+		if (meeting.getLocationType() == LocationType.GENERATED_FROM_PREFERRED_LOCATIONS) {
+			// TODO
+		} else if (meeting.getLocationType() == LocationType.GENERATED_FROM_PARAMETERS) {
+			// TODO
+		}
 		return meeting.toDTO(participantRepository);
 	}
 
@@ -83,7 +112,7 @@ public class MeetingServiceImpl implements MeetingService {
 		return new Meeting(meetingDTO.getLeaderId(), meetingDTO.getTitle(),
 				meetingDTO.getDescription(), meetingDTO.getStartDateTime(),
 				meetingDTO.getEndDateTime(), meetingDTO.getLocation(), meetingDTO.getLocationType(),
-				meetingDTO.getLocationName(), meetingDTO.getPredefinedLocations(),
+				meetingDTO.getLocationName(), meetingDTO.getUserPreferredLocations(),
 				meetingDTO.getStatus());
 	}
 
@@ -96,6 +125,7 @@ public class MeetingServiceImpl implements MeetingService {
 				participant =
 						new Participant(account, meeting, account.getName(), account.getEmail(),
 								account.getPhoneNumber(), participantDTO.getParticipationAnswer(),
+								participantDTO.getSendGPSLocationAnswer(),
 								participantDTO.getLocation(),
 								participantDTO.getLocationTimestamp());
 			} else {
@@ -112,16 +142,10 @@ public class MeetingServiceImpl implements MeetingService {
 		return account != null && account.getSid().equals(sid);
 	}
 
-	private void checkLocation(Meeting meeting) {
-		if (meeting.getLocation() == null) {
-			List<Participant> participants =
-					participantRepository.findParticipantsByMeetingId(meeting.getId());
-			for (Participant participant : participants) {
-				if (participant.getParticipationAnswer() == ParticipationAnswer.NOT_ANSWERED) {
-					return;
-				}
-			}
-			meeting.setLocation(LocationGeneratorUtil.findOptimalLocation(meeting, participants));
+	private void checkLocationType(Meeting meeting) {
+		if (meeting.getLocationType() == LocationType.GENERATED_FROM_PARAMETERS ||
+				meeting.getLocationType() == LocationType.GENERATED_FROM_PREFERRED_LOCATIONS) {
+			meeting.setStatus(MeetingStatus.WAITING_LOCATION_CHOICE);
 			meetingRepository.save(meeting);
 		}
 	}

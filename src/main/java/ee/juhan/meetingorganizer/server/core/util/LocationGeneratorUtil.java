@@ -16,8 +16,8 @@ public final class LocationGeneratorUtil {
 	public static MapCoordinate findOptimalLocation(Meeting meeting,
 			List<Participant> participants) {
 		MapCoordinate centerCoordinate = getCenterCoordinate(meeting, participants);
-		if (meeting.getLocationType() == LocationType.GENERATED_FROM_PREDEFINED_LOCATIONS) {
-			return getNearestLocation(centerCoordinate, meeting.getPredefinedLocations());
+		if (meeting.getLocationType() == LocationType.GENERATED_FROM_PREFERRED_LOCATIONS) {
+			return getNearestLocation(centerCoordinate, meeting.getUserPreferredLocations());
 		}
 		return centerCoordinate;
 	}

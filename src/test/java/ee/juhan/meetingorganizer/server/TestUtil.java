@@ -22,6 +22,7 @@ import ee.juhan.meetingorganizer.server.rest.domain.LocationType;
 import ee.juhan.meetingorganizer.server.rest.domain.MapCoordinate;
 import ee.juhan.meetingorganizer.server.rest.domain.MeetingStatus;
 import ee.juhan.meetingorganizer.server.rest.domain.ParticipationAnswer;
+import ee.juhan.meetingorganizer.server.rest.domain.SendGPSLocationAnswer;
 
 @SuppressWarnings("unused")
 public final class TestUtil {
@@ -93,7 +94,8 @@ public final class TestUtil {
 			Account account, Meeting meeting) {
 		Participant participant =
 				new Participant(account, meeting, TEST_USER_NAME, TEST_EMAIL, TEST_PHONE_NUMBER,
-						ParticipationAnswer.PARTICIPATING, TEST_LOCATION, TEST_DATE);
+						ParticipationAnswer.PARTICIPATING, SendGPSLocationAnswer.NO_ANSWER,
+						TEST_LOCATION, TEST_DATE);
 		participantRepository.save(participant);
 		participant.setName(participant.getName() + participant.getId());
 		participant.setEmail(participant.getEmail() + participant.getId());

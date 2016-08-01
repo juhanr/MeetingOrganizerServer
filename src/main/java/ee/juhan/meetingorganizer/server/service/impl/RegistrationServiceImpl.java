@@ -28,7 +28,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 	private ParticipantRepository participantRepository;
 
 	@Override
-	public final ServerResponse registrationRequest(AccountDTO accountDTO) {
+	public final ServerResponse registration(AccountDTO accountDTO) {
 		if (accountRepository.findByEmail(accountDTO.getEmail()) != null) {
 			return new ServerResponse(ServerResult.EMAIL_IN_USE);
 		}

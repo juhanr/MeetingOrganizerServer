@@ -21,7 +21,7 @@ public class LoginServiceImpl implements LoginService {
 	private AccountRepository accountRepository;
 
 	@Override
-	public final ServerResponse loginRequest(AccountDTO accountDTO) {
+	public final ServerResponse login(AccountDTO accountDTO) {
 		Account account = accountRepository.findByEmail(accountDTO.getEmail());
 		if (account == null) { return new ServerResponse(ServerResult.NO_ACCOUNT_FOUND); }
 		try {

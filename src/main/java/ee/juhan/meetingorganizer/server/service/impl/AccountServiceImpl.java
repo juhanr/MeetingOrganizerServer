@@ -19,7 +19,7 @@ public class AccountServiceImpl implements AccountService {
 	private AccountRepository accountRepository;
 
 	@Override
-	public final List<ContactDTO> checkContactsRequest(int accountId, List<ContactDTO> contacts,
+	public final List<ContactDTO> checkContacts(int accountId, List<ContactDTO> contacts,
 			String sid) {
 		if (!isValidSID(accountId, sid)) { return null; }
 		for (int i = 0; i < contacts.size(); i++) {

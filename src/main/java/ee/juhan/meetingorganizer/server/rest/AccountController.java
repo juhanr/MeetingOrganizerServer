@@ -34,8 +34,7 @@ public class AccountController {
 			@RequestBody List<ContactDTO> contacts,
 			@CookieValue(value = ControllerConstants.SID) String sid) {
 		LOG.info("Check contacts request: accountId=" + accountId + ", sid=" + sid);
-		List<ContactDTO> response = accountService.checkContactsRequest(accountId, contacts, sid);
-		LOG.info("Check contacts request completed.");
+		List<ContactDTO> response = accountService.checkContacts(accountId, contacts, sid);
 		if (response == null) { return new ResponseEntity<>(HttpStatus.FORBIDDEN); }
 		return new ResponseEntity<>(response, HttpStatus.OK);
 

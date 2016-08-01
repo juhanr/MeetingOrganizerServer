@@ -1,6 +1,7 @@
 package ee.juhan.meetingorganizer.server.core.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -55,16 +56,19 @@ public class Meeting implements Serializable {
 	private String locationName;
 
 	@ElementCollection
-	private Set<MapCoordinate> predefinedLocations = new HashSet<>();
+	private Set<MapCoordinate> userPreferredLocations = new HashSet<>();
+
+	@ElementCollection
+	private List<MapCoordinate> recommendedLocations = new ArrayList<>();
 
 	@Column(nullable = false)
-	private MeetingStatus status;
+	private MeetingStatus status = MeetingStatus.ACTIVE;
 
 	protected Meeting() {}
 
 	public Meeting(int leaderId, String title, String description, Date startDateTime,
 			Date endDateTime, MapCoordinate location, LocationType locationType,
-			String locationName, Set<MapCoordinate> predefinedLocations, MeetingStatus status) {
+			String locationName, Set<MapCoordinate> userPreferredLocations, MeetingStatus status) {
 		this.leaderId = leaderId;
 		this.title = title;
 		this.description = description;
@@ -72,7 +76,7 @@ public class Meeting implements Serializable {
 		this.endDateTime = (Date) endDateTime.clone();
 		this.location = location;
 		this.locationType = locationType;
-		this.predefinedLocations = predefinedLocations;
+		this.userPreferredLocations = userPreferredLocations;
 		this.status = status;
 	}
 
@@ -157,20 +161,28 @@ public class Meeting implements Serializable {
 		this.locationName = locationName;
 	}
 
-	public final Set<MapCoordinate> getPredefinedLocations() {
-		return predefinedLocations;
+	public final Set<MapCoordinate> getUserPreferredLocations() {
+		return userPreferredLocations;
 	}
 
-	public final void setPredefinedLocations(Set<MapCoordinate> predefinedLocations) {
-		this.predefinedLocations = predefinedLocations;
+	public final void setUserPreferredLocations(Set<MapCoordinate> userPreferredLocations) {
+		this.userPreferredLocations = userPreferredLocations;
 	}
 
-	public final void addPredefinedLocation(MapCoordinate predefinedLocation) {
-		this.predefinedLocations.add(predefinedLocation);
+	public final void addUserPreferredLocation(MapCoordinate userPreferredLocation) {
+		this.userPreferredLocations.add(userPreferredLocation);
 	}
 
-	public final void removePredefinedLocation(MapCoordinate predefinedLocation) {
-		this.predefinedLocations.remove(predefinedLocation);
+	public final void removeUserPreferredLocation(MapCoordinate userPreferredLocation) {
+		this.userPreferredLocations.remove(userPreferredLocation);
+	}
+
+	public List<MapCoordinate> getRecommendedLocations() {
+		return recommendedLocations;
+	}
+
+	public void setRecommendedLocations(List<MapCoordinate> recommendedLocations) {
+		this.recommendedLocations = recommendedLocations;
 	}
 
 	public MeetingStatus getStatus() {

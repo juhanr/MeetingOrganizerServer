@@ -69,8 +69,7 @@ public class AccountControllerTest {
 		ContactDTO testContact = testContacts.get(0);
 		Cookie goodCookie = new Cookie("sid", testAccount.getSid());
 
-		when(accountService
-				.checkContactsRequest(eq(testAccount.getId()), any(testContacts.getClass()),
+		when(accountService.checkContacts(eq(testAccount.getId()), any(testContacts.getClass()),
 						eq(goodCookie.getValue()))).thenReturn(testContacts);
 
 		String requestPath = ControllerConstants.ACCOUNT_PATH + "/" + testAccount.getId() +
@@ -92,8 +91,7 @@ public class AccountControllerTest {
 		assertNotNull(testAccount);
 		List<ContactDTO> testContacts = TestUtil.generateTestContactsList(1);
 		Cookie badCookie = new Cookie("sid", testAccount.getSid() + "j");
-		when(accountService
-				.checkContactsRequest(eq(testAccount.getId()), any(testContacts.getClass()),
+		when(accountService.checkContacts(eq(testAccount.getId()), any(testContacts.getClass()),
 						eq(badCookie.getValue()))).thenReturn(null);
 
 		String requestPath = ControllerConstants.ACCOUNT_PATH + "/" + testAccount.getId() +

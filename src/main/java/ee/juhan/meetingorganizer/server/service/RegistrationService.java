@@ -5,6 +5,6 @@ import ee.juhan.meetingorganizer.server.rest.domain.ServerResponse;
 
 public interface RegistrationService {
 
-	ServerResponse registrationRequest(AccountDTO accountDTO);
+	ServerResponse registration(AccountDTO accountDTO);
 
 }
