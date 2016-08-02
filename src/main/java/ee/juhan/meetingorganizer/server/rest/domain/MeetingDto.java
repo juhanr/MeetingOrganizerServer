@@ -1,88 +1,37 @@
-package ee.juhan.meetingorganizer.server.core.domain;
+package ee.juhan.meetingorganizer.server.rest.domain;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import ee.juhan.meetingorganizer.server.util.JsonDateDeserializer;
 
-import ee.juhan.meetingorganizer.server.core.repository.ParticipantRepository;
-import ee.juhan.meetingorganizer.server.rest.domain.LocationType;
-import ee.juhan.meetingorganizer.server.rest.domain.MapCoordinate;
-import ee.juhan.meetingorganizer.server.rest.domain.MeetingDto;
-import ee.juhan.meetingorganizer.server.rest.domain.MeetingStatus;
-import ee.juhan.meetingorganizer.server.rest.domain.ParticipantDto;
+public class MeetingDto {
 
-@Entity
-public class Meeting implements Serializable {
-
-	private static final long serialVersionUID = 1L;
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-
-	@Column(nullable = false)
 	private int leaderId;
-
-	@Column(nullable = false)
 	private String title;
-
 	private String description;
-
-	@Column(nullable = false)
-	@Temporal(TemporalType.TIMESTAMP)
 	private Date startDateTime;
-
-	@Column(nullable = false)
-	@Temporal(TemporalType.TIMESTAMP)
 	private Date endDateTime;
-
 	private MapCoordinate location;
-
-	@Column(nullable = false)
 	private LocationType locationType;
-
 	private String locationName;
-
-	@ElementCollection
+	private List<ParticipantDto> participants = new ArrayList<>();
 	private Set<MapCoordinate> userPreferredLocations = new HashSet<>();
-
-	@ElementCollection
 	private List<MapCoordinate> recommendedLocations = new ArrayList<>();
+	private MeetingStatus status;
 
-	@Column(nullable = false)
-	private MeetingStatus status = MeetingStatus.ACTIVE;
+	public MeetingDto() {}
 
-	protected Meeting() {}
-
-	public Meeting(int leaderId, String title, String description, Date startDateTime,
-			Date endDateTime, MapCoordinate location, LocationType locationType,
-			String locationName, Set<MapCoordinate> userPreferredLocations, MeetingStatus status) {
-		this.leaderId = leaderId;
-		this.title = title;
-		this.description = description;
-		this.startDateTime = (Date) startDateTime.clone();
-		this.endDateTime = (Date) endDateTime.clone();
-		this.location = location;
-		this.locationType = locationType;
-		this.userPreferredLocations = userPreferredLocations;
-		this.status = status;
-	}
-
-	public Meeting(int leaderId, String title, String description, Date startDateTime,
+	public MeetingDto(int id, int leaderId, String title, String description, Date startDateTime,
 			Date endDateTime, MapCoordinate location, LocationType locationType,
 			String locationName, MeetingStatus status) {
+		this.id = id;
 		this.leaderId = leaderId;
 		this.title = title;
 		this.description = description;
@@ -90,11 +39,16 @@ public class Meeting implements Serializable {
 		this.endDateTime = (Date) endDateTime.clone();
 		this.location = location;
 		this.locationType = locationType;
+		this.locationName = locationName;
 		this.status = status;
 	}
 
 	public final int getId() {
 		return id;
+	}
+
+	public final void setId(int id) {
+		this.id = id;
 	}
 
 	public final int getLeaderId() {
@@ -125,16 +79,18 @@ public class Meeting implements Serializable {
 		return (Date) startDateTime.clone();
 	}
 
-	public final void setStartDateTime(Date startDateTime) {
-		this.startDateTime = (Date) startDateTime.clone();
+	@JsonDeserialize(using = JsonDateDeserializer.class)
+	public final void setStartDateTime(Date startTime) {
+		this.startDateTime = (Date) startTime.clone();
 	}
 
 	public final Date getEndDateTime() {
 		return (Date) endDateTime.clone();
 	}
 
-	public final void setEndDateTime(Date endDateTime) {
-		this.endDateTime = (Date) endDateTime.clone();
+	@JsonDeserialize(using = JsonDateDeserializer.class)
+	public final void setEndDateTime(Date endTime) {
+		this.endDateTime = (Date) endTime.clone();
 	}
 
 	public final MapCoordinate getLocation() {
@@ -159,6 +115,18 @@ public class Meeting implements Serializable {
 
 	public void setLocationName(String locationName) {
 		this.locationName = locationName;
+	}
+
+	public final List<ParticipantDto> getParticipants() {
+		return participants;
+	}
+
+	public final void setParticipants(List<ParticipantDto> participants) {
+		this.participants = participants;
+	}
+
+	public final boolean addParticipant(ParticipantDto participant) {
+		return participants.add(participant);
 	}
 
 	public final Set<MapCoordinate> getUserPreferredLocations() {
@@ -191,18 +159,6 @@ public class Meeting implements Serializable {
 
 	public void setStatus(MeetingStatus status) {
 		this.status = status;
-	}
-
-	public final MeetingDto toDTO(ParticipantRepository participantRepository) {
-		MeetingDto meetingDto =
-				new MeetingDto(id, leaderId, title, description, startDateTime, endDateTime,
-						location, locationType, locationName, status);
-		List<Participant> participants = participantRepository.findParticipantsByMeetingId(this.id);
-		for (Participant participant : participants) {
-			ParticipantDto participantDto = participant.toDTO();
-			meetingDto.addParticipant(participantDto);
-		}
-		return meetingDto;
 	}
 
 }

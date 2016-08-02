@@ -7,7 +7,7 @@ import java.util.List;
 
 import ee.juhan.meetingorganizer.server.core.domain.Account;
 import ee.juhan.meetingorganizer.server.core.repository.AccountRepository;
-import ee.juhan.meetingorganizer.server.rest.domain.ContactDTO;
+import ee.juhan.meetingorganizer.server.rest.domain.ContactDto;
 import ee.juhan.meetingorganizer.server.service.AccountService;
 
 @Service
@@ -19,11 +19,11 @@ public class AccountServiceImpl implements AccountService {
 	private AccountRepository accountRepository;
 
 	@Override
-	public final List<ContactDTO> checkContacts(int accountId, List<ContactDTO> contacts,
+	public final List<ContactDto> checkContacts(int accountId, List<ContactDto> contacts,
 			String sid) {
 		if (!isValidSID(accountId, sid)) { return null; }
 		for (int i = 0; i < contacts.size(); i++) {
-			ContactDTO contact = contacts.get(i);
+			ContactDto contact = contacts.get(i);
 			if (contact.getPhoneNumber() != null && !contact.getPhoneNumber().equals("")) {
 				if (!isWithAreaNumber(contact.getPhoneNumber())) {
 					contact.setPhoneNumber(addAreaNumber(contact.getPhoneNumber(), accountId));

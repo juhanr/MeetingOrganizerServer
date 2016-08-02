@@ -15,14 +15,14 @@ import ee.juhan.meetingorganizer.server.core.domain.Participant;
 import ee.juhan.meetingorganizer.server.core.repository.AccountRepository;
 import ee.juhan.meetingorganizer.server.core.repository.MeetingRepository;
 import ee.juhan.meetingorganizer.server.core.repository.ParticipantRepository;
-import ee.juhan.meetingorganizer.server.core.util.HasherUtil;
-import ee.juhan.meetingorganizer.server.core.util.SIDGeneratorUtil;
-import ee.juhan.meetingorganizer.server.rest.domain.ContactDTO;
+import ee.juhan.meetingorganizer.server.rest.domain.ContactDto;
 import ee.juhan.meetingorganizer.server.rest.domain.LocationType;
 import ee.juhan.meetingorganizer.server.rest.domain.MapCoordinate;
 import ee.juhan.meetingorganizer.server.rest.domain.MeetingStatus;
 import ee.juhan.meetingorganizer.server.rest.domain.ParticipationAnswer;
-import ee.juhan.meetingorganizer.server.rest.domain.SendGPSLocationAnswer;
+import ee.juhan.meetingorganizer.server.rest.domain.SendGpsLocationAnswer;
+import ee.juhan.meetingorganizer.server.util.HasherUtil;
+import ee.juhan.meetingorganizer.server.util.SidGeneratorUtil;
 
 @SuppressWarnings("unused")
 public final class TestUtil {
@@ -41,17 +41,17 @@ public final class TestUtil {
 
 	private TestUtil() {}
 
-	public static ContactDTO generateTestContact() {
+	public static ContactDto generateTestContact() {
 		return generateTestContact(0);
 	}
 
-	public static ContactDTO generateTestContact(int id) {
-		return new ContactDTO(id, "Test Contact " + id, "test.contact" + id + "@test.com",
+	public static ContactDto generateTestContact(int id) {
+		return new ContactDto(id, "Test Contact " + id, "test.contact" + id + "@test.com",
 				"+10" + id + " " + id * 8);
 	}
 
-	public static List<ContactDTO> generateTestContactsList(int size) {
-		List<ContactDTO> contactsList = new ArrayList<>();
+	public static List<ContactDto> generateTestContactsList(int size) {
+		List<ContactDto> contactsList = new ArrayList<>();
 		for (int i = 0; i < size; i++) {
 			contactsList.add(generateTestContact(i));
 		}
@@ -62,7 +62,7 @@ public final class TestUtil {
 		try {
 			Account account = new Account(TEST_USER_NAME, TEST_EMAIL,
 					HasherUtil.createHash(TEST_ACCOUNT_PASSWORD), TEST_PHONE_NUMBER,
-					SIDGeneratorUtil.generateSID());
+					SidGeneratorUtil.generateSid());
 			accountRepository.save(account);
 			account.setName(account.getName() + account.getId());
 			account.setEmail(account.getEmail() + account.getId());
@@ -94,7 +94,7 @@ public final class TestUtil {
 			Account account, Meeting meeting) {
 		Participant participant =
 				new Participant(account, meeting, TEST_USER_NAME, TEST_EMAIL, TEST_PHONE_NUMBER,
-						ParticipationAnswer.PARTICIPATING, SendGPSLocationAnswer.NO_ANSWER,
+						ParticipationAnswer.PARTICIPATING, SendGpsLocationAnswer.NO_ANSWER,
 						TEST_LOCATION, TEST_DATE);
 		participantRepository.save(participant);
 		participant.setName(participant.getName() + participant.getId());

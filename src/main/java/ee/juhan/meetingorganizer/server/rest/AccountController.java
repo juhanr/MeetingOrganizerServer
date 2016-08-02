@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import ee.juhan.meetingorganizer.server.rest.domain.ContactDTO;
+import ee.juhan.meetingorganizer.server.rest.domain.ContactDto;
 import ee.juhan.meetingorganizer.server.service.AccountService;
 
 @RestController
@@ -29,12 +29,12 @@ public class AccountController {
 	@RequestMapping(method = RequestMethod.POST,
 			value = "/{" + ControllerConstants.ACCOUNT_ID + "}" +
 					ControllerConstants.CHECK_CONTACTS_PATH)
-	public final ResponseEntity<List<ContactDTO>> checkContactsRequest(
+	public final ResponseEntity<List<ContactDto>> checkContactsRequest(
 			@PathVariable(ControllerConstants.ACCOUNT_ID) int accountId,
-			@RequestBody List<ContactDTO> contacts,
+			@RequestBody List<ContactDto> contacts,
 			@CookieValue(value = ControllerConstants.SID) String sid) {
 		LOG.info("Check contacts request: accountId=" + accountId + ", sid=" + sid);
-		List<ContactDTO> response = accountService.checkContacts(accountId, contacts, sid);
+		List<ContactDto> response = accountService.checkContacts(accountId, contacts, sid);
 		if (response == null) { return new ResponseEntity<>(HttpStatus.FORBIDDEN); }
 		return new ResponseEntity<>(response, HttpStatus.OK);
 

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import ee.juhan.meetingorganizer.server.rest.domain.AccountDTO;
+import ee.juhan.meetingorganizer.server.rest.domain.AccountDto;
 import ee.juhan.meetingorganizer.server.rest.domain.ServerResponse;
 import ee.juhan.meetingorganizer.server.service.LoginService;
 
@@ -25,9 +25,9 @@ public class LoginController {
 
 	@RequestMapping(method = RequestMethod.POST)
 	public final ResponseEntity<ServerResponse> registrationRequest(
-			@RequestBody AccountDTO accountDTO) {
-		LOG.info("Log in request: " + accountDTO.getEmail());
-		ServerResponse response = loginService.login(accountDTO);
+			@RequestBody AccountDto accountDto) {
+		LOG.info("Log in request: " + accountDto.getEmail());
+		ServerResponse response = loginService.login(accountDto);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 
 	}

@@ -1,4 +1,4 @@
-package ee.juhan.meetingorganizer.server.core.util;
+package ee.juhan.meetingorganizer.server.util;
 
 import java.text.SimpleDateFormat;
 

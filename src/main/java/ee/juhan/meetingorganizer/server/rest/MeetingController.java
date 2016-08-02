@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import ee.juhan.meetingorganizer.server.rest.domain.MeetingDTO;
-import ee.juhan.meetingorganizer.server.rest.domain.ParticipantDTO;
+import ee.juhan.meetingorganizer.server.rest.domain.MeetingDto;
+import ee.juhan.meetingorganizer.server.rest.domain.ParticipantDto;
 import ee.juhan.meetingorganizer.server.service.MeetingService;
 
 @RestController
@@ -28,10 +28,10 @@ public class MeetingController {
 	private MeetingService meetingService;
 
 	@RequestMapping(method = RequestMethod.POST, value = ControllerConstants.NEW_PATH)
-	public final ResponseEntity<MeetingDTO> newMeetingRequest(@RequestBody MeetingDTO meetingDTO,
+	public final ResponseEntity<MeetingDto> newMeetingRequest(@RequestBody MeetingDto meetingDto,
 			@CookieValue(value = ControllerConstants.SID) String sid) {
-		LOG.info("New meeting request: " + meetingDTO.getTitle());
-		MeetingDTO response = meetingService.newMeeting(meetingDTO, sid);
+		LOG.info("New meeting request: " + meetingDto.getTitle());
+		MeetingDto response = meetingService.newMeeting(meetingDto, sid);
 		if (response == null) { return new ResponseEntity<>(HttpStatus.FORBIDDEN); }
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
@@ -40,12 +40,12 @@ public class MeetingController {
 			value = "/{" + ControllerConstants.MEETINGS_TYPE + "}" +
 					ControllerConstants.ACCOUNT_PATH + "/{" +
 					ControllerConstants.ACCOUNT_ID + "}")
-	public final ResponseEntity<List<MeetingDTO>> getMeetingsRequest(
+	public final ResponseEntity<List<MeetingDto>> getMeetingsRequest(
 			@PathVariable(ControllerConstants.MEETINGS_TYPE) String meetingsType,
 			@PathVariable(ControllerConstants.ACCOUNT_ID) int accountId,
 			@CookieValue(value = ControllerConstants.SID) String sid) {
 		LOG.info("Get meetings request for user " + accountId);
-		List<MeetingDTO> response = null;
+		List<MeetingDto> response = null;
 		switch (meetingsType) {
 			case ControllerConstants.ACTIVE_MEETINGS:
 				response = meetingService.getActiveMeetings(accountId, sid);
@@ -64,13 +64,13 @@ public class MeetingController {
 	@RequestMapping(method = RequestMethod.POST,
 			value = "/{" + ControllerConstants.MEETING_ID + "}" +
 					ControllerConstants.UPDATE_PARTICIPATION_ANSWER_PATH)
-	public final ResponseEntity<MeetingDTO> updateParticipationAnswerRequest(
-			@RequestBody ParticipantDTO participantDTO,
+	public final ResponseEntity<MeetingDto> updateParticipationAnswerRequest(
+			@RequestBody ParticipantDto participantDto,
 			@PathVariable(ControllerConstants.MEETING_ID) int meetingId,
 			@CookieValue(value = ControllerConstants.SID) String sid) {
-		LOG.info("Update participation answer request for participant " + participantDTO);
-		MeetingDTO response =
-				meetingService.updateParticipationAnswer(participantDTO, meetingId, sid);
+		LOG.info("Update participation answer request for participant " + participantDto);
+		MeetingDto response =
+				meetingService.updateParticipationAnswer(participantDto, meetingId, sid);
 		if (response == null) { return new ResponseEntity<>(HttpStatus.FORBIDDEN); }
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
@@ -78,13 +78,13 @@ public class MeetingController {
 	@RequestMapping(method = RequestMethod.POST,
 			value = "/{" + ControllerConstants.MEETING_ID + "}" +
 					ControllerConstants.UPDATE_PARTICIPANT_LOCATION_PATH)
-	public final ResponseEntity<MeetingDTO> updateParticipantLocationRequest(
-			@RequestBody ParticipantDTO participantDTO,
+	public final ResponseEntity<MeetingDto> updateParticipantLocationRequest(
+			@RequestBody ParticipantDto participantDto,
 			@PathVariable(ControllerConstants.MEETING_ID) int meetingId,
 			@CookieValue(value = ControllerConstants.SID) String sid) {
-		LOG.info("Update participant location request for participant " + participantDTO);
-		MeetingDTO response =
-				meetingService.updateParticipantLocation(participantDTO, meetingId, sid);
+		LOG.info("Update participant location request for participant " + participantDto);
+		MeetingDto response =
+				meetingService.updateParticipantLocation(participantDto, meetingId, sid);
 		if (response == null) { return new ResponseEntity<>(HttpStatus.FORBIDDEN); }
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
@@ -92,11 +92,11 @@ public class MeetingController {
 	@RequestMapping(method = RequestMethod.POST,
 			value = "/{" + ControllerConstants.MEETING_ID + "}" +
 					ControllerConstants.GENERATE_RECOMMENDED_LOCATIONS_PATH)
-	public final ResponseEntity<MeetingDTO> generateRecommendedLocationsRequest(
+	public final ResponseEntity<MeetingDto> generateRecommendedLocationsRequest(
 			@PathVariable(ControllerConstants.MEETING_ID) int meetingId,
 			@CookieValue(value = ControllerConstants.SID) String sid) {
 		LOG.info("Generate recommended locations request for meeting " + meetingId);
-		MeetingDTO response = meetingService.generateRecommendedLocations(meetingId, sid);
+		MeetingDto response = meetingService.generateRecommendedLocations(meetingId, sid);
 		if (response == null) { return new ResponseEntity<>(HttpStatus.FORBIDDEN); }
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}

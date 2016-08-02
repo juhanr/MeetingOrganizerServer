@@ -11,12 +11,12 @@ import ee.juhan.meetingorganizer.server.core.domain.Account;
 import ee.juhan.meetingorganizer.server.core.domain.Participant;
 import ee.juhan.meetingorganizer.server.core.repository.AccountRepository;
 import ee.juhan.meetingorganizer.server.core.repository.ParticipantRepository;
-import ee.juhan.meetingorganizer.server.core.util.HasherUtil;
-import ee.juhan.meetingorganizer.server.core.util.SIDGeneratorUtil;
-import ee.juhan.meetingorganizer.server.rest.domain.AccountDTO;
+import ee.juhan.meetingorganizer.server.rest.domain.AccountDto;
 import ee.juhan.meetingorganizer.server.rest.domain.ServerResponse;
 import ee.juhan.meetingorganizer.server.rest.domain.ServerResult;
 import ee.juhan.meetingorganizer.server.service.RegistrationService;
+import ee.juhan.meetingorganizer.server.util.HasherUtil;
+import ee.juhan.meetingorganizer.server.util.SidGeneratorUtil;
 
 @Service
 public class RegistrationServiceImpl implements RegistrationService {
@@ -28,25 +28,25 @@ public class RegistrationServiceImpl implements RegistrationService {
 	private ParticipantRepository participantRepository;
 
 	@Override
-	public final ServerResponse registration(AccountDTO accountDTO) {
-		if (accountRepository.findByEmail(accountDTO.getEmail()) != null) {
+	public final ServerResponse registration(AccountDto accountDto) {
+		if (accountRepository.findByEmail(accountDto.getEmail()) != null) {
 			return new ServerResponse(ServerResult.EMAIL_IN_USE);
 		}
-		if (accountRepository.findByPhoneNumber(accountDTO.getPhoneNumber()) != null) {
+		if (accountRepository.findByPhoneNumber(accountDto.getPhoneNumber()) != null) {
 			return new ServerResponse(ServerResult.PHONE_NUMBER_IN_USE);
 		}
 
-		Account account = createAccount(accountDTO);
+		Account account = createAccount(accountDto);
 		if (account == null) { return new ServerResponse(ServerResult.FAIL); }
-		accountDTO.setAccountId(account.getId());
-		return new ServerResponse(ServerResult.SUCCESS, account.getSid(), accountDTO);
+		accountDto.setAccountId(account.getId());
+		return new ServerResponse(ServerResult.SUCCESS, account.getSid(), accountDto);
 	}
 
-	private Account createAccount(AccountDTO accountDTO) {
+	private Account createAccount(AccountDto accountDto) {
 		try {
-			String sid = SIDGeneratorUtil.generateSID();
-			Account account = new Account(accountDTO.getName(), accountDTO.getEmail(),
-					HasherUtil.createHash(accountDTO.getPassword()), accountDTO.getPhoneNumber(),
+			String sid = SidGeneratorUtil.generateSid();
+			Account account = new Account(accountDto.getName(), accountDto.getEmail(),
+					HasherUtil.createHash(accountDto.getPassword()), accountDto.getPhoneNumber(),
 					sid);
 			accountRepository.save(account);
 			updateParticipantObjects(account);

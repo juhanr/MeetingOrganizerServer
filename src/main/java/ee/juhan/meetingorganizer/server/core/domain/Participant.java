@@ -13,9 +13,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import ee.juhan.meetingorganizer.server.rest.domain.MapCoordinate;
-import ee.juhan.meetingorganizer.server.rest.domain.ParticipantDTO;
+import ee.juhan.meetingorganizer.server.rest.domain.ParticipantDto;
 import ee.juhan.meetingorganizer.server.rest.domain.ParticipationAnswer;
-import ee.juhan.meetingorganizer.server.rest.domain.SendGPSLocationAnswer;
+import ee.juhan.meetingorganizer.server.rest.domain.SendGpsLocationAnswer;
 
 @Entity
 public class Participant implements Serializable {
@@ -43,7 +43,7 @@ public class Participant implements Serializable {
 	private ParticipationAnswer participationAnswer = ParticipationAnswer.NO_ANSWER;
 
 	@Column(nullable = false)
-	private SendGPSLocationAnswer sendGPSLocationAnswer = SendGPSLocationAnswer.NO_ANSWER;
+	private SendGpsLocationAnswer sendGpsLocationAnswer = SendGpsLocationAnswer.NO_ANSWER;
 
 	private MapCoordinate location;
 
@@ -54,7 +54,7 @@ public class Participant implements Serializable {
 
 	public Participant(Account account, Meeting meeting, String name, String email,
 			String phoneNumber, ParticipationAnswer participationAnswer,
-			SendGPSLocationAnswer sendGPSLocationAnswer, MapCoordinate location,
+			SendGpsLocationAnswer sendGpsLocationAnswer, MapCoordinate location,
 			Date locationTimestamp) {
 		this.account = account;
 		this.meeting = meeting;
@@ -62,7 +62,7 @@ public class Participant implements Serializable {
 		this.email = email;
 		this.phoneNumber = phoneNumber;
 		this.participationAnswer = participationAnswer;
-		this.sendGPSLocationAnswer = sendGPSLocationAnswer;
+		this.sendGpsLocationAnswer = sendGpsLocationAnswer;
 		this.location = location;
 		this.locationTimestamp = (Date) locationTimestamp.clone();
 	}
@@ -126,12 +126,12 @@ public class Participant implements Serializable {
 		this.participationAnswer = participationAnswer;
 	}
 
-	public SendGPSLocationAnswer getSendGPSLocationAnswer() {
-		return sendGPSLocationAnswer;
+	public SendGpsLocationAnswer getSendGPSLocationAnswer() {
+		return sendGpsLocationAnswer;
 	}
 
-	public void setSendGPSLocationAnswer(SendGPSLocationAnswer sendGPSLocationAnswer) {
-		this.sendGPSLocationAnswer = sendGPSLocationAnswer;
+	public void setSendGPSLocationAnswer(SendGpsLocationAnswer sendGpsLocationAnswer) {
+		this.sendGpsLocationAnswer = sendGpsLocationAnswer;
 	}
 
 	public final MapCoordinate getLocation() {
@@ -150,18 +150,18 @@ public class Participant implements Serializable {
 		this.locationTimestamp = (Date) locationTimestamp.clone();
 	}
 
-	public final ParticipantDTO toDTO() {
+	public final ParticipantDto toDTO() {
 		int accountId = account == null ? 0 : account.getId();
 		int meetingId = meeting == null ? 0 : meeting.getId();
-		return new ParticipantDTO(id, accountId, meetingId, name, email, phoneNumber,
-				participationAnswer, sendGPSLocationAnswer, location, locationTimestamp);
+		return new ParticipantDto(id, accountId, meetingId, name, email, phoneNumber,
+				participationAnswer, sendGpsLocationAnswer, location, locationTimestamp);
 	}
 
-	public final Participant updateLocation(ParticipantDTO participantDTO) {
-		this.sendGPSLocationAnswer = participantDTO.getSendGPSLocationAnswer();
-		if (sendGPSLocationAnswer == SendGPSLocationAnswer.SEND) {
-			this.location = participantDTO.getLocation();
-			this.locationTimestamp = participantDTO.getLocationTimestamp();
+	public final Participant updateLocation(ParticipantDto participantDto) {
+		this.sendGpsLocationAnswer = participantDto.getSendGpsLocationAnswer();
+		if (sendGpsLocationAnswer == SendGpsLocationAnswer.SEND) {
+			this.location = participantDto.getLocation();
+			this.locationTimestamp = participantDto.getLocationTimestamp();
 		} else {
 			this.location = null;
 			this.locationTimestamp = null;

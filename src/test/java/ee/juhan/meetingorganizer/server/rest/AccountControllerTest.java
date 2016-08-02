@@ -25,7 +25,7 @@ import ee.juhan.meetingorganizer.server.Application;
 import ee.juhan.meetingorganizer.server.TestUtil;
 import ee.juhan.meetingorganizer.server.core.domain.Account;
 import ee.juhan.meetingorganizer.server.core.repository.AccountRepository;
-import ee.juhan.meetingorganizer.server.rest.domain.ContactDTO;
+import ee.juhan.meetingorganizer.server.rest.domain.ContactDto;
 import ee.juhan.meetingorganizer.server.service.AccountService;
 
 import static org.hamcrest.Matchers.is;
@@ -65,8 +65,8 @@ public class AccountControllerTest {
 	public void checkContactsSuccess() throws Exception {
 		Account testAccount = TestUtil.generateTestAccount(accountRepository);
 		assertNotNull(testAccount);
-		List<ContactDTO> testContacts = TestUtil.generateTestContactsList(1);
-		ContactDTO testContact = testContacts.get(0);
+		List<ContactDto> testContacts = TestUtil.generateTestContactsList(1);
+		ContactDto testContact = testContacts.get(0);
 		Cookie goodCookie = new Cookie("sid", testAccount.getSid());
 
 		when(accountService.checkContacts(eq(testAccount.getId()), any(testContacts.getClass()),
@@ -89,7 +89,7 @@ public class AccountControllerTest {
 	public void checkContactsFail() throws Exception {
 		Account testAccount = TestUtil.generateTestAccount(accountRepository);
 		assertNotNull(testAccount);
-		List<ContactDTO> testContacts = TestUtil.generateTestContactsList(1);
+		List<ContactDto> testContacts = TestUtil.generateTestContactsList(1);
 		Cookie badCookie = new Cookie("sid", testAccount.getSid() + "j");
 		when(accountService.checkContacts(eq(testAccount.getId()), any(testContacts.getClass()),
 						eq(badCookie.getValue()))).thenReturn(null);
