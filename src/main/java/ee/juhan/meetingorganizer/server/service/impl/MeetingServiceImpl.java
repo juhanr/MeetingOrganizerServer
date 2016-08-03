@@ -32,8 +32,7 @@ public class MeetingServiceImpl implements MeetingService {
 	private AccountRepository accountRepository;
 
 	@Override
-	public final MeetingDto newMeeting(MeetingDto meetingDto, String sid) {
-		if (!isValidSID(meetingDto.getLeaderId(), sid)) { return null; }
+	public final MeetingDto newMeeting(MeetingDto meetingDto) {
 		Meeting meeting = createMeeting(meetingDto);
 		meetingRepository.save(meeting);
 		addParticipants(meeting, meetingDto);
@@ -42,53 +41,27 @@ public class MeetingServiceImpl implements MeetingService {
 	}
 
 	@Override
-	public final List<MeetingDto> getActiveMeetings(int accountId, String sid) {
-		if (!isValidSID(accountId, sid)) { return null; }
+	public final List<MeetingDto> getActiveMeetings(int accountId) {
 		return meetingsListToDTO(participantRepository
 				.findActiveMeetings(accountId, ParticipationAnswer.PARTICIPATING));
 	}
 
 	@Override
-	public final List<MeetingDto> getPastMeetings(int accountId, String sid) {
-		if (!isValidSID(accountId, sid)) { return null; }
+	public final List<MeetingDto> getPastMeetings(int accountId) {
 		return meetingsListToDTO(participantRepository
 				.findPastMeetings(accountId, ParticipationAnswer.PARTICIPATING));
 	}
 
 	@Override
-	public final List<MeetingDto> getInvitations(int accountId, String sid) {
-		if (!isValidSID(accountId, sid)) { return null; }
+	public final List<MeetingDto> getInvitations(int accountId) {
 		return meetingsListToDTO(
 				participantRepository.findInvitations(accountId, ParticipationAnswer.NO_ANSWER));
 	}
 
 	@Override
-	public final MeetingDto updateParticipationAnswer(ParticipantDto participantDto, int meetingId,
-			String sid) {
-		if (!isValidSID(participantDto.getAccountId(), sid)) { return null; }
-		Participant participant = participantRepository.findById(participantDto.getId());
-		participant.setParticipationAnswer(participantDto.getParticipationAnswer());
-		participantRepository.save(participant);
+	public final MeetingDto generateRecommendedLocations(int meetingId) {
 		Meeting meeting = meetingRepository.findById(meetingId);
-		return meeting.toDTO(participantRepository);
-	}
-
-	@Override
-	public final MeetingDto updateParticipantLocation(ParticipantDto participantDto, int meetingId,
-			String sid) {
-		if (!isValidSID(participantDto.getAccountId(), sid)) { return null; }
-		Participant participant = participantRepository.findById(participantDto.getId());
-		participant.updateLocation(participantDto);
-		participantRepository.save(participant);
-		Meeting meeting = meetingRepository.findById(meetingId);
-		return meeting.toDTO(participantRepository);
-	}
-
-	@Override
-	public final MeetingDto generateRecommendedLocations(int meetingId, String sid) {
-		Meeting meeting = meetingRepository.findById(meetingId);
-		if (!isValidSID(meeting.getLeaderId(), sid) ||
-				meeting.getStatus() != MeetingStatus.WAITING_PARTICIPANT_ANSWERS) {
+		if (meeting.getStatus() != MeetingStatus.WAITING_PARTICIPANT_ANSWERS) {
 			return null;
 		}
 		meeting.setStatus(MeetingStatus.WAITING_LOCATION_CHOICE);
@@ -135,11 +108,6 @@ public class MeetingServiceImpl implements MeetingService {
 			participantRepository.save(participant);
 		}
 		return meeting;
-	}
-
-	private boolean isValidSID(int accountId, String sid) {
-		Account account = accountRepository.findById(accountId);
-		return account != null && account.getSid().equals(sid);
 	}
 
 	private void checkLocationType(Meeting meeting) {

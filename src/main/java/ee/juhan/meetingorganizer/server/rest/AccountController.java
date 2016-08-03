@@ -16,6 +16,7 @@ import java.util.List;
 
 import ee.juhan.meetingorganizer.server.rest.domain.ContactDto;
 import ee.juhan.meetingorganizer.server.service.AccountService;
+import ee.juhan.meetingorganizer.server.service.AuthorizationService;
 
 @RestController
 @RequestMapping(ControllerConstants.ACCOUNT_PATH)
@@ -26,6 +27,9 @@ public class AccountController {
 	@Autowired
 	private AccountService accountService;
 
+	@Autowired
+	private AuthorizationService authorizationService;
+
 	@RequestMapping(method = RequestMethod.POST,
 			value = "/{" + ControllerConstants.ACCOUNT_ID + "}" +
 					ControllerConstants.CHECK_CONTACTS_PATH)
@@ -34,8 +38,8 @@ public class AccountController {
 			@RequestBody List<ContactDto> contacts,
 			@CookieValue(value = ControllerConstants.SID) String sid) {
 		LOG.info("Check contacts request: accountId=" + accountId + ", sid=" + sid);
-		List<ContactDto> response = accountService.checkContacts(accountId, contacts, sid);
-		if (response == null) { return new ResponseEntity<>(HttpStatus.FORBIDDEN); }
+		authorizationService.authorizeAccount(accountId, sid);
+		List<ContactDto> response = accountService.checkContacts(accountId, contacts);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 
 	}

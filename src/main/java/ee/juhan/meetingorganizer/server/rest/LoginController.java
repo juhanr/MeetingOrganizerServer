@@ -24,7 +24,7 @@ public class LoginController {
 	private LoginService loginService;
 
 	@RequestMapping(method = RequestMethod.POST)
-	public final ResponseEntity<ServerResponse> registrationRequest(
+	public final ResponseEntity<ServerResponse> loginRequest(
 			@RequestBody AccountDto accountDto) {
 		LOG.info("Log in request: " + accountDto.getEmail());
 		ServerResponse response = loginService.login(accountDto);
