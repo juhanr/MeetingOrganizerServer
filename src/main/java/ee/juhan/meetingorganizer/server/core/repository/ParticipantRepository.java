@@ -8,6 +8,7 @@ import java.util.List;
 import ee.juhan.meetingorganizer.server.core.domain.Meeting;
 import ee.juhan.meetingorganizer.server.core.domain.Participant;
 import ee.juhan.meetingorganizer.server.rest.domain.ParticipationAnswer;
+import ee.juhan.meetingorganizer.server.rest.domain.SendGpsLocationAnswer;
 
 public interface ParticipantRepository extends CrudRepository<Participant, Integer> {
 
@@ -43,6 +44,13 @@ public interface ParticipantRepository extends CrudRepository<Participant, Integ
 			"where p.meeting.id = ?1 " +
 			"order by p.id")
 	List<Participant> findParticipantsByMeetingId(int meetingId);
+
+	@Query("select p from Participant p " +
+			"where p.account.id = ?1 and p.sendGpsLocationAnswer = ?2 " +
+			"and p.meeting.endDateTime >= now() and p.meeting.startDateTime <= now() " +
+			"order by p.id")
+	List<Participant> findOngoingMeetingParticipantsByAccountId(int account,
+			SendGpsLocationAnswer sendGpsLocationAnswer);
 
 	@Query("select m from Participant p " +
 			"join p.meeting m " +

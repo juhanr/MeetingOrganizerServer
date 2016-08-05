@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -64,16 +65,23 @@ public class MeetingController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
-	@RequestMapping(method = RequestMethod.POST,
-			value = "/{" + ControllerConstants.MEETING_ID + "}" +
-					ControllerConstants.GENERATE_RECOMMENDED_LOCATIONS_PATH)
-	public final ResponseEntity<MeetingDto> generateRecommendedLocationsRequest(
+	@RequestMapping(method = RequestMethod.GET, value = "/{" + ControllerConstants.MEETING_ID + "}")
+	public final ResponseEntity<MeetingDto> getMeetingRequest(
 			@PathVariable(ControllerConstants.MEETING_ID) int meetingId,
 			@CookieValue(value = ControllerConstants.SID) String sid) {
-		LOG.info("Generate recommended locations request for meeting " + meetingId);
+		LOG.info("Get meeting request for meeting " + meetingId);
 		authorizationService.authorizeMeetingLeader(meetingId, sid);
-		MeetingDto response = meetingService.generateRecommendedLocations(meetingId);
+		MeetingDto response = meetingService.getMeeting(meetingId);
 		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = ControllerConstants.UPDATE_PATH)
+	@ResponseStatus(HttpStatus.OK)
+	public final void updateMeetingRequest(@RequestBody MeetingDto meetingDto,
+			@CookieValue(value = ControllerConstants.SID) String sid) {
+		LOG.info("Update meeting request for meeting " + meetingDto.getId());
+		authorizationService.authorizeMeetingLeader(meetingDto.getId(), sid);
+		meetingService.updateMeeting(meetingDto);
 	}
 
 }

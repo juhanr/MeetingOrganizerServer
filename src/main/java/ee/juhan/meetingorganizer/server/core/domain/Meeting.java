@@ -1,7 +1,6 @@
 package ee.juhan.meetingorganizer.server.core.domain;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -58,8 +57,7 @@ public class Meeting implements Serializable {
 	@ElementCollection
 	private Set<MapCoordinate> userPreferredLocations = new HashSet<>();
 
-	@ElementCollection
-	private List<MapCoordinate> recommendedLocations = new ArrayList<>();
+	private MapCoordinate recommendedLocation;
 
 	@Column(nullable = false)
 	private MeetingStatus status = MeetingStatus.ACTIVE;
@@ -177,12 +175,12 @@ public class Meeting implements Serializable {
 		this.userPreferredLocations.remove(userPreferredLocation);
 	}
 
-	public List<MapCoordinate> getRecommendedLocations() {
-		return recommendedLocations;
+	public MapCoordinate getRecommendedLocation() {
+		return recommendedLocation;
 	}
 
-	public void setRecommendedLocations(List<MapCoordinate> recommendedLocations) {
-		this.recommendedLocations = recommendedLocations;
+	public void setRecommendedLocation(MapCoordinate recommendedLocation) {
+		this.recommendedLocation = recommendedLocation;
 	}
 
 	public MeetingStatus getStatus() {

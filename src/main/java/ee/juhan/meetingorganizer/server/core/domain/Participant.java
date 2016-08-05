@@ -157,16 +157,4 @@ public class Participant implements Serializable {
 				participationAnswer, sendGpsLocationAnswer, location, locationTimestamp);
 	}
 
-	public final Participant updateLocation(ParticipantDto participantDto) {
-		this.sendGpsLocationAnswer = participantDto.getSendGpsLocationAnswer();
-		if (sendGpsLocationAnswer == SendGpsLocationAnswer.SEND) {
-			this.location = participantDto.getLocation();
-			this.locationTimestamp = participantDto.getLocationTimestamp();
-		} else {
-			this.location = null;
-			this.locationTimestamp = null;
-		}
-		return this;
-	}
-
 }

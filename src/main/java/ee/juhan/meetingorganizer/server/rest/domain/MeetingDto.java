@@ -23,7 +23,7 @@ public class MeetingDto {
 	private String locationName;
 	private List<ParticipantDto> participants = new ArrayList<>();
 	private Set<MapCoordinate> userPreferredLocations = new HashSet<>();
-	private List<MapCoordinate> recommendedLocations = new ArrayList<>();
+	private MapCoordinate recommendedLocation;
 	private MeetingStatus status;
 
 	public MeetingDto() {}
@@ -145,12 +145,12 @@ public class MeetingDto {
 		this.userPreferredLocations.remove(userPreferredLocation);
 	}
 
-	public List<MapCoordinate> getRecommendedLocations() {
-		return recommendedLocations;
+	public MapCoordinate getRecommendedLocation() {
+		return recommendedLocation;
 	}
 
-	public void setRecommendedLocations(List<MapCoordinate> recommendedLocations) {
-		this.recommendedLocations = recommendedLocations;
+	public void setRecommendedLocation(MapCoordinate recommendedLocation) {
+		this.recommendedLocation = recommendedLocation;
 	}
 
 	public MeetingStatus getStatus() {

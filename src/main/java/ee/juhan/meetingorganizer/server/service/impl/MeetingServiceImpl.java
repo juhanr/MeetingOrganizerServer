@@ -36,7 +36,11 @@ public class MeetingServiceImpl implements MeetingService {
 		Meeting meeting = createMeeting(meetingDto);
 		meetingRepository.save(meeting);
 		addParticipants(meeting, meetingDto);
-		checkLocationType(meeting);
+		if (meeting.getLocationType() == LocationType.GENERATED_FROM_PARAMETERS ||
+				meeting.getLocationType() == LocationType.GENERATED_FROM_PREFERRED_LOCATIONS) {
+			meeting.setStatus(MeetingStatus.WAITING_LOCATION_CHOICE);
+			meetingRepository.save(meeting);
+		}
 		return meeting.toDTO(participantRepository);
 	}
 
@@ -59,18 +63,22 @@ public class MeetingServiceImpl implements MeetingService {
 	}
 
 	@Override
-	public final MeetingDto generateRecommendedLocations(int meetingId) {
+	public final MeetingDto getMeeting(int meetingId) {
 		Meeting meeting = meetingRepository.findById(meetingId);
-		if (meeting.getStatus() != MeetingStatus.WAITING_PARTICIPANT_ANSWERS) {
-			return null;
-		}
-		meeting.setStatus(MeetingStatus.WAITING_LOCATION_CHOICE);
-		if (meeting.getLocationType() == LocationType.GENERATED_FROM_PREFERRED_LOCATIONS) {
-			// TODO
-		} else if (meeting.getLocationType() == LocationType.GENERATED_FROM_PARAMETERS) {
-			// TODO
-		}
 		return meeting.toDTO(participantRepository);
+	}
+
+	@Override
+	public final void updateMeeting(MeetingDto meetingDto) {
+		Meeting meeting = meetingRepository.findById(meetingDto.getId());
+		meeting.setTitle(meetingDto.getTitle());
+		meeting.setDescription(meetingDto.getDescription());
+		meeting.setLocation(meetingDto.getLocation());
+		meeting.setLocationType(meetingDto.getLocationType());
+		meeting.setLocationName(meetingDto.getLocationName());
+		meeting.setRecommendedLocation(meetingDto.getRecommendedLocation());
+		meeting.setStatus(meetingDto.getStatus());
+		meetingRepository.save(meeting);
 	}
 
 	private List<MeetingDto> meetingsListToDTO(List<Meeting> meetings) {
@@ -108,14 +116,6 @@ public class MeetingServiceImpl implements MeetingService {
 			participantRepository.save(participant);
 		}
 		return meeting;
-	}
-
-	private void checkLocationType(Meeting meeting) {
-		if (meeting.getLocationType() == LocationType.GENERATED_FROM_PARAMETERS ||
-				meeting.getLocationType() == LocationType.GENERATED_FROM_PREFERRED_LOCATIONS) {
-			meeting.setStatus(MeetingStatus.WAITING_LOCATION_CHOICE);
-			meetingRepository.save(meeting);
-		}
 	}
 
 }

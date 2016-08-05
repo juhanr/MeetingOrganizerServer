@@ -5,8 +5,7 @@ public final class ControllerConstants {
 	// Request paths
 	public static final String MEETING_PATH = "/meeting";
 	public static final String NEW_PATH = "/new";
-	public static final String GENERATE_RECOMMENDED_LOCATIONS_PATH =
-			"/generate-recommended-locations";
+	public static final String UPDATE_PATH = "/update";
 
 	public static final String REGISTER_PATH = "/register";
 
@@ -18,6 +17,7 @@ public final class ControllerConstants {
 	public static final String PARTICIPANT_PATH = "/participant";
 	public static final String UPDATE_PARTICIPATION_ANSWER_PATH = "/update-participation-answer";
 	public static final String UPDATE_SEND_LOCATION_ANSWER_PATH = "/update-send-location-answer";
+	public static final String UPDATE_LOCATION_ALL_PATH = "/update-location-all";
 
 	// Path variables
 	public static final String ACCOUNT_ID = "accountId";

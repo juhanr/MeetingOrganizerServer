@@ -14,6 +14,8 @@ public interface MeetingService {
 
 	List<MeetingDto> getInvitations(int accountId);
 
-	MeetingDto generateRecommendedLocations(int meetingId);
+	MeetingDto getMeeting(int meetingId);
+
+	void updateMeeting(MeetingDto meetingDto);
 
 }
