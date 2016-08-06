@@ -1,10 +1,9 @@
 package ee.juhan.meetingorganizer.server.core.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -55,7 +54,7 @@ public class Meeting implements Serializable {
 	private String locationName;
 
 	@ElementCollection
-	private Set<MapCoordinate> userPreferredLocations = new HashSet<>();
+	private List<MapCoordinate> userPreferredLocations = new ArrayList<>();
 
 	private MapCoordinate recommendedLocation;
 
@@ -66,7 +65,7 @@ public class Meeting implements Serializable {
 
 	public Meeting(int leaderId, String title, String description, Date startDateTime,
 			Date endDateTime, MapCoordinate location, LocationType locationType,
-			String locationName, Set<MapCoordinate> userPreferredLocations, MeetingStatus status) {
+			String locationName, List<MapCoordinate> userPreferredLocations, MeetingStatus status) {
 		this.leaderId = leaderId;
 		this.title = title;
 		this.description = description;
@@ -159,11 +158,11 @@ public class Meeting implements Serializable {
 		this.locationName = locationName;
 	}
 
-	public final Set<MapCoordinate> getUserPreferredLocations() {
+	public final List<MapCoordinate> getUserPreferredLocations() {
 		return userPreferredLocations;
 	}
 
-	public final void setUserPreferredLocations(Set<MapCoordinate> userPreferredLocations) {
+	public final void setUserPreferredLocations(List<MapCoordinate> userPreferredLocations) {
 		this.userPreferredLocations = userPreferredLocations;
 	}
 
@@ -191,10 +190,11 @@ public class Meeting implements Serializable {
 		this.status = status;
 	}
 
-	public final MeetingDto toDTO(ParticipantRepository participantRepository) {
+	public final MeetingDto toDto(ParticipantRepository participantRepository) {
 		MeetingDto meetingDto =
 				new MeetingDto(id, leaderId, title, description, startDateTime, endDateTime,
-						location, locationType, locationName, status);
+						location, locationType, locationName, userPreferredLocations,
+						recommendedLocation, status);
 		List<Participant> participants = participantRepository.findParticipantsByMeetingId(this.id);
 		for (Participant participant : participants) {
 			ParticipantDto participantDto = participant.toDTO();

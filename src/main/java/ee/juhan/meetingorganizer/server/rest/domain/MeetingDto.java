@@ -4,9 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import ee.juhan.meetingorganizer.server.util.JsonDateDeserializer;
 
@@ -22,7 +20,7 @@ public class MeetingDto {
 	private LocationType locationType;
 	private String locationName;
 	private List<ParticipantDto> participants = new ArrayList<>();
-	private Set<MapCoordinate> userPreferredLocations = new HashSet<>();
+	private List<MapCoordinate> userPreferredLocations = new ArrayList<>();
 	private MapCoordinate recommendedLocation;
 	private MeetingStatus status;
 
@@ -30,16 +28,19 @@ public class MeetingDto {
 
 	public MeetingDto(int id, int leaderId, String title, String description, Date startDateTime,
 			Date endDateTime, MapCoordinate location, LocationType locationType,
-			String locationName, MeetingStatus status) {
+			String locationName, List<MapCoordinate> userPreferredLocations,
+			MapCoordinate recommendedLocation, MeetingStatus status) {
 		this.id = id;
 		this.leaderId = leaderId;
 		this.title = title;
 		this.description = description;
-		this.startDateTime = (Date) startDateTime.clone();
-		this.endDateTime = (Date) endDateTime.clone();
+		this.startDateTime = startDateTime;
+		this.endDateTime = endDateTime;
 		this.location = location;
 		this.locationType = locationType;
 		this.locationName = locationName;
+		this.userPreferredLocations = userPreferredLocations;
+		this.recommendedLocation = recommendedLocation;
 		this.status = status;
 	}
 
@@ -129,11 +130,11 @@ public class MeetingDto {
 		return participants.add(participant);
 	}
 
-	public final Set<MapCoordinate> getUserPreferredLocations() {
+	public final List<MapCoordinate> getUserPreferredLocations() {
 		return userPreferredLocations;
 	}
 
-	public final void setUserPreferredLocations(Set<MapCoordinate> userPreferredLocations) {
+	public final void setUserPreferredLocations(List<MapCoordinate> userPreferredLocations) {
 		this.userPreferredLocations = userPreferredLocations;
 	}
 

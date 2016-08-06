@@ -41,7 +41,7 @@ public class MeetingServiceImpl implements MeetingService {
 			meeting.setStatus(MeetingStatus.WAITING_LOCATION_CHOICE);
 			meetingRepository.save(meeting);
 		}
-		return meeting.toDTO(participantRepository);
+		return meeting.toDto(participantRepository);
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class MeetingServiceImpl implements MeetingService {
 	@Override
 	public final MeetingDto getMeeting(int meetingId) {
 		Meeting meeting = meetingRepository.findById(meetingId);
-		return meeting.toDTO(participantRepository);
+		return meeting.toDto(participantRepository);
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public class MeetingServiceImpl implements MeetingService {
 	private List<MeetingDto> meetingsListToDTO(List<Meeting> meetings) {
 		List<MeetingDto> meetingsDTO = new ArrayList<>();
 		for (Meeting meeting : meetings) {
-			meetingsDTO.add(meeting.toDTO(participantRepository));
+			meetingsDTO.add(meeting.toDto(participantRepository));
 		}
 		return meetingsDTO;
 	}
