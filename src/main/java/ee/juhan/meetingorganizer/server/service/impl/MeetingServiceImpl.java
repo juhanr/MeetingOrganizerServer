@@ -12,7 +12,7 @@ import ee.juhan.meetingorganizer.server.core.domain.Participant;
 import ee.juhan.meetingorganizer.server.core.repository.AccountRepository;
 import ee.juhan.meetingorganizer.server.core.repository.MeetingRepository;
 import ee.juhan.meetingorganizer.server.core.repository.ParticipantRepository;
-import ee.juhan.meetingorganizer.server.rest.domain.LocationType;
+import ee.juhan.meetingorganizer.server.rest.domain.LocationChoice;
 import ee.juhan.meetingorganizer.server.rest.domain.MeetingDto;
 import ee.juhan.meetingorganizer.server.rest.domain.MeetingStatus;
 import ee.juhan.meetingorganizer.server.rest.domain.ParticipantDto;
@@ -36,8 +36,9 @@ public class MeetingServiceImpl implements MeetingService {
 		Meeting meeting = createMeeting(meetingDto);
 		meetingRepository.save(meeting);
 		addParticipants(meeting, meetingDto);
-		if (meeting.getLocationType() == LocationType.GENERATED_FROM_PARAMETERS ||
-				meeting.getLocationType() == LocationType.GENERATED_FROM_PREFERRED_LOCATIONS) {
+		if (meeting.getLocationChoice() == LocationChoice.RECOMMENDED_BY_PLACE_TYPE ||
+				meeting.getLocationChoice() ==
+						LocationChoice.RECOMMENDED_FROM_PREFERRED_LOCATIONS) {
 			meeting.setStatus(MeetingStatus.WAITING_LOCATION_CHOICE);
 			meetingRepository.save(meeting);
 		}
@@ -73,10 +74,8 @@ public class MeetingServiceImpl implements MeetingService {
 		Meeting meeting = meetingRepository.findById(meetingDto.getId());
 		meeting.setTitle(meetingDto.getTitle());
 		meeting.setDescription(meetingDto.getDescription());
-		meeting.setLocation(meetingDto.getLocation());
-		meeting.setLocationType(meetingDto.getLocationType());
-		meeting.setLocationName(meetingDto.getLocationName());
-		meeting.setRecommendedLocation(meetingDto.getRecommendedLocation());
+		meeting.setMapLocation(meetingDto.getMapLocation());
+		meeting.setLocationChoice(meetingDto.getLocationChoice());
 		meeting.setStatus(meetingDto.getStatus());
 		meetingRepository.save(meeting);
 	}
@@ -92,8 +91,8 @@ public class MeetingServiceImpl implements MeetingService {
 	private Meeting createMeeting(MeetingDto meetingDto) {
 		return new Meeting(meetingDto.getLeaderId(), meetingDto.getTitle(),
 				meetingDto.getDescription(), meetingDto.getStartDateTime(),
-				meetingDto.getEndDateTime(), meetingDto.getLocation(), meetingDto.getLocationType(),
-				meetingDto.getLocationName(), meetingDto.getUserPreferredLocations(),
+				meetingDto.getEndDateTime(), meetingDto.getMapLocation(),
+				meetingDto.getLocationChoice(), meetingDto.getUserPreferredLocations(),
 				meetingDto.getStatus());
 	}
 
@@ -107,7 +106,7 @@ public class MeetingServiceImpl implements MeetingService {
 						new Participant(account, meeting, account.getName(), account.getEmail(),
 								account.getPhoneNumber(), participantDto.getParticipationAnswer(),
 								participantDto.getSendGpsLocationAnswer(),
-								participantDto.getLocation(),
+								participantDto.getMapLocation(),
 								participantDto.getLocationTimestamp());
 			} else {
 				participant = new Participant(meeting, participantDto.getName(),

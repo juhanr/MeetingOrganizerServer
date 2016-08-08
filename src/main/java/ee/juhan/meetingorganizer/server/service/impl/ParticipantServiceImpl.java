@@ -50,7 +50,7 @@ public class ParticipantServiceImpl implements ParticipantService {
 		boolean mustSendMoreLocationUpdates = false;
 		for (Participant participant : participants) {
 			mustSendMoreLocationUpdates = true;
-			participant.setLocation(participantDto.getLocation());
+			participant.setMapLocation(participantDto.getMapLocation());
 			participant.setLocationTimestamp(participantDto.getLocationTimestamp());
 			participantRepository.save(participant);
 		}

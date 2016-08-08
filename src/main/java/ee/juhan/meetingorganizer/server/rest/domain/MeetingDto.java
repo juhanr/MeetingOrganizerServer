@@ -16,31 +16,26 @@ public class MeetingDto {
 	private String description;
 	private Date startDateTime;
 	private Date endDateTime;
-	private MapCoordinate location;
-	private LocationType locationType;
-	private String locationName;
+	private MapLocation mapLocation;
+	private LocationChoice locationChoice;
 	private List<ParticipantDto> participants = new ArrayList<>();
-	private List<MapCoordinate> userPreferredLocations = new ArrayList<>();
-	private MapCoordinate recommendedLocation;
+	private List<MapLocation> userPreferredLocations = new ArrayList<>();
 	private MeetingStatus status;
 
 	public MeetingDto() {}
 
 	public MeetingDto(int id, int leaderId, String title, String description, Date startDateTime,
-			Date endDateTime, MapCoordinate location, LocationType locationType,
-			String locationName, List<MapCoordinate> userPreferredLocations,
-			MapCoordinate recommendedLocation, MeetingStatus status) {
+			Date endDateTime, MapLocation mapLocation, LocationChoice locationChoice,
+			List<MapLocation> userPreferredLocations, MeetingStatus status) {
 		this.id = id;
 		this.leaderId = leaderId;
 		this.title = title;
 		this.description = description;
 		this.startDateTime = startDateTime;
 		this.endDateTime = endDateTime;
-		this.location = location;
-		this.locationType = locationType;
-		this.locationName = locationName;
+		this.mapLocation = mapLocation;
+		this.locationChoice = locationChoice;
 		this.userPreferredLocations = userPreferredLocations;
-		this.recommendedLocation = recommendedLocation;
 		this.status = status;
 	}
 
@@ -94,28 +89,20 @@ public class MeetingDto {
 		this.endDateTime = (Date) endTime.clone();
 	}
 
-	public final MapCoordinate getLocation() {
-		return location;
+	public final MapLocation getMapLocation() {
+		return mapLocation;
 	}
 
-	public final void setLocation(MapCoordinate location) {
-		this.location = location;
+	public final void setMapLocation(MapLocation mapLocation) {
+		this.mapLocation = mapLocation;
 	}
 
-	public final LocationType getLocationType() {
-		return locationType;
+	public final LocationChoice getLocationChoice() {
+		return locationChoice;
 	}
 
-	public final void setLocationType(LocationType locationType) {
-		this.locationType = locationType;
-	}
-
-	public String getLocationName() {
-		return locationName;
-	}
-
-	public void setLocationName(String locationName) {
-		this.locationName = locationName;
+	public final void setLocationChoice(LocationChoice locationChoice) {
+		this.locationChoice = locationChoice;
 	}
 
 	public final List<ParticipantDto> getParticipants() {
@@ -130,28 +117,20 @@ public class MeetingDto {
 		return participants.add(participant);
 	}
 
-	public final List<MapCoordinate> getUserPreferredLocations() {
+	public final List<MapLocation> getUserPreferredLocations() {
 		return userPreferredLocations;
 	}
 
-	public final void setUserPreferredLocations(List<MapCoordinate> userPreferredLocations) {
+	public final void setUserPreferredLocations(List<MapLocation> userPreferredLocations) {
 		this.userPreferredLocations = userPreferredLocations;
 	}
 
-	public final void addUserPreferredLocation(MapCoordinate userPreferredLocation) {
+	public final void addUserPreferredLocation(MapLocation userPreferredLocation) {
 		this.userPreferredLocations.add(userPreferredLocation);
 	}
 
-	public final void removeUserPreferredLocation(MapCoordinate userPreferredLocation) {
+	public final void removeUserPreferredLocation(MapLocation userPreferredLocation) {
 		this.userPreferredLocations.remove(userPreferredLocation);
-	}
-
-	public MapCoordinate getRecommendedLocation() {
-		return recommendedLocation;
-	}
-
-	public void setRecommendedLocation(MapCoordinate recommendedLocation) {
-		this.recommendedLocation = recommendedLocation;
 	}
 
 	public MeetingStatus getStatus() {

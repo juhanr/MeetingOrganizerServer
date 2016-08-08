@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import ee.juhan.meetingorganizer.server.rest.domain.MapCoordinate;
+import ee.juhan.meetingorganizer.server.rest.domain.MapLocation;
 import ee.juhan.meetingorganizer.server.rest.domain.ParticipantDto;
 import ee.juhan.meetingorganizer.server.rest.domain.ParticipationAnswer;
 import ee.juhan.meetingorganizer.server.rest.domain.SendGpsLocationAnswer;
@@ -45,7 +45,7 @@ public class Participant implements Serializable {
 	@Column(nullable = false)
 	private SendGpsLocationAnswer sendGpsLocationAnswer = SendGpsLocationAnswer.NO_ANSWER;
 
-	private MapCoordinate location;
+	private MapLocation mapLocation;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date locationTimestamp;
@@ -54,7 +54,7 @@ public class Participant implements Serializable {
 
 	public Participant(Account account, Meeting meeting, String name, String email,
 			String phoneNumber, ParticipationAnswer participationAnswer,
-			SendGpsLocationAnswer sendGpsLocationAnswer, MapCoordinate location,
+			SendGpsLocationAnswer sendGpsLocationAnswer, MapLocation mapLocation,
 			Date locationTimestamp) {
 		this.account = account;
 		this.meeting = meeting;
@@ -63,7 +63,7 @@ public class Participant implements Serializable {
 		this.phoneNumber = phoneNumber;
 		this.participationAnswer = participationAnswer;
 		this.sendGpsLocationAnswer = sendGpsLocationAnswer;
-		this.location = location;
+		this.mapLocation = mapLocation;
 		this.locationTimestamp = (Date) locationTimestamp.clone();
 	}
 
@@ -134,12 +134,12 @@ public class Participant implements Serializable {
 		this.sendGpsLocationAnswer = sendGpsLocationAnswer;
 	}
 
-	public final MapCoordinate getLocation() {
-		return location;
+	public final MapLocation getMapLocation() {
+		return mapLocation;
 	}
 
-	public final void setLocation(MapCoordinate location) {
-		this.location = location;
+	public final void setMapLocation(MapLocation mapLocation) {
+		this.mapLocation = mapLocation;
 	}
 
 	public Date getLocationTimestamp() {
@@ -154,7 +154,7 @@ public class Participant implements Serializable {
 		int accountId = account == null ? 0 : account.getId();
 		int meetingId = meeting == null ? 0 : meeting.getId();
 		return new ParticipantDto(id, accountId, meetingId, name, email, phoneNumber,
-				participationAnswer, sendGpsLocationAnswer, location, locationTimestamp);
+				participationAnswer, sendGpsLocationAnswer, mapLocation, locationTimestamp);
 	}
 
 }

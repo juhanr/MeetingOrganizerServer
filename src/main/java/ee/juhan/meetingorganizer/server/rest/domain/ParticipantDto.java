@@ -16,14 +16,14 @@ public class ParticipantDto {
 	private String phoneNumber;
 	private ParticipationAnswer participationAnswer = ParticipationAnswer.NO_ANSWER;
 	private SendGpsLocationAnswer sendGpsLocationAnswer = SendGpsLocationAnswer.NO_ANSWER;
-	private MapCoordinate location;
+	private MapLocation mapLocation;
 	private Date locationTimestamp;
 
 	public ParticipantDto() {}
 
 	public ParticipantDto(int id, int accountId, int meetingId, String name, String email,
 			String phoneNumber, ParticipationAnswer participationAnswer,
-			SendGpsLocationAnswer sendGpsLocationAnswer, MapCoordinate location,
+			SendGpsLocationAnswer sendGpsLocationAnswer, MapLocation mapLocation,
 			Date locationTimestamp) {
 		this.id = id;
 		this.accountId = accountId;
@@ -33,7 +33,7 @@ public class ParticipantDto {
 		this.phoneNumber = phoneNumber;
 		this.participationAnswer = participationAnswer;
 		this.sendGpsLocationAnswer = sendGpsLocationAnswer;
-		this.location = location;
+		this.mapLocation = mapLocation;
 		this.locationTimestamp = locationTimestamp;
 	}
 
@@ -101,12 +101,12 @@ public class ParticipantDto {
 		this.sendGpsLocationAnswer = sendGpsLocationAnswer;
 	}
 
-	public final MapCoordinate getLocation() {
-		return location;
+	public final MapLocation getMapLocation() {
+		return mapLocation;
 	}
 
-	public final void setLocation(MapCoordinate location) {
-		this.location = location;
+	public final void setMapLocation(MapLocation mapLocation) {
+		this.mapLocation = mapLocation;
 	}
 
 	public Date getLocationTimestamp() {

@@ -15,8 +15,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import ee.juhan.meetingorganizer.server.core.repository.ParticipantRepository;
-import ee.juhan.meetingorganizer.server.rest.domain.LocationType;
-import ee.juhan.meetingorganizer.server.rest.domain.MapCoordinate;
+import ee.juhan.meetingorganizer.server.rest.domain.LocationChoice;
+import ee.juhan.meetingorganizer.server.rest.domain.MapLocation;
 import ee.juhan.meetingorganizer.server.rest.domain.MeetingDto;
 import ee.juhan.meetingorganizer.server.rest.domain.MeetingStatus;
 import ee.juhan.meetingorganizer.server.rest.domain.ParticipantDto;
@@ -46,17 +46,13 @@ public class Meeting implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date endDateTime;
 
-	private MapCoordinate location;
+	private MapLocation mapLocation;
 
 	@Column(nullable = false)
-	private LocationType locationType;
-
-	private String locationName;
+	private LocationChoice locationChoice;
 
 	@ElementCollection
-	private List<MapCoordinate> userPreferredLocations = new ArrayList<>();
-
-	private MapCoordinate recommendedLocation;
+	private List<MapLocation> userPreferredLocations = new ArrayList<>();
 
 	@Column(nullable = false)
 	private MeetingStatus status = MeetingStatus.ACTIVE;
@@ -64,29 +60,29 @@ public class Meeting implements Serializable {
 	protected Meeting() {}
 
 	public Meeting(int leaderId, String title, String description, Date startDateTime,
-			Date endDateTime, MapCoordinate location, LocationType locationType,
-			String locationName, List<MapCoordinate> userPreferredLocations, MeetingStatus status) {
+			Date endDateTime, MapLocation mapLocation, LocationChoice locationChoice,
+			List<MapLocation> userPreferredLocations, MeetingStatus status) {
 		this.leaderId = leaderId;
 		this.title = title;
 		this.description = description;
 		this.startDateTime = (Date) startDateTime.clone();
 		this.endDateTime = (Date) endDateTime.clone();
-		this.location = location;
-		this.locationType = locationType;
+		this.mapLocation = mapLocation;
+		this.locationChoice = locationChoice;
 		this.userPreferredLocations = userPreferredLocations;
 		this.status = status;
 	}
 
 	public Meeting(int leaderId, String title, String description, Date startDateTime,
-			Date endDateTime, MapCoordinate location, LocationType locationType,
-			String locationName, MeetingStatus status) {
+			Date endDateTime, MapLocation mapLocation, LocationChoice locationChoice,
+			MeetingStatus status) {
 		this.leaderId = leaderId;
 		this.title = title;
 		this.description = description;
 		this.startDateTime = (Date) startDateTime.clone();
 		this.endDateTime = (Date) endDateTime.clone();
-		this.location = location;
-		this.locationType = locationType;
+		this.mapLocation = mapLocation;
+		this.locationChoice = locationChoice;
 		this.status = status;
 	}
 
@@ -134,52 +130,36 @@ public class Meeting implements Serializable {
 		this.endDateTime = (Date) endDateTime.clone();
 	}
 
-	public final MapCoordinate getLocation() {
-		return location;
+	public final MapLocation getMapLocation() {
+		return mapLocation;
 	}
 
-	public final void setLocation(MapCoordinate location) {
-		this.location = location;
+	public final void setMapLocation(MapLocation mapLocation) {
+		this.mapLocation = mapLocation;
 	}
 
-	public final LocationType getLocationType() {
-		return locationType;
+	public final LocationChoice getLocationChoice() {
+		return locationChoice;
 	}
 
-	public final void setLocationType(LocationType locationType) {
-		this.locationType = locationType;
+	public final void setLocationChoice(LocationChoice locationChoice) {
+		this.locationChoice = locationChoice;
 	}
 
-	public String getLocationName() {
-		return locationName;
-	}
-
-	public void setLocationName(String locationName) {
-		this.locationName = locationName;
-	}
-
-	public final List<MapCoordinate> getUserPreferredLocations() {
+	public final List<MapLocation> getUserPreferredLocations() {
 		return userPreferredLocations;
 	}
 
-	public final void setUserPreferredLocations(List<MapCoordinate> userPreferredLocations) {
+	public final void setUserPreferredLocations(List<MapLocation> userPreferredLocations) {
 		this.userPreferredLocations = userPreferredLocations;
 	}
 
-	public final void addUserPreferredLocation(MapCoordinate userPreferredLocation) {
+	public final void addUserPreferredLocation(MapLocation userPreferredLocation) {
 		this.userPreferredLocations.add(userPreferredLocation);
 	}
 
-	public final void removeUserPreferredLocation(MapCoordinate userPreferredLocation) {
+	public final void removeUserPreferredLocation(MapLocation userPreferredLocation) {
 		this.userPreferredLocations.remove(userPreferredLocation);
-	}
-
-	public MapCoordinate getRecommendedLocation() {
-		return recommendedLocation;
-	}
-
-	public void setRecommendedLocation(MapCoordinate recommendedLocation) {
-		this.recommendedLocation = recommendedLocation;
 	}
 
 	public MeetingStatus getStatus() {
@@ -193,8 +173,7 @@ public class Meeting implements Serializable {
 	public final MeetingDto toDto(ParticipantRepository participantRepository) {
 		MeetingDto meetingDto =
 				new MeetingDto(id, leaderId, title, description, startDateTime, endDateTime,
-						location, locationType, locationName, userPreferredLocations,
-						recommendedLocation, status);
+						mapLocation, locationChoice, userPreferredLocations, status);
 		List<Participant> participants = participantRepository.findParticipantsByMeetingId(this.id);
 		for (Participant participant : participants) {
 			ParticipantDto participantDto = participant.toDTO();

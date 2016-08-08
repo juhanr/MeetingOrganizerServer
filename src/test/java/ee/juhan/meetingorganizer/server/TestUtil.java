@@ -16,8 +16,8 @@ import ee.juhan.meetingorganizer.server.core.repository.AccountRepository;
 import ee.juhan.meetingorganizer.server.core.repository.MeetingRepository;
 import ee.juhan.meetingorganizer.server.core.repository.ParticipantRepository;
 import ee.juhan.meetingorganizer.server.rest.domain.ContactDto;
-import ee.juhan.meetingorganizer.server.rest.domain.LocationType;
-import ee.juhan.meetingorganizer.server.rest.domain.MapCoordinate;
+import ee.juhan.meetingorganizer.server.rest.domain.LocationChoice;
+import ee.juhan.meetingorganizer.server.rest.domain.MapLocation;
 import ee.juhan.meetingorganizer.server.rest.domain.MeetingStatus;
 import ee.juhan.meetingorganizer.server.rest.domain.ParticipationAnswer;
 import ee.juhan.meetingorganizer.server.rest.domain.SendGpsLocationAnswer;
@@ -33,7 +33,7 @@ public final class TestUtil {
 	private static final String TEST_PHONE_NUMBER = "+100 00000000";
 	private static final String TEST_MEETING_TITLE = "Test Meeting";
 	private static final String TEST_MEETING_DESCRIPTION = "Test Description";
-	private static final MapCoordinate TEST_LOCATION = new MapCoordinate(100.0, 100.0);
+	private static final MapLocation TEST_MAP_LOCATION = new MapLocation(100.0, 100.0);
 	private static final String TEST_LOCATION_NAME = "Test location";
 	private static final Date TEST_DATE = new Date();
 
@@ -78,14 +78,12 @@ public final class TestUtil {
 	public static Meeting generateTestMeeting(MeetingRepository meetingRepository, int leaderId) {
 		Meeting meeting =
 				new Meeting(leaderId, TEST_MEETING_TITLE, TEST_MEETING_DESCRIPTION, TEST_DATE,
-						TEST_DATE, TEST_LOCATION, LocationType.SPECIFIC_LOCATION,
-						TEST_LOCATION_NAME, MeetingStatus.ACTIVE);
+						TEST_DATE, TEST_MAP_LOCATION, LocationChoice.SPECIFIC_LOCATION,
+						MeetingStatus.ACTIVE);
 		meetingRepository.save(meeting);
 		meeting.setTitle(meeting.getTitle() + meeting.getId());
 		meeting.setDescription(meeting.getDescription() + meeting.getId());
-		meeting.setLocation(new MapCoordinate(meeting.getLocation().getLatitude() + meeting.getId(),
-				meeting.getLocation().getLongitude() + meeting.getId()));
-		meeting.setLocation(generateTestLocation(meeting.getId()));
+		meeting.setMapLocation(generateTestMapLocation(meeting.getId()));
 		meetingRepository.save(meeting);
 		return meeting;
 	}
@@ -95,18 +93,18 @@ public final class TestUtil {
 		Participant participant =
 				new Participant(account, meeting, TEST_USER_NAME, TEST_EMAIL, TEST_PHONE_NUMBER,
 						ParticipationAnswer.PARTICIPATING, SendGpsLocationAnswer.NO_ANSWER,
-						TEST_LOCATION, TEST_DATE);
+						TEST_MAP_LOCATION, TEST_DATE);
 		participantRepository.save(participant);
 		participant.setName(participant.getName() + participant.getId());
 		participant.setEmail(participant.getEmail() + participant.getId());
 		participant.setPhoneNumber(participant.getPhoneNumber() + participant.getId());
-		participant.setLocation(generateTestLocation(participant.getId()));
+		participant.setMapLocation(generateTestMapLocation(participant.getId()));
 		participantRepository.save(participant);
 		return participant;
 	}
 
-	private static MapCoordinate generateTestLocation(double coordinate) {
-		return new MapCoordinate(coordinate, -coordinate);
+	private static MapLocation generateTestMapLocation(double coordinate) {
+		return new MapLocation(coordinate, -coordinate);
 	}
 
 }
