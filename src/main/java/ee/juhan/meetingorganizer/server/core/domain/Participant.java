@@ -64,7 +64,7 @@ public class Participant implements Serializable {
 		this.participationAnswer = participationAnswer;
 		this.sendGpsLocationAnswer = sendGpsLocationAnswer;
 		this.mapLocation = mapLocation;
-		this.locationTimestamp = (Date) locationTimestamp.clone();
+		setLocationTimestamp(locationTimestamp);
 	}
 
 	public Participant(Meeting meeting, String name, String email, String phoneNumber) {
@@ -147,7 +147,8 @@ public class Participant implements Serializable {
 	}
 
 	public void setLocationTimestamp(Date locationTimestamp) {
-		this.locationTimestamp = (Date) locationTimestamp.clone();
+		this.locationTimestamp =
+				locationTimestamp != null ? (Date) locationTimestamp.clone() : null;
 	}
 
 	public final ParticipantDto toDTO() {

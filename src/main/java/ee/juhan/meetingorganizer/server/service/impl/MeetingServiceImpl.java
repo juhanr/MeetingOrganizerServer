@@ -106,11 +106,6 @@ public class MeetingServiceImpl implements MeetingService {
 			int participantAccountId = participantDto.getAccountId();
 			if (participantAccountId != 0) {
 				Account account = accountRepository.findById(participantAccountId);
-				if (account == null) {
-					LOG.debug("Account null: " + participantAccountId);
-				} else {
-					LOG.debug("Account not null: " + account.toString());
-				}
 				participant =
 						new Participant(account, meeting, account.getName(), account.getEmail(),
 								account.getPhoneNumber(), participantDto.getParticipationAnswer(),
