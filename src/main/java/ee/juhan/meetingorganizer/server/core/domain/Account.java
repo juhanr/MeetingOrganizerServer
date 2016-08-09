@@ -86,4 +86,15 @@ public class Account implements Serializable {
 		this.sid = sid;
 	}
 
+	@Override
+	public String toString() {
+		return "Account{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", email='" + email + '\'' +
+				", hash='" + hash + '\'' +
+				", phoneNumber='" + phoneNumber + '\'' +
+				", sid='" + sid + '\'' +
+				'}';
+	}
 }

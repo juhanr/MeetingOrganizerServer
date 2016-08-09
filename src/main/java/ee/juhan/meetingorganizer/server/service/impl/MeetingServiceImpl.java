@@ -1,5 +1,7 @@
 package ee.juhan.meetingorganizer.server.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,8 @@ import ee.juhan.meetingorganizer.server.service.MeetingService;
 
 @Service
 public class MeetingServiceImpl implements MeetingService {
+
+	private static final Logger LOG = LoggerFactory.getLogger(MeetingServiceImpl.class);
 
 	@Autowired
 	private MeetingRepository meetingRepository;
@@ -102,6 +106,11 @@ public class MeetingServiceImpl implements MeetingService {
 			int participantAccountId = participantDto.getAccountId();
 			if (participantAccountId != 0) {
 				Account account = accountRepository.findById(participantAccountId);
+				if (account == null) {
+					LOG.debug("Account null: " + participantAccountId);
+				} else {
+					LOG.debug("Account not null: " + account.toString());
+				}
 				participant =
 						new Participant(account, meeting, account.getName(), account.getEmail(),
 								account.getPhoneNumber(), participantDto.getParticipationAnswer(),
